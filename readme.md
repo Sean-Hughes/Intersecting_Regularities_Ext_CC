@@ -1,7 +1,7 @@
 # Intersecting Regularities (Extinction & Counterconditioning)
 
 
-To Do
+
 
 ## Notes on project structure
 
