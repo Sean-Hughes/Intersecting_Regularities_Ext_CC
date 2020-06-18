@@ -1,0 +1,972 @@
+---
+title: "Study 7: Data Analysis"
+author: "Sean Hughes"
+date: "30-5-2020"
+output: 
+  html_document:
+    code_folding: hide
+    highlight: haddock
+    theme: flatly
+    toc: yes 
+    toc_float: yes
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(message=FALSE,
+                      warning=FALSE)
+```
+
+
+# Load the necessary packages
+
+```{r}
+library(foreign)
+library(tidyverse)
+library(Hmisc)
+library(car)
+library(readxl)
+library(ggplot2)
+library(dplyr)
+library(xlsx)
+library(ggthemes)
+```
+
+## 1. Import the raw data files from Excel into R
+
+```{r}
+
+getwd()
+
+wd <- list()
+wd$data_AQ   <- "C:/Users/Sean/Desktop/Intersecting_Regularties_/Study 7/Raw_Data/1_Acquisition_Only_Data/"
+wd$data_CC   <- "C:/Users/Sean/Desktop/Intersecting_Regularties_/Study 7/Raw_Data/2_Counterconditioning_Data/"
+wd$data_EX   <- "C:/Users/Sean/Desktop/Intersecting_Regularties_/Study 7/Raw_Data/3_Extinction_Data/"
+
+wd$output <- "C:/Users/Sean/Desktop/Intersecting_Regularties_/Study 7/Processed_Data/"
+
+# Confidence ratings
+data_confidence_ratings_AQ    <- read_xlsx(paste0(wd$data_AQ, "confidence_ratings_17_06_20.xlsx"), col_names = TRUE) %>% 
+  mutate(training_condition = "Acquisition_Only")
+
+data_confidence_ratings_CC    <- read_xlsx(paste0(wd$data_CC, "confidence_ratings_survey.xlsx"), col_names = TRUE) %>% 
+  mutate(training_condition = "Counterconditioning")
+
+data_confidence_ratings_EX    <- read_xlsx(paste0(wd$data_EX, "confidence_ratings_19_04_05.xlsx"), col_names = TRUE) %>% 
+  mutate(training_condition = "Extinction")
+
+# Demand
+data_demand_AQ                <- read_xlsx(paste0(wd$data_AQ, "demand_17_06_20.xlsx"), col_names = TRUE)%>% 
+  mutate(training_condition = "Acquisition_Only")
+
+data_demand_CC                <- read_xlsx(paste0(wd$data_CC, "demand_survey.xlsx"), col_names = TRUE)%>% 
+  mutate(training_condition = "Counterconditioning")
+
+data_demand_EX                <- read_xlsx(paste0(wd$data_EX, "demand_19_04_05.xlsx"), col_names = TRUE)%>% 
+  mutate(training_condition = "Extinction")
+
+# Demographics
+data_demographics_AQ          <- read_xlsx(paste0(wd$data_AQ, "demographics_17_06_20.xlsx"), col_names = TRUE) %>% 
+  mutate(training_condition = "Acquisition_Only")
+
+data_demographics_CC          <- read_xlsx(paste0(wd$data_CC, "demographics_raw.xlsx"), col_names = TRUE) %>% 
+  mutate(training_condition = "Counterconditioning")
+
+data_demographics_EX          <- read_xlsx(paste0(wd$data_EX, "demographics_19_04_05.xlsx"), col_names = TRUE) %>% 
+  mutate(training_condition = "Extinction")
+
+# Intentions
+data_intentions_1_AQ          <- read_xlsx(paste0(wd$data_AQ, "intention_ratings_1_3_17_06_20.xlsx"), col_names = TRUE) %>% 
+  mutate(training_condition = "Acquisition_Only")
+
+data_intentions_1_CC          <- read_xlsx(paste0(wd$data_CC, "intention_ratings_1_3_survey.xlsx"), col_names = TRUE)%>% 
+  mutate(training_condition = "Counterconditioning")
+
+data_intentions_1_EX          <- read_xlsx(paste0(wd$data_EX, "intention_ratings_1_3_19_04_05.xlsx"), col_names = TRUE) %>% 
+  mutate(training_condition = "Extinction")
+
+
+data_intentions_2_AQ          <- read_xlsx(paste0(wd$data_AQ, "intention_ratings_2_4_17_06_20.xlsx"), col_names = TRUE) %>% 
+  mutate(training_condition = "Acquisition_Only")
+
+data_intentions_2_CC          <- read_xlsx(paste0(wd$data_CC, "intention_ratings_2_4_survey.xlsx"), col_names = TRUE)%>% 
+  mutate(training_condition = "Counterconditioning")
+
+data_intentions_2_EX          <- read_xlsx(paste0(wd$data_EX, "intention_ratings_2_4_19_04_05.xlsx"), col_names = TRUE) %>% 
+  mutate(training_condition = "Extinction")
+
+# Reactance
+data_reactance_AQ             <- read_xlsx(paste0(wd$data_AQ, "reactance_17_06_20.xlsx"), col_names = TRUE) %>% 
+  mutate(training_condition = "Acquisition_Only")
+
+data_reactance_CC             <- read_xlsx(paste0(wd$data_CC, "reactance_survey.xlsx"), col_names = TRUE)%>% 
+  mutate(training_condition = "Counterconditioning")
+
+data_reactance_EX             <- read_xlsx(paste0(wd$data_EX, "reactance_19_04_05.xlsx"), col_names = TRUE) %>% 
+  mutate(training_condition = "Extinction")
+
+# Ratings
+data_ratings_AQ               <- read_xlsx(paste0(wd$data_AQ, "valence_ratings_17_06_20.xlsx"), col_names = TRUE) %>% 
+  mutate(training_condition = "Acquisition_Only")
+
+data_ratings_CC               <- read_xlsx(paste0(wd$data_CC, "valence_ratings_survey.xlsx"), col_names = TRUE)%>% 
+  mutate(training_condition = "Counterconditioning")
+
+data_ratings_EX               <- read_xlsx(paste0(wd$data_EX, "valence_ratings_19_04_05.xlsx"), col_names = TRUE)%>% 
+  mutate(training_condition = "Extinction")
+
+# Task Order
+data_task_order_1_AQ          <- read_xlsx(paste0(wd$data_AQ, "stimulus_ratings_before_17_06_20.xlsx"), col_names = TRUE) %>% 
+  mutate(training_condition = "Acquisition_Only")
+
+data_task_order_1_CC          <- read_xlsx(paste0(wd$data_CC, "stimulus_ratings_before_raw.xlsx"), col_names = TRUE) %>% 
+  mutate(training_condition = "Counterconditioning")
+
+data_task_order_1_EX          <- read_xlsx(paste0(wd$data_EX, "stimulus_ratings_before_19_04_05.xlsx"), col_names = TRUE) %>% 
+  mutate(training_condition = "Extinction")  
+
+
+data_task_order_2_AQ          <- read_xlsx(paste0(wd$data_AQ, "stimulus_ratings_after_17_06_20.xlsx"), col_names = TRUE)%>% 
+  mutate(training_condition = "Acquisition_Only")
+
+data_task_order_2_CC          <- read_xlsx(paste0(wd$data_CC, "stimulus_ratings_after_raw.xlsx"), col_names = TRUE)  %>% 
+  mutate(training_condition = "Counterconditioning")
+
+data_task_order_2_EX          <- read_xlsx(paste0(wd$data_EX, "stimulus_ratings_after_19_04_05.xlsx"), col_names = TRUE)  %>% 
+  mutate(training_condition = "Extinction") 
+
+
+data_stimulus_identity     <- read_csv2(paste0(wd$output, "Study_7_Stimulus_Identity.csv"), col_names = TRUE)
+data_training_condition    <- read_csv2(paste0(wd$output,"Study_7_Complete_Training_Testing_Data.csv"), col_names = TRUE)
+data_iat                   <- read_csv2(paste0(wd$output,"Study_7_IAT_Scores.csv"), col_names = TRUE) 
+
+```
+
+##2. Join the Files 
+
+```{r}
+data_confidence_ratings <- data_confidence_ratings_AQ %>%
+  bind_rows(data_confidence_ratings_CC, data_confidence_ratings_EX)
+
+data_demographics <- data_demographics_AQ %>%
+  bind_rows(data_demographics_CC, data_demographics_EX)
+
+data_demand <- data_demand_AQ %>%
+  bind_rows(data_demand_CC, data_demand_EX)
+
+data_intentions_1 <- data_intentions_1_AQ %>%
+  bind_rows(data_intentions_1_CC, data_intentions_1_EX)
+
+data_intentions_2 <- data_intentions_2_AQ %>%
+  bind_rows(data_intentions_2_CC, data_intentions_2_EX)
+
+data_reactance <- data_reactance_AQ %>%
+  bind_rows(data_reactance_CC, data_reactance_EX)
+
+data_ratings <- data_ratings_AQ %>%
+  bind_rows(data_ratings_CC, data_ratings_EX)
+
+data_task_order_1 <- data_task_order_1_AQ %>%
+  bind_rows(data_task_order_1_CC, data_task_order_1_EX)
+
+# Apparently the response column in the EX version of this file is a character whereas the others are numerics. Change the former to the latter
+data_task_order_2_EX$response <- is.numeric(data_task_order_2_EX$response)  
+
+data_task_order_2 <- data_task_order_2_AQ %>%
+  bind_rows(data_task_order_2_CC, data_task_order_2_EX)
+
+```
+
+
+
+## 2. Prepare Demographic Data File 
+
+```{r}
+
+# Extract Age and Gender information for each subject
+
+# Acquisition_Only
+
+demographics_age_AQ <- data_demographics %>% 
+  select(subject, trialcode, response, training_condition) %>% 
+  filter(trialcode != "ProlificCode") %>%
+  filter(training_condition == "Acquisition_Only") %>%
+  tibble::rowid_to_column() %>%
+  spread(trialcode, response) %>%
+  filter(age != "NA")
+
+demographics_gender_AQ <- data_demographics %>% 
+  select(subject, trialcode, response, training_condition) %>% 
+  filter(trialcode != "ProlificCode") %>%
+  filter(training_condition == "Acquisition_Only") %>%
+  tibble::rowid_to_column() %>%
+  spread(trialcode, response) %>%
+  filter(gender != "NA")
+
+# Combine the files together
+demographics_AQ <- demographics_age_AQ %>%
+  left_join(demographics_gender_AQ, by = "subject")
+
+# Retain only the columns necessary for data analysis
+
+demographics_AQ <- demographics_AQ %>% 
+  select(subject, age.x, gender.y, training_condition.x) %>% 
+  rename(Age = age.x, Gender = gender.y, training_condition = training_condition.x) %>% 
+  arrange(subject)
+
+# Remove data for participants with no demographic information 
+demographics_AQ <- na.omit(demographics_AQ)
+
+# Clean up the Gender column so that it reads Male, Female, No Gender Provided 
+
+Cleaned_demographics_AQ <- demographics_AQ %>%
+    mutate(Gender = case_when(
+    str_detect(Gender, "f") ~ "F",
+    str_detect(Gender, "female")  ~ "F",
+    str_detect(Gender, "Female")  ~ "F",
+    str_detect(Gender, "femAle")  ~ "F",
+    str_detect(Gender, "m")  ~ "M",
+    str_detect(Gender, "MALE")  ~ "M",
+    str_detect(Gender, "Male")  ~ "M",
+    TRUE ~ Gender
+    )
+  ) 
+
+ # Counterconditioning
+
+demographics_age_CC <- data_demographics %>% 
+  select(subject, trialcode, response, training_condition) %>% 
+  filter(trialcode != "ProlificCode") %>%
+  filter(training_condition == "Counterconditioning") %>%
+  tibble::rowid_to_column() %>%
+  spread(trialcode, response) %>%
+  filter(age != "NA")
+
+demographics_gender_CC <- data_demographics %>% 
+  select(subject, trialcode, response, training_condition) %>% 
+  filter(trialcode != "ProlificCode") %>%
+  filter(training_condition == "Counterconditioning") %>%
+  tibble::rowid_to_column() %>%
+  spread(trialcode, response) %>%
+  filter(gender != "NA")
+
+# Combine the files together
+demographics_CC <- demographics_age_CC %>%
+  left_join(demographics_gender_CC, by = "subject")
+
+# Retain only the columns necessary for data analysis
+
+demographics_CC <- demographics_CC %>% 
+  select(subject, age.x, gender.y, training_condition.x) %>% 
+  rename(Age = age.x, Gender = gender.y, training_condition = training_condition.x) %>% 
+  arrange(subject)
+
+# Remove data for participants with no demographic information 
+demographics_CC <- na.omit(demographics_CC)
+
+# Clean up the Gender column so that it reads Male, Female, No Gender Provided 
+
+Cleaned_demographics_CC <- demographics_CC %>%
+    mutate(Gender = case_when(
+    str_detect(Gender, "f") ~ "F",
+    str_detect(Gender, "female")  ~ "F",
+    str_detect(Gender, "Female")  ~ "F",
+    str_detect(Gender, "femAle")  ~ "F",
+    str_detect(Gender, "m")  ~ "M",
+    str_detect(Gender, "MALE")  ~ "M",
+    str_detect(Gender, "Male")  ~ "M",
+    TRUE ~ Gender
+    )
+  ) 
+
+# Extinction 
+
+demographics_age_EX <- data_demographics %>% 
+  select(subject, trialcode, response, training_condition) %>% 
+  filter(trialcode != "ProlificCode") %>%
+  filter(training_condition == "Extinction") %>%
+  tibble::rowid_to_column() %>%
+  spread(trialcode, response) %>%
+  filter(age != "NA")
+
+demographics_gender_EX <- data_demographics %>% 
+  select(subject, trialcode, response, training_condition) %>% 
+  filter(trialcode != "ProlificCode") %>%
+  filter(training_condition == "Extinction") %>%
+  tibble::rowid_to_column() %>%
+  spread(trialcode, response) %>%
+  filter(gender != "NA")
+
+# Combine the files together
+demographics_EX <- demographics_age_EX %>%
+  left_join(demographics_gender_EX, by = "subject")
+
+# Retain only the columns necessary for data analysis
+
+demographics_EX <- demographics_EX %>% 
+  select(subject, age.x, gender.y, training_condition.x) %>% 
+  rename(Age = age.x, Gender = gender.y, training_condition = training_condition.x) %>% 
+  arrange(subject)
+
+# Remove data for participants with no demographic information 
+demographics_EX <- na.omit(demographics_EX)
+
+# Clean up the Gender column so that it reads Male, Female, No Gender Provided 
+
+Cleaned_demographics_EX <- demographics_EX %>%
+    mutate(Gender = case_when(
+    str_detect(Gender, "f") ~ "F",
+    str_detect(Gender, "female")  ~ "F",
+    str_detect(Gender, "Female")  ~ "F",
+    str_detect(Gender, "femAle")  ~ "F",
+    str_detect(Gender, "m")  ~ "M",
+    str_detect(Gender, "MALE")  ~ "M",
+    str_detect(Gender, "Male")  ~ "M",
+    TRUE ~ Gender
+    )
+  ) 
+
+# Combine the files together
+
+Cleaned_demographics <- Cleaned_demographics_AQ %>% 
+  bind_rows(Cleaned_demographics_CC, Cleaned_demographics_EX)
+
+
+```
+
+## 3. Prepare Demand File
+
+```{r}
+
+# Acquisition_Only
+
+# Select out the variables of interest and create a new (recoded) column that classifes people as demand vs. non-demand compliant
+
+Cleaned_demand_AQ <- data_demand_AQ %>% 
+  select(subject, training_condition, Demand_response) %>%
+  arrange(subject) %>%
+  mutate(Demand_recoded = case_when(Demand_response == "What I learned during the experiment" ~ "Not Demand Compliant",
+                            Demand_response == "I don't know why I evaluated the items as I did" ~ "Not Demand Compliant",
+                            Demand_response == "What I learned during the experiment" ~ "Not Demand Compliant",
+                            Demand_response == "What I thought the experimenter wanted me to say" ~ "Demand Compliant",
+                            Demand_response == "I based my ratings on some some factor that was not what I learned or what the experimenter wanted me to do" ~ "Not Demand Compliant")) %>%
+  
+# Remove individuals without complete demand data
+
+drop_na()
+
+# Counterconditioning
+
+Cleaned_demand_CC <- data_demand_CC %>% 
+  select(subject, training_condition, Demand_response) %>%
+  arrange(subject) %>%
+  mutate(Demand_recoded = case_when(Demand_response == "What I learned during the experiment" ~ "Not Demand Compliant",
+                            Demand_response == "I don't know why I evaluated the items as I did" ~ "Not Demand Compliant",
+                            Demand_response == "What I learned during the experiment" ~ "Not Demand Compliant",
+                            Demand_response == "What I thought the experimenter wanted me to say" ~ "Demand Compliant",
+                            Demand_response == "I based my ratings on some some factor that was not what I learned or what the experimenter wanted me to do" ~ "Not Demand Compliant")) %>%
+  
+# Remove individuals without complete demand data
+
+drop_na()
+
+# Extinction 
+
+Cleaned_demand_EX <- data_demand_EX %>% 
+  select(subject, training_condition, Demand_response) %>%
+  arrange(subject) %>%
+  mutate(Demand_recoded = case_when(Demand_response == "What I learned during the experiment" ~ "Not Demand Compliant",
+                            Demand_response == "I don't know why I evaluated the items as I did" ~ "Not Demand Compliant",
+                            Demand_response == "What I learned during the experiment" ~ "Not Demand Compliant",
+                            Demand_response == "What I thought the experimenter wanted me to say" ~ "Demand Compliant",
+                            Demand_response == "I based my ratings on some some factor that was not what I learned or what the experimenter wanted me to do" ~ "Not Demand Compliant")) %>%
+  
+# Remove individuals without complete demand data
+
+drop_na()
+
+# Combine the files 
+
+Cleaned_demand <- Cleaned_demand_AQ %>% 
+  bind_rows(Cleaned_demand_CC, Cleaned_demand_EX)
+
+
+
+```
+
+## 4. Prepare Reactance File
+
+```{r}
+
+# Acquisition_Only 
+
+# Select out the columns from the raw data file that are relevant to reactance
+
+Cleaned_reactance_AQ <- data_reactance_AQ %>% 
+  select(subject, training_condition, react1_response, react2_response) %>% 
+  rename(reactance_question_1 = react1_response, reactance_question_2 = react2_response) %>%
+  arrange(subject) %>%
+  drop_na(reactance_question_1)
+
+# Counterconditioning
+
+Cleaned_reactance_CC <- data_reactance_CC %>% 
+  select(subject, training_condition, react1_response, react2_response) %>% 
+  rename(reactance_question_1 = react1_response, reactance_question_2 = react2_response) %>%
+  arrange(subject) %>%
+  drop_na(reactance_question_1)
+
+# Extinction
+
+Cleaned_reactance_EX <- data_reactance_EX %>% 
+  select(subject, training_condition, react1_response, react2_response) %>% 
+  rename(reactance_question_1 = react1_response, reactance_question_2 = react2_response) %>%
+  arrange(subject) %>%
+  drop_na(reactance_question_1)
+
+# Combine files 
+
+Cleaned_reactance <- Cleaned_reactance_AQ %>% 
+  bind_rows(Cleaned_reactance_CC, Cleaned_reactance_EX)
+
+
+```
+
+## 5. Prepare confidence Files
+
+```{r}
+
+# Acquisition_Only
+
+Cleaned_confidence_AQ <- data_confidence_ratings_AQ %>% 
+  select(subject, training_condition, Stimulus_1_Confidence_Confidence_response, Stimulus_2_Confidence_Confidence_response, Stimulus_3_Confidence_Confidence_response, Stimulus_4_Confidence_Confidence_response) %>% 
+  rename(stim_1_confidence = Stimulus_1_Confidence_Confidence_response, stim_2_confidence = Stimulus_2_Confidence_Confidence_response, stim_3_confidence = Stimulus_3_Confidence_Confidence_response, stim_4_confidence = Stimulus_4_Confidence_Confidence_response) %>% 
+  arrange(subject)%>%
+
+# Remove participants without complete confidence data
+
+  drop_na(stim_1_confidence)
+
+# Counterconditioning 
+
+Cleaned_confidence_CC <- data_confidence_ratings_CC %>% 
+  select(subject, training_condition, Stimulus_1_Confidence_Confidence_response, Stimulus_2_Confidence_Confidence_response, Stimulus_3_Confidence_Confidence_response, Stimulus_4_Confidence_Confidence_response) %>% 
+  rename(stim_1_confidence = Stimulus_1_Confidence_Confidence_response, stim_2_confidence = Stimulus_2_Confidence_Confidence_response, stim_3_confidence = Stimulus_3_Confidence_Confidence_response, stim_4_confidence = Stimulus_4_Confidence_Confidence_response) %>% 
+  arrange(subject)%>%
+
+# Remove participants without complete confidence data
+
+  drop_na(stim_1_confidence)
+
+# Extinction 
+
+Cleaned_confidence_EX <- data_confidence_ratings_EX %>% 
+  select(subject, training_condition, Stimulus_1_Confidence_Confidence_response, Stimulus_2_Confidence_Confidence_response, Stimulus_3_Confidence_Confidence_response, Stimulus_4_Confidence_Confidence_response) %>% 
+  rename(stim_1_confidence = Stimulus_1_Confidence_Confidence_response, stim_2_confidence = Stimulus_2_Confidence_Confidence_response, stim_3_confidence = Stimulus_3_Confidence_Confidence_response, stim_4_confidence = Stimulus_4_Confidence_Confidence_response) %>% 
+  arrange(subject)%>%
+
+# Remove participants without complete confidence data
+
+  drop_na(stim_1_confidence)
+
+# Combine files 
+
+Cleaned_confidence <- Cleaned_confidence_AQ %>% 
+  bind_rows(Cleaned_confidence_CC, Cleaned_confidence_EX)
+
+```
+
+## 7. Prepare Ratings file
+
+```{r}
+
+# ACQUISITION GROUP
+
+Cleaned_ratings_AQ <- data_ratings_AQ %>% 
+  select(subject, training_condition, Stimulus_1_Positive_Negative_Positive_Negative_response, 
+                  Stimulus_1_Good_Bad_Good_Bad_response, 
+                  Stimulus_1_Pleasant_Unpleasant_Pleasant_Unpleasant_response, 
+                  Stimulus_1_Like_Dislike_Like_Dislike_response, 
+                  Stimulus_2_Positive_Negative_Positive_Negative_response, 
+                  Stimulus_2_Good_Bad_Good_Bad_response, 
+                  Stimulus_2_Pleasant_Unpleasant_Pleasant_Unpleasant_response,
+                  Stimulus_2_Like_Dislike_Like_Dislike_response, 
+                  Stimulus_3_Positive_Negative_Positive_Negative_response, 
+                  Stimulus_3_Good_Bad_Good_Bad_response, 
+                  Stimulus_3_Pleasant_Unpleasant_Pleasant_Unpleasant_response, 
+                  Stimulus_3_Like_Dislike_Like_Dislike_response, 
+                  Stimulus_4_Positive_Negative_Positive_Negative_response, 
+                  Stimulus_4_Good_Bad_Good_Bad_response, 
+                  Stimulus_4_Pleasant_Unpleasant_Pleasant_Unpleasant_response, 
+                  Stimulus_4_Like_Dislike_Like_Dislike_response) %>% 
+  arrange(subject) %>%
+  rename(Outcome_1_Pos_Neg = Stimulus_1_Positive_Negative_Positive_Negative_response,
+         Outcome_1_Good_Bad = Stimulus_1_Good_Bad_Good_Bad_response,
+         Outcome_1_Pleasant_Unpleasant = Stimulus_1_Pleasant_Unpleasant_Pleasant_Unpleasant_response,
+         Outcome_1_Like_Dislike = Stimulus_1_Like_Dislike_Like_Dislike_response,
+         Outcome_2_Pos_Neg = Stimulus_3_Positive_Negative_Positive_Negative_response,
+         Outcome_2_Good_Bad = Stimulus_3_Good_Bad_Good_Bad_response, 
+         Outcome_2_Pleasant_Unpleasant = Stimulus_3_Pleasant_Unpleasant_Pleasant_Unpleasant_response,
+         Outcome_2_Like_Dislike = Stimulus_3_Like_Dislike_Like_Dislike_response,
+         Target_1_Pos_Neg = Stimulus_2_Positive_Negative_Positive_Negative_response,
+         Target_1_Good_Bad = Stimulus_2_Good_Bad_Good_Bad_response, 
+         Target_1_Pleasant_Unpleasant = Stimulus_2_Pleasant_Unpleasant_Pleasant_Unpleasant_response,
+         Target_1_Like_Dislike = Stimulus_2_Like_Dislike_Like_Dislike_response,
+         Target_2_Pos_Neg = Stimulus_4_Positive_Negative_Positive_Negative_response,
+         Target_2_Good_Bad = Stimulus_4_Good_Bad_Good_Bad_response,
+         Target_2_Pleasant_Unpleasant = Stimulus_4_Pleasant_Unpleasant_Pleasant_Unpleasant_response,
+         Target_2_Like_Dislike = Stimulus_4_Like_Dislike_Like_Dislike_response) %>% 
+
+  # Create a mean rating score for each stimulus
+  # Create an operant evaluative conditioning (OEC) and intersecting regularites (IR) effect
+  mutate(Mean_Outcome_1 = (Outcome_1_Pos_Neg + Outcome_1_Good_Bad + Outcome_1_Pleasant_Unpleasant + Outcome_1_Like_Dislike)/4,
+         Mean_Outcome_2 = (Outcome_2_Pos_Neg + Outcome_2_Good_Bad + Outcome_2_Pleasant_Unpleasant + Outcome_2_Like_Dislike)/4,
+         Mean_Target_1 = (Target_1_Pos_Neg + Target_1_Good_Bad + Target_1_Pleasant_Unpleasant + Target_1_Like_Dislike)/4,
+         Mean_Target_2 = (Target_2_Pos_Neg + Target_2_Good_Bad + Target_2_Pleasant_Unpleasant + Target_2_Like_Dislike)/4,
+         OEC_Effect = Mean_Outcome_1 - Mean_Outcome_2,
+         IR_Effect = Mean_Target_1 - Mean_Target_2) %>%
+  
+
+  # Remove individuals without complete ratings data
+
+drop_na(Outcome_1_Pos_Neg)
+
+  # The identity of the outcome and target stimuli (Morag and Straun/ Chinese symbols) that intersected with positive or negative outcome   stimuli were counterbalanced across participants. In order to address this counterbalancing factor we need to reverse score half of the   scores. 
+
+
+  # Add stimulus identity information to the ratings
+
+data_stimulus_identity_AQ <- data_stimulus_identity %>%
+  filter(training_condition == "Acquisition_Only")
+  
+Cleaned_ratings_AQ <- data_stimulus_identity_AQ %>% 
+  full_join(Cleaned_ratings_AQ, by = c("subject")) %>%
+  drop_na(training_condition.y) %>%
+  select(-training_condition.y)%>%
+  rename(training_condition = training_condition.x) %>%
+
+  # Reverse the scores for those who were in the Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good group
+   mutate(Transformed_OEC_Effect = ifelse(stimulus_identity == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad", OEC_Effect, OEC_Effect * -1), 
+           Transformed_IR_Effect = ifelse(stimulus_identity == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad", IR_Effect, IR_Effect * -1))  
+   
+
+# COUNTERCONDITIONING GROUP
+Cleaned_ratings_CC <- data_ratings_CC %>% 
+  select(subject, training_condition, Stimulus_1_Positive_Negative_Positive_Negative_response, 
+                  Stimulus_1_Good_Bad_Good_Bad_response, 
+                  Stimulus_1_Pleasant_Unpleasant_Pleasant_Unpleasant_response, 
+                  Stimulus_1_Like_Dislike_Like_Dislike_response, 
+                  Stimulus_2_Positive_Negative_Positive_Negative_response, 
+                  Stimulus_2_Good_Bad_Good_Bad_response, 
+                  Stimulus_2_Pleasant_Unpleasant_Pleasant_Unpleasant_response,
+                  Stimulus_2_Like_Dislike_Like_Dislike_response, 
+                  Stimulus_3_Positive_Negative_Positive_Negative_response, 
+                  Stimulus_3_Good_Bad_Good_Bad_response, 
+                  Stimulus_3_Pleasant_Unpleasant_Pleasant_Unpleasant_response, 
+                  Stimulus_3_Like_Dislike_Like_Dislike_response, 
+                  Stimulus_4_Positive_Negative_Positive_Negative_response, 
+                  Stimulus_4_Good_Bad_Good_Bad_response, 
+                  Stimulus_4_Pleasant_Unpleasant_Pleasant_Unpleasant_response, 
+                  Stimulus_4_Like_Dislike_Like_Dislike_response) %>% 
+  arrange(subject) %>%
+  rename(Outcome_1_Pos_Neg = Stimulus_1_Positive_Negative_Positive_Negative_response,
+         Outcome_1_Good_Bad = Stimulus_1_Good_Bad_Good_Bad_response,
+         Outcome_1_Pleasant_Unpleasant = Stimulus_1_Pleasant_Unpleasant_Pleasant_Unpleasant_response,
+         Outcome_1_Like_Dislike = Stimulus_1_Like_Dislike_Like_Dislike_response,
+         Outcome_2_Pos_Neg = Stimulus_3_Positive_Negative_Positive_Negative_response,
+         Outcome_2_Good_Bad = Stimulus_3_Good_Bad_Good_Bad_response, 
+         Outcome_2_Pleasant_Unpleasant = Stimulus_3_Pleasant_Unpleasant_Pleasant_Unpleasant_response,
+         Outcome_2_Like_Dislike = Stimulus_3_Like_Dislike_Like_Dislike_response,
+         Target_1_Pos_Neg = Stimulus_2_Positive_Negative_Positive_Negative_response,
+         Target_1_Good_Bad = Stimulus_2_Good_Bad_Good_Bad_response, 
+         Target_1_Pleasant_Unpleasant = Stimulus_2_Pleasant_Unpleasant_Pleasant_Unpleasant_response,
+         Target_1_Like_Dislike = Stimulus_2_Like_Dislike_Like_Dislike_response,
+         Target_2_Pos_Neg = Stimulus_4_Positive_Negative_Positive_Negative_response,
+         Target_2_Good_Bad = Stimulus_4_Good_Bad_Good_Bad_response,
+         Target_2_Pleasant_Unpleasant = Stimulus_4_Pleasant_Unpleasant_Pleasant_Unpleasant_response,
+         Target_2_Like_Dislike = Stimulus_4_Like_Dislike_Like_Dislike_response) %>% 
+
+  # Create a mean rating score for each stimulus
+  # Create an operant evaluative conditioning (OEC) and intersecting regularites (IR) effect
+  mutate(Mean_Outcome_1 = (Outcome_1_Pos_Neg + Outcome_1_Good_Bad + Outcome_1_Pleasant_Unpleasant + Outcome_1_Like_Dislike)/4,
+         Mean_Outcome_2 = (Outcome_2_Pos_Neg + Outcome_2_Good_Bad + Outcome_2_Pleasant_Unpleasant + Outcome_2_Like_Dislike)/4,
+         Mean_Target_1 = (Target_1_Pos_Neg + Target_1_Good_Bad + Target_1_Pleasant_Unpleasant + Target_1_Like_Dislike)/4,
+         Mean_Target_2 = (Target_2_Pos_Neg + Target_2_Good_Bad + Target_2_Pleasant_Unpleasant + Target_2_Like_Dislike)/4,
+         OEC_Effect = Mean_Outcome_1 - Mean_Outcome_2,
+         IR_Effect = Mean_Target_1 - Mean_Target_2) %>%
+  
+
+  # Remove individuals without complete ratings data
+
+drop_na(Outcome_1_Pos_Neg)
+
+  # The identity of the outcome and target stimuli (Morag and Straun/ Chinese symbols) that intersected with positive or negative outcome   stimuli were counterbalanced across participants. In order to address this counterbalancing factor we need to reverse score half of the   scores. 
+
+
+  # Add stimulus identity information to the ratings
+
+data_stimulus_identity_CC <- data_stimulus_identity %>%
+  filter(training_condition == "Counterconditioning")
+  
+Cleaned_ratings_CC <- data_stimulus_identity_CC %>% 
+  full_join(Cleaned_ratings_CC, by = c("subject")) %>%
+  drop_na(training_condition.y) %>%
+  select(-training_condition.y)%>%
+  rename(training_condition = training_condition.x) %>%
+
+  # Reverse the scores for those who were in the Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good group
+   mutate(Transformed_OEC_Effect = ifelse(stimulus_identity == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad", OEC_Effect, OEC_Effect * -1), 
+           Transformed_IR_Effect = ifelse(stimulus_identity == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad", IR_Effect, IR_Effect * -1))  
+
+# EXTINCTION GROUP 
+  
+Cleaned_ratings_EX <- data_ratings_EX %>% 
+  select(subject, training_condition, Stimulus_1_Positive_Negative_Positive_Negative_response, 
+                  Stimulus_1_Good_Bad_Good_Bad_response, 
+                  Stimulus_1_Pleasant_Unpleasant_Pleasant_Unpleasant_response, 
+                  Stimulus_1_Like_Dislike_Like_Dislike_response, 
+                  Stimulus_2_Positive_Negative_Positive_Negative_response, 
+                  Stimulus_2_Good_Bad_Good_Bad_response, 
+                  Stimulus_2_Pleasant_Unpleasant_Pleasant_Unpleasant_response,
+                  Stimulus_2_Like_Dislike_Like_Dislike_response, 
+                  Stimulus_3_Positive_Negative_Positive_Negative_response, 
+                  Stimulus_3_Good_Bad_Good_Bad_response, 
+                  Stimulus_3_Pleasant_Unpleasant_Pleasant_Unpleasant_response, 
+                  Stimulus_3_Like_Dislike_Like_Dislike_response, 
+                  Stimulus_4_Positive_Negative_Positive_Negative_response, 
+                  Stimulus_4_Good_Bad_Good_Bad_response, 
+                  Stimulus_4_Pleasant_Unpleasant_Pleasant_Unpleasant_response, 
+                  Stimulus_4_Like_Dislike_Like_Dislike_response) %>% 
+  arrange(subject) %>%
+  rename(Outcome_1_Pos_Neg = Stimulus_1_Positive_Negative_Positive_Negative_response,
+         Outcome_1_Good_Bad = Stimulus_1_Good_Bad_Good_Bad_response,
+         Outcome_1_Pleasant_Unpleasant = Stimulus_1_Pleasant_Unpleasant_Pleasant_Unpleasant_response,
+         Outcome_1_Like_Dislike = Stimulus_1_Like_Dislike_Like_Dislike_response,
+         Outcome_2_Pos_Neg = Stimulus_3_Positive_Negative_Positive_Negative_response,
+         Outcome_2_Good_Bad = Stimulus_3_Good_Bad_Good_Bad_response, 
+         Outcome_2_Pleasant_Unpleasant = Stimulus_3_Pleasant_Unpleasant_Pleasant_Unpleasant_response,
+         Outcome_2_Like_Dislike = Stimulus_3_Like_Dislike_Like_Dislike_response,
+         Target_1_Pos_Neg = Stimulus_2_Positive_Negative_Positive_Negative_response,
+         Target_1_Good_Bad = Stimulus_2_Good_Bad_Good_Bad_response, 
+         Target_1_Pleasant_Unpleasant = Stimulus_2_Pleasant_Unpleasant_Pleasant_Unpleasant_response,
+         Target_1_Like_Dislike = Stimulus_2_Like_Dislike_Like_Dislike_response,
+         Target_2_Pos_Neg = Stimulus_4_Positive_Negative_Positive_Negative_response,
+         Target_2_Good_Bad = Stimulus_4_Good_Bad_Good_Bad_response,
+         Target_2_Pleasant_Unpleasant = Stimulus_4_Pleasant_Unpleasant_Pleasant_Unpleasant_response,
+         Target_2_Like_Dislike = Stimulus_4_Like_Dislike_Like_Dislike_response) %>% 
+
+  # Create a mean rating score for each stimulus
+  # Create an operant evaluative conditioning (OEC) and intersecting regularites (IR) effect
+  mutate(Mean_Outcome_1 = (Outcome_1_Pos_Neg + Outcome_1_Good_Bad + Outcome_1_Pleasant_Unpleasant + Outcome_1_Like_Dislike)/4,
+         Mean_Outcome_2 = (Outcome_2_Pos_Neg + Outcome_2_Good_Bad + Outcome_2_Pleasant_Unpleasant + Outcome_2_Like_Dislike)/4,
+         Mean_Target_1 = (Target_1_Pos_Neg + Target_1_Good_Bad + Target_1_Pleasant_Unpleasant + Target_1_Like_Dislike)/4,
+         Mean_Target_2 = (Target_2_Pos_Neg + Target_2_Good_Bad + Target_2_Pleasant_Unpleasant + Target_2_Like_Dislike)/4,
+         OEC_Effect = Mean_Outcome_1 - Mean_Outcome_2,
+         IR_Effect = Mean_Target_1 - Mean_Target_2) %>%
+  
+
+  # Remove individuals without complete ratings data
+
+drop_na(Outcome_1_Pos_Neg)
+
+  # The identity of the outcome and target stimuli (Morag and Straun/ Chinese symbols) that intersected with positive or negative outcome   stimuli were counterbalanced across participants. In order to address this counterbalancing factor we need to reverse score half of the   scores. 
+
+
+  # Add stimulus identity information to the ratings
+
+data_stimulus_identity_EX <- data_stimulus_identity %>%
+  filter(training_condition == "Extinction")
+  
+Cleaned_ratings_EX <- data_stimulus_identity_EX %>% 
+  full_join(Cleaned_ratings_EX, by = c("subject")) %>%
+  drop_na(training_condition.y) %>%
+  select(-training_condition.y)%>%
+  rename(training_condition = training_condition.x) %>%
+
+  # Reverse the scores for those who were in the Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good group
+   mutate(Transformed_OEC_Effect = ifelse(stimulus_identity == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad", OEC_Effect, OEC_Effect * -1), 
+           Transformed_IR_Effect = ifelse(stimulus_identity == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad", IR_Effect, IR_Effect * -1))  
+
+# Join the Ratings Files Together
+
+Cleaned_ratings <- Cleaned_ratings_AQ %>%
+  bind_rows(Cleaned_ratings_CC, Cleaned_ratings_EX)
+
+```
+
+## 8. Prepare intention files for analysis
+
+```{r}
+
+# Acquisition GROUP
+
+data_intentions_1_AQ <- data_intentions_1_AQ %>% 
+  select(subject, training_condition, Intentions_1_3_response) %>%
+  arrange(subject) %>%
+  drop_na(Intentions_1_3_response)
+
+data_intentions_2_AQ <- data_intentions_2_AQ %>% 
+   select(subject, training_condition, Intentions_2_4_response) %>%
+  arrange(subject) %>% 
+  drop_na(Intentions_2_4_response)
+
+Cleaned_intentions_AQ <- data_intentions_1_AQ %>% 
+  full_join(data_intentions_2_AQ, by = "subject") %>%
+  select(-training_condition.y)%>%
+  rename(training_condition = training_condition.x) 
+
+
+# COUNTERCONDITIONING GROUP
+
+data_intentions_1_CC <- data_intentions_1_CC %>% 
+  select(subject, training_condition, Intentions_1_3_response) %>%
+  arrange(subject) %>%
+  drop_na(Intentions_1_3_response)
+
+data_intentions_2_CC <- data_intentions_2_CC %>% 
+   select(subject, training_condition, Intentions_2_4_response) %>%
+  arrange(subject) %>% 
+  drop_na(Intentions_2_4_response)
+
+Cleaned_intentions_CC <- data_intentions_1_CC %>% 
+  full_join(data_intentions_2_CC, by = "subject") %>%
+  select(-training_condition.y)%>%
+  rename(training_condition = training_condition.x) 
+
+
+# EXTINCTION GROUP
+
+data_intentions_1_EX <- data_intentions_1_EX %>% 
+  select(subject, training_condition, Intentions_1_3_response) %>%
+  arrange(subject) %>%
+  drop_na(Intentions_1_3_response)
+
+data_intentions_2_EX <- data_intentions_2_EX %>% 
+   select(subject, training_condition, Intentions_2_4_response) %>%
+  arrange(subject) %>% 
+  drop_na(Intentions_2_4_response)
+
+Cleaned_intentions_EX <- data_intentions_1_EX %>% 
+  full_join(data_intentions_2_EX, by = "subject") %>%
+  select(-training_condition.y)%>%
+  rename(training_condition = training_condition.x) 
+
+# Combine the files together
+
+Cleaned_intentions <- Cleaned_intentions_AQ %>% 
+  bind_rows(Cleaned_intentions_CC, Cleaned_intentions_EX)
+
+```
+
+## 9. Prepare Method Factors (Task Order, Training Performance, and Experimental Condition) for Analysis
+
+```{r}
+
+data_task_order_1 <- data_task_order_1 %>% 
+  select(subject, training_condition) %>% 
+  arrange(subject) %>% 
+  mutate(task_order = "Explicits First")
+
+data_task_order_2 <- data_task_order_2 %>% 
+  select(subject, training_condition) %>% 
+  arrange(subject) %>% 
+  mutate(task_order = "Implicits First")
+
+# Acquisition Only Group
+
+Cleaned_task_order_AQ <-  bind_rows(data_task_order_1, data_task_order_2) %>% 
+  filter(training_condition == "Acquisition_Only") %>%
+  arrange(subject)
+
+Cleaned_performance_condition_AQ <- data_training_condition %>%
+  filter(training_condition == "Acquisition_Only") %>% 
+  select(subject, training_performance, training_condition)
+
+Cleaned_method_factors_AQ <- Cleaned_task_order_AQ %>%
+  full_join(Cleaned_performance_condition_AQ, by = c("subject")) %>%
+  drop_na()
+
+
+# Counterconditioning Group
+
+Cleaned_task_order_CC <-  bind_rows(data_task_order_1, data_task_order_2) %>% 
+  filter(training_condition == "Counterconditioning") %>%
+  arrange(subject)
+
+Cleaned_performance_condition_CC <- data_training_condition %>%
+  filter(training_condition == "Counterconditioning") %>% 
+  select(subject, training_performance, training_condition)
+
+Cleaned_method_factors_CC <- Cleaned_task_order_CC %>%
+  full_join(Cleaned_performance_condition_CC, by = c("subject")) %>%
+  drop_na()
+
+
+# Extinction Group
+
+Cleaned_task_order_EX <-  bind_rows(data_task_order_1, data_task_order_2) %>% 
+  filter(training_condition == "Extinction") %>%
+  arrange(subject)
+
+Cleaned_performance_condition_EX <- data_training_condition %>%
+  filter(training_condition == "Extinction") %>% 
+  select(subject, training_performance, training_condition)
+
+Cleaned_method_factors_EX <- Cleaned_task_order_EX %>%
+  full_join(Cleaned_performance_condition_EX, by = c("subject")) %>% 
+  drop_na()
+
+# Join files together
+
+Cleaned_method_factors <- Cleaned_method_factors_AQ %>% 
+  bind_rows(Cleaned_method_factors_CC, Cleaned_method_factors_EX) %>%
+  select(-training_condition.y) %>% 
+  rename(training_condition = training_condition.x)
+
+```
+
+## 10. Prepare the IAT Files
+
+```{r}
+
+# Acquisition_Only 
+
+Cleaned_iat_AQ <- data_iat %>%
+  filter(training_condition == "Acquisition_Only") %>%
+  rename(subject = ID) 
+
+# Counterconditioning 
+
+Cleaned_iat_CC <- data_iat %>%
+  filter(training_condition == "Counterconditioning") %>%
+  rename(subject = ID) 
+
+# Acquisition_Only 
+
+Cleaned_iat_EX <- data_iat %>%
+  filter(training_condition == "Extinction") %>%
+  rename(subject = ID) 
+
+# Combine Files 
+
+Cleaned_iat <- Cleaned_iat_AQ %>% 
+  bind_rows(Cleaned_iat_CC, Cleaned_iat_EX)
+
+
+```
+
+## 11. Combine files into one master file for processing
+
+```{r}
+
+# Join the cleaned data files together into a master file
+
+# Acquisition_Only 
+
+Study_7_data_AQ <- Cleaned_demographics_AQ %>% 
+  full_join(Cleaned_method_factors_AQ, by = c("subject")) %>%
+  full_join(Cleaned_ratings_AQ, by = c("subject")) %>% 
+  full_join(Cleaned_intentions_AQ, by = "subject") %>%
+  full_join(Cleaned_confidence_AQ, by = "subject") %>%
+  full_join(Cleaned_demand_AQ, by = "subject") %>% 
+  full_join(Cleaned_reactance_AQ, by = "subject")  %>%
+  full_join(Cleaned_iat_AQ, by = "subject") %>%
+
+  #Clean the data file
+
+  select(-training_condition.x.x, -training_condition.y, -training_condition.y.y, -training_performance.y, -training_condition.x.x.x, -training_condition.y.y.y, -training_condition.x.x.x.x, -training_condition.y.y.y.y, -training_condition) %>%
+  rename(training_condition = training_condition.x, training_performance = training_performance.x) %>%
+  drop_na() 
+
+# At the moment the stimulus identity factor (Target 1 - good OR Target 1 - bad) leads to IAT effects that differ in their direction (for half of the participants the IAT score is in the positive direction and for the rest it is the negative direction). In order to control for this, I have reverse scored the IAT effects for those in the "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" condition. Now a positive IAT score indicates that people preferred the Target that was related to the Positive Source more than the Target related to the Negative source. Negative values indicate the opposite preference pattern.
+
+
+Study_7_data_AQ <- Study_7_data_AQ %>% 
+  mutate(Transformed_IAT_D2 = ifelse(stimulus_identity == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good", Reverse_Scored_IAT_D2 * -1, Reverse_Scored_IAT_D2))
+
+
+# Counterconditioning
+
+Study_7_data_CC <- Cleaned_demographics_CC %>% 
+  full_join(Cleaned_method_factors_CC, by = c("subject")) %>%
+  full_join(Cleaned_ratings_CC, by = c("subject")) %>% 
+  full_join(Cleaned_intentions_CC, by = "subject") %>%
+  full_join(Cleaned_confidence_CC, by = "subject") %>%
+  full_join(Cleaned_demand_CC, by = "subject") %>% 
+  full_join(Cleaned_reactance_CC, by = "subject")  %>%
+  full_join(Cleaned_iat_CC, by = "subject") %>%
+
+  #Clean the data file
+
+  select(-training_condition.x.x, -training_condition.y, -training_condition.y.y, -training_performance.y, -training_condition.x.x.x, -training_condition.y.y.y, -training_condition.x.x.x.x, -training_condition.y.y.y.y, -training_condition) %>%
+  rename(training_condition = training_condition.x, training_performance = training_performance.x) %>%
+  drop_na() 
+
+# At the moment the stimulus identity factor (Target 1 - good OR Target 1 - bad) leads to IAT effects that differ in their direction (for half of the participants the IAT score is in the positive direction and for the rest it is the negative direction). In order to control for this, I have reverse scored the IAT effects for those in the "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" condition. Now a positive IAT score indicates that people preferred the Target that was related to the Positive Source more than the Target related to the Negative source. Negative values indicate the opposite preference pattern.
+
+
+Study_7_data_CC <- Study_7_data_CC %>% 
+  mutate(Transformed_IAT_D2 = ifelse(stimulus_identity == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good", Reverse_Scored_IAT_D2 * -1, Reverse_Scored_IAT_D2))
+
+
+# Extinction 
+
+Study_7_data_EX <- Cleaned_demographics_EX %>% 
+  full_join(Cleaned_method_factors_EX, by = c("subject")) %>%
+  full_join(Cleaned_ratings_EX, by = c("subject")) %>% 
+  full_join(Cleaned_intentions_EX, by = "subject") %>%
+  full_join(Cleaned_confidence_EX, by = "subject") %>%
+  full_join(Cleaned_demand_EX, by = "subject") %>% 
+  full_join(Cleaned_reactance_EX, by = "subject")  %>%
+  full_join(Cleaned_iat_EX, by = "subject") %>%
+
+  #Clean the data file
+
+  select(-training_condition.x.x, -training_condition.y, -training_condition.y.y, -training_performance.y, -training_condition.x.x.x, -training_condition.y.y.y, -training_condition.x.x.x.x, -training_condition.y.y.y.y, -training_condition) %>%
+  rename(training_condition = training_condition.x, training_performance = training_performance.x) %>%
+  drop_na() 
+
+# At the moment the stimulus identity factor (Target 1 - good OR Target 1 - bad) leads to IAT effects that differ in their direction (for half of the participants the IAT score is in the positive direction and for the rest it is the negative direction). In order to control for this, I have reverse scored the IAT effects for those in the "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" condition. Now a positive IAT score indicates that people preferred the Target that was related to the Positive Source more than the Target related to the Negative source. Negative values indicate the opposite preference pattern.
+
+
+Study_7_data_EX <- Study_7_data_EX %>% 
+  mutate(Transformed_IAT_D2 = ifelse(stimulus_identity == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good", Reverse_Scored_IAT_D2 * -1, Reverse_Scored_IAT_D2))
+
+
+
+# Combine the files 
+
+Study_7_data <- Study_7_data_AQ %>% 
+  bind_rows(Study_7_data_CC, Study_7_data_EX)
+
+
+
+# Clean global environment
+
+rm(demographics_age_AQ, demographics_gender_AQ, demographics_AQ, Cleaned_demographics_AQ, demographics_age_CC, demographics_gender_CC, demographics_CC, Cleaned_demographics_CC, demographics_age_EX, demographics_gender_EX, demographics_EX, Cleaned_demographics_EX)
+
+rm(data_confidence_ratings_AQ, data_confidence_ratings_CC, data_confidence_ratings_EX, data_demand_AQ, data_demand_CC, data_demand_EX, data_demographics_AQ, data_demographics_CC, data_demographics_EX, data_reactance_AQ, data_reactance_CC, data_reactance_EX, data_task_order_1_AQ, data_task_order_1_CC, data_task_order_1_EX, data_task_order_2_AQ, data_task_order_2_CC, data_task_order_2_EX)
+
+rm(Cleaned_demand_AQ, Cleaned_demand_CC, Cleaned_demand_EX)
+
+rm(Cleaned_reactance_AQ, Cleaned_reactance_CC, Cleaned_reactance_EX)
+
+rm(Cleaned_task_order_AQ, Cleaned_task_order_CC, Cleaned_task_order_EX, Cleaned_performance_condition_AQ, Cleaned_performance_condition_CC, Cleaned_performance_condition_EX, Cleaned_method_factors_AQ, Cleaned_method_factors_CC, Cleaned_method_factors_EX)
+
+rm(data_intentions_1_AQ, data_intentions_1_CC, data_intentions_1_EX, data_intentions_2_AQ, data_intentions_2_CC, data_intentions_2_EX, Cleaned_intentions_AQ, Cleaned_intentions_CC, Cleaned_intentions_EX)
+
+rm(Cleaned_ratings_AQ, Cleaned_ratings_CC, Cleaned_ratings_EX, data_ratings_AQ, data_ratings_CC, data_ratings_EX, data_stimulus_identity_AQ, data_stimulus_identity_CC, data_stimulus_identity_EX)
+
+```
+
+## 12. Write to file
+
+```{r}
+
+sean <- Study_7_data %>% 
+  select(subject, training_condition, Transformed_OEC_Effect, Transformed_IR_Effect, Transformed_IAT_D2)
+
+write_csv2(Study_7_data, path = paste0(wd$output, "Study_7_Master_File.csv"))
+
+
+```
+

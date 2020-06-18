@@ -2,8 +2,9 @@
 
 Data and code 
 
+To Do 
 
+Remove the SPSS files once they are no longer needed 
 
-# arbitrary text added
+Better organize file structure 
 
-# Sean's extra text

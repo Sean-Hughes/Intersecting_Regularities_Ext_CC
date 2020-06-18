@@ -1,0 +1,103 @@
+subject;training_performance;experimental_condition
+        3;Pass;AQ
+        4;Pass;AQ
+        6;Pass;AQ
+        7;Pass;AQ
+        8;Pass;AQ
+        9;Pass;CC
+       11;Pass;CC
+       16;Pass;CC
+       17;Pass;AQ
+       20;Pass;AQ
+       21;Pass;AQ
+       23;Fail;AQ
+       27;Pass;CC
+       28;Pass;CC
+       29;Pass;CC
+       30;Pass;CC
+       31;Pass;CC
+       33;Fail;AQ
+       35;Pass;AQ
+       36;Pass;AQ
+       38;Pass;AQ
+       41;Pass;CC
+       43;Pass;CC
+       44;Pass;CC
+       46;Pass;CC
+       47;Pass;CC
+       49;Pass;AQ
+       51;Pass;AQ
+       53;Pass;AQ
+       54;Pass;AQ
+       57;Pass;CC
+       58;Pass;CC
+       60;Pass;CC
+       61;Pass;CC
+       62;Fail;CC
+       64;Pass;CC
+       68;Pass;AQ
+       71;Pass;AQ
+       72;Fail;AQ
+       73;Pass;CC
+       75;Pass;CC
+       76;Pass;CC
+       77;Pass;CC
+       78;Pass;CC
+       79;Pass;CC
+       82;Pass;AQ
+       84;Pass;AQ
+       87;Pass;AQ
+       88;Pass;AQ
+       90;Pass;CC
+       91;Pass;CC
+       92;Pass;CC
+       93;Pass;CC
+       94;Pass;CC
+       95;Pass;CC
+       98;Pass;AQ
+      100;Pass;AQ
+      101;Pass;AQ
+      102;Pass;AQ
+      103;Pass;AQ
+      104;Fail;AQ
+      106;Pass;CC
+      109;Pass;CC
+      110;Pass;CC
+      111;Pass;CC
+      114;Pass;AQ
+      116;Fail;AQ
+      117;Pass;AQ
+      120;Pass;AQ
+      123;Pass;CC
+      125;Pass;CC
+      126;Pass;CC
+      127;Pass;CC
+      130;Pass;AQ
+      131;Pass;AQ
+      132;Pass;AQ
+      133;Pass;AQ
+      136;Fail;AQ
+      137;Pass;CC
+      141;Pass;CC
+      143;Pass;CC
+      148;Pass;AQ
+      149;Pass;AQ
+      151;Pass;AQ
+      152;Fail;AQ
+      153;Pass;CC
+      154;Pass;CC
+      157;Pass;CC
+      160;Pass;CC
+      163;Pass;AQ
+      164;Pass;AQ
+ 52162361;Pass;CC
+137333688;Fail;AQ
+313206201;Pass;AQ
+343483196;Pass;CC
+459244001;Pass;AQ
+514757468;Pass;CC
+547854617;Pass;CC
+617687584;Pass;CC
+800342016;Pass;CC
+950704713;Pass;CC
+992945207;Pass;AQ

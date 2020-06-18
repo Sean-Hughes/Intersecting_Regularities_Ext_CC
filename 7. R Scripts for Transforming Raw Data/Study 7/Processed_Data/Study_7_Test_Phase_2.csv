@@ -1,0 +1,237 @@
+subject;training_condition;mean_correct;sd_correct;training_performance;block_type
+  2;Extinction;0,000;0,0000000;Fail;Test_2
+  3;Extinction;1,000;0,0000000;Pass;Test_2
+  4;Counterconditioning;1,000;0,0000000;Pass;Test_2
+  4;Extinction;0,500;0,5345225;Fail;Test_2
+  5;Counterconditioning;1,000;0,0000000;Pass;Test_2
+  6;Counterconditioning;0,750;0,4629100;Pass;Test_2
+  7;Counterconditioning;1,000;0,0000000;Pass;Test_2
+  8;Extinction;0,500;0,5345225;Fail;Test_2
+  9;Extinction;1,000;0,0000000;Pass;Test_2
+ 11;Extinction;0,500;0,5345225;Fail;Test_2
+ 12;Counterconditioning;1,000;0,0000000;Pass;Test_2
+ 12;Extinction;0,875;0,3535534;Pass;Test_2
+ 14;Counterconditioning;0,875;0,3535534;Pass;Test_2
+ 15;Extinction;0,500;0,5345225;Fail;Test_2
+ 16;Counterconditioning;1,000;0,0000000;Pass;Test_2
+ 17;Extinction;1,000;0,0000000;Pass;Test_2
+ 18;Extinction;1,000;0,0000000;Pass;Test_2
+ 20;Counterconditioning;1,000;0,0000000;Pass;Test_2
+ 20;Extinction;0,500;0,5345225;Fail;Test_2
+ 22;Extinction;1,000;0,0000000;Pass;Test_2
+ 23;Counterconditioning;1,000;0,0000000;Pass;Test_2
+ 24;Extinction;1,000;0,0000000;Pass;Test_2
+ 27;Counterconditioning;1,000;0,0000000;Pass;Test_2
+ 27;Extinction;1,000;0,0000000;Pass;Test_2
+ 28;Counterconditioning;1,000;0,0000000;Pass;Test_2
+ 29;Extinction;0,500;0,5345225;Fail;Test_2
+ 30;Extinction;1,000;0,0000000;Pass;Test_2
+ 31;Counterconditioning;1,000;0,0000000;Pass;Test_2
+ 31;Extinction;0,500;0,5345225;Fail;Test_2
+ 32;Counterconditioning;0,250;0,4629100;Fail;Test_2
+ 34;Extinction;0,500;0,5345225;Fail;Test_2
+ 35;Extinction;1,000;0,0000000;Pass;Test_2
+ 36;Counterconditioning;0,750;0,4629100;Pass;Test_2
+ 36;Extinction;0,500;0,5345225;Fail;Test_2
+ 38;Extinction;1,000;0,0000000;Pass;Test_2
+ 39;Counterconditioning;1,000;0,0000000;Pass;Test_2
+ 39;Extinction;1,000;0,0000000;Pass;Test_2
+ 40;Extinction;0,500;0,5345225;Fail;Test_2
+ 41;Counterconditioning;0,750;0,4629100;Pass;Test_2
+ 41;Extinction;1,000;0,0000000;Pass;Test_2
+ 42;Extinction;0,625;0,5175492;Fail;Test_2
+ 43;Counterconditioning;1,000;0,0000000;Pass;Test_2
+ 43;Extinction;0,500;0,5345225;Fail;Test_2
+ 44;Counterconditioning;1,000;0,0000000;Pass;Test_2
+ 44;Extinction;1,000;0,0000000;Pass;Test_2
+ 45;Counterconditioning;1,000;0,0000000;Pass;Test_2
+ 49;Counterconditioning;1,000;0,0000000;Pass;Test_2
+ 49;Extinction;0,500;0,5345225;Fail;Test_2
+ 50;Extinction;0,500;0,5345225;Fail;Test_2
+ 51;Counterconditioning;1,000;0,0000000;Pass;Test_2
+ 51;Extinction;1,000;0,0000000;Pass;Test_2
+ 53;Counterconditioning;0,750;0,4629100;Pass;Test_2
+ 53;Extinction;0,875;0,3535534;Pass;Test_2
+ 57;Extinction;0,500;0,5345225;Fail;Test_2
+ 58;Extinction;0,375;0,5175492;Fail;Test_2
+ 59;Extinction;1,000;0,0000000;Pass;Test_2
+ 60;Counterconditioning;1,000;0,0000000;Pass;Test_2
+ 63;Extinction;1,000;0,0000000;Pass;Test_2
+ 64;Extinction;0,500;0,5345225;Fail;Test_2
+ 65;Extinction;1,000;0,0000000;Pass;Test_2
+ 66;Counterconditioning;1,000;0,0000000;Pass;Test_2
+ 67;Extinction;1,000;0,0000000;Pass;Test_2
+ 68;Extinction;0,500;0,5345225;Fail;Test_2
+ 69;Extinction;0,625;0,5175492;Fail;Test_2
+ 71;Extinction;1,000;0,0000000;Pass;Test_2
+ 74;Extinction;0,500;0,5345225;Fail;Test_2
+ 75;Extinction;0,500;0,5345225;Fail;Test_2
+ 77;Extinction;0,500;0,5345225;Fail;Test_2
+ 80;Counterconditioning;0,375;0,5175492;Fail;Test_2
+ 83;Extinction;1,000;0,0000000;Pass;Test_2
+ 86;Extinction;0,500;0,5345225;Fail;Test_2
+ 87;Counterconditioning;1,000;0,0000000;Pass;Test_2
+ 88;Extinction;1,000;0,0000000;Pass;Test_2
+ 89;Counterconditioning;1,000;0,0000000;Pass;Test_2
+ 89;Extinction;0,750;0,4629100;Pass;Test_2
+ 91;Extinction;0,500;0,5345225;Fail;Test_2
+ 92;Extinction;0,750;0,4629100;Pass;Test_2
+ 94;Counterconditioning;1,000;0,0000000;Pass;Test_2
+ 94;Extinction;0,500;0,5345225;Fail;Test_2
+ 95;Extinction;1,000;0,0000000;Pass;Test_2
+ 96;Counterconditioning;1,000;0,0000000;Pass;Test_2
+ 96;Extinction;0,750;0,4629100;Pass;Test_2
+ 99;Extinction;1,000;0,0000000;Pass;Test_2
+100;Extinction;0,500;0,5345225;Fail;Test_2
+101;Extinction;0,125;0,3535534;Fail;Test_2
+104;Counterconditioning;1,000;0,0000000;Pass;Test_2
+105;Extinction;1,000;0,0000000;Pass;Test_2
+107;Extinction;0,500;0,5345225;Fail;Test_2
+113;Extinction;0,500;0,5345225;Fail;Test_2
+115;Counterconditioning;0,625;0,5175492;Fail;Test_2
+115;Extinction;0,500;0,5345225;Fail;Test_2
+117;Extinction;1,000;0,0000000;Pass;Test_2
+118;Extinction;1,000;0,0000000;Pass;Test_2
+119;Extinction;1,000;0,0000000;Pass;Test_2
+122;Counterconditioning;1,000;0,0000000;Pass;Test_2
+122;Extinction;0,500;0,5345225;Fail;Test_2
+124;Extinction;0,500;0,5345225;Fail;Test_2
+125;Extinction;0,500;0,5345225;Fail;Test_2
+126;Extinction;0,625;0,5175492;Fail;Test_2
+127;Extinction;1,000;0,0000000;Pass;Test_2
+128;Extinction;1,000;0,0000000;Pass;Test_2
+130;Extinction;0,500;0,5345225;Fail;Test_2
+131;Extinction;1,000;0,0000000;Pass;Test_2
+132;Counterconditioning;1,000;0,0000000;Pass;Test_2
+132;Extinction;0,500;0,5345225;Fail;Test_2
+133;Counterconditioning;0,625;0,5175492;Fail;Test_2
+133;Extinction;0,500;0,5345225;Fail;Test_2
+134;Counterconditioning;0,750;0,4629100;Pass;Test_2
+134;Extinction;1,000;0,0000000;Pass;Test_2
+135;Extinction;1,000;0,0000000;Pass;Test_2
+137;Counterconditioning;0,750;0,4629100;Pass;Test_2
+137;Extinction;0,500;0,5345225;Fail;Test_2
+138;Extinction;0,500;0,5345225;Fail;Test_2
+139;Extinction;0,500;0,5345225;Fail;Test_2
+140;Counterconditioning;1,000;0,0000000;Pass;Test_2
+141;Extinction;0,500;0,5345225;Fail;Test_2
+143;Counterconditioning;1,000;0,0000000;Pass;Test_2
+143;Extinction;1,000;0,0000000;Pass;Test_2
+145;Extinction;0,500;0,5345225;Fail;Test_2
+146;Extinction;0,500;0,5345225;Fail;Test_2
+147;Extinction;1,000;0,0000000;Pass;Test_2
+148;Counterconditioning;0,750;0,4629100;Pass;Test_2
+149;Extinction;1,000;0,0000000;Pass;Test_2
+151;Counterconditioning;1,000;0,0000000;Pass;Test_2
+154;Counterconditioning;1,000;0,0000000;Pass;Test_2
+154;Extinction;1,000;0,0000000;Pass;Test_2
+155;Extinction;1,000;0,0000000;Pass;Test_2
+156;Extinction;1,000;0,0000000;Pass;Test_2
+157;Counterconditioning;1,000;0,0000000;Pass;Test_2
+160;Counterconditioning;1,000;0,0000000;Pass;Test_2
+163;Counterconditioning;1,000;0,0000000;Pass;Test_2
+164;Extinction;1,000;0,0000000;Pass;Test_2
+165;Extinction;1,000;0,0000000;Pass;Test_2
+166;Counterconditioning;1,000;0,0000000;Pass;Test_2
+167;Counterconditioning;0,500;0,5345225;Fail;Test_2
+169;Counterconditioning;1,000;0,0000000;Pass;Test_2
+169;Extinction;1,000;0,0000000;Pass;Test_2
+170;Counterconditioning;1,000;0,0000000;Pass;Test_2
+171;Extinction;1,000;0,0000000;Pass;Test_2
+172;Extinction;1,000;0,0000000;Pass;Test_2
+174;Extinction;1,000;0,0000000;Pass;Test_2
+177;Counterconditioning;0,250;0,4629100;Fail;Test_2
+178;Extinction;0,750;0,4629100;Pass;Test_2
+179;Extinction;0,500;0,5345225;Fail;Test_2
+180;Counterconditioning;0,750;0,4629100;Pass;Test_2
+180;Extinction;0,500;0,5345225;Fail;Test_2
+182;Extinction;1,000;0,0000000;Pass;Test_2
+183;Extinction;1,000;0,0000000;Pass;Test_2
+184;Extinction;0,500;0,5345225;Fail;Test_2
+185;Extinction;0,750;0,4629100;Pass;Test_2
+186;Extinction;0,500;0,5345225;Fail;Test_2
+187;Extinction;1,000;0,0000000;Pass;Test_2
+191;Counterconditioning;0,750;0,4629100;Pass;Test_2
+191;Extinction;0,500;0,5345225;Fail;Test_2
+192;Extinction;0,500;0,5345225;Fail;Test_2
+194;Extinction;1,000;0,0000000;Pass;Test_2
+195;Counterconditioning;1,000;0,0000000;Pass;Test_2
+196;Counterconditioning;1,000;0,0000000;Pass;Test_2
+197;Extinction;1,000;0,0000000;Pass;Test_2
+198;Counterconditioning;1,000;0,0000000;Pass;Test_2
+199;Extinction;1,000;0,0000000;Pass;Test_2
+201;Extinction;0,500;0,5345225;Fail;Test_2
+204;Counterconditioning;1,000;0,0000000;Pass;Test_2
+205;Counterconditioning;1,000;0,0000000;Pass;Test_2
+206;Extinction;0,500;0,5345225;Fail;Test_2
+207;Extinction;1,000;0,0000000;Pass;Test_2
+208;Counterconditioning;1,000;0,0000000;Pass;Test_2
+208;Extinction;0,875;0,3535534;Pass;Test_2
+211;Extinction;0,625;0,5175492;Fail;Test_2
+213;Extinction;1,000;0,0000000;Pass;Test_2
+214;Extinction;1,000;0,0000000;Pass;Test_2
+215;Extinction;0,500;0,5345225;Fail;Test_2
+217;Extinction;1,000;0,0000000;Pass;Test_2
+218;Extinction;0,500;0,5345225;Fail;Test_2
+220;Extinction;0,500;0,5345225;Fail;Test_2
+223;Extinction;1,000;0,0000000;Pass;Test_2
+231;Counterconditioning;1,000;0,0000000;Pass;Test_2
+237;Counterconditioning;0,625;0,5175492;Fail;Test_2
+238;Counterconditioning;1,000;0,0000000;Pass;Test_2
+239;Counterconditioning;0,750;0,4629100;Pass;Test_2
+246;Counterconditioning;0,625;0,5175492;Fail;Test_2
+248;Counterconditioning;1,000;0,0000000;Pass;Test_2
+250;Counterconditioning;1,000;0,0000000;Pass;Test_2
+254;Counterconditioning;1,000;0,0000000;Pass;Test_2
+256;Counterconditioning;1,000;0,0000000;Pass;Test_2
+261;Counterconditioning;1,000;0,0000000;Pass;Test_2
+264;Counterconditioning;1,000;0,0000000;Pass;Test_2
+270;Counterconditioning;1,000;0,0000000;Pass;Test_2
+271;Counterconditioning;1,000;0,0000000;Pass;Test_2
+280;Counterconditioning;1,000;0,0000000;Pass;Test_2
+282;Counterconditioning;0,750;0,4629100;Pass;Test_2
+283;Counterconditioning;1,000;0,0000000;Pass;Test_2
+285;Counterconditioning;1,000;0,0000000;Pass;Test_2
+290;Counterconditioning;1,000;0,0000000;Pass;Test_2
+291;Counterconditioning;1,000;0,0000000;Pass;Test_2
+295;Counterconditioning;0,750;0,4629100;Pass;Test_2
+311;Counterconditioning;0,750;0,4629100;Pass;Test_2
+314;Counterconditioning;1,000;0,0000000;Pass;Test_2
+316;Counterconditioning;1,000;0,0000000;Pass;Test_2
+321;Counterconditioning;1,000;0,0000000;Pass;Test_2
+326;Counterconditioning;1,000;0,0000000;Pass;Test_2
+331;Counterconditioning;0,250;0,4629100;Fail;Test_2
+332;Counterconditioning;0,875;0,3535534;Pass;Test_2
+337;Counterconditioning;1,000;0,0000000;Pass;Test_2
+339;Counterconditioning;1,000;0,0000000;Pass;Test_2
+342;Counterconditioning;1,000;0,0000000;Pass;Test_2
+344;Counterconditioning;0,625;0,5175492;Fail;Test_2
+345;Counterconditioning;1,000;0,0000000;Pass;Test_2
+349;Counterconditioning;0,750;0,4629100;Pass;Test_2
+355;Counterconditioning;1,000;0,0000000;Pass;Test_2
+361;Counterconditioning;1,000;0,0000000;Pass;Test_2
+363;Counterconditioning;1,000;0,0000000;Pass;Test_2
+364;Counterconditioning;1,000;0,0000000;Pass;Test_2
+365;Counterconditioning;1,000;0,0000000;Pass;Test_2
+368;Counterconditioning;0,875;0,3535534;Pass;Test_2
+371;Counterconditioning;1,000;0,0000000;Pass;Test_2
+373;Counterconditioning;1,000;0,0000000;Pass;Test_2
+377;Counterconditioning;1,000;0,0000000;Pass;Test_2
+380;Counterconditioning;0,250;0,4629100;Fail;Test_2
+386;Counterconditioning;1,000;0,0000000;Pass;Test_2
+391;Counterconditioning;0,750;0,4629100;Pass;Test_2
+403;Counterconditioning;1,000;0,0000000;Pass;Test_2
+409;Counterconditioning;1,000;0,0000000;Pass;Test_2
+410;Counterconditioning;1,000;0,0000000;Pass;Test_2
+414;Counterconditioning;1,000;0,0000000;Pass;Test_2
+428;Counterconditioning;1,000;0,0000000;Pass;Test_2
+430;Counterconditioning;0,375;0,5175492;Fail;Test_2
+432;Counterconditioning;1,000;0,0000000;Pass;Test_2
+434;Counterconditioning;1,000;0,0000000;Pass;Test_2
+441;Counterconditioning;1,000;0,0000000;Pass;Test_2
+442;Counterconditioning;1,000;0,0000000;Pass;Test_2
+446;Counterconditioning;1,000;0,0000000;Pass;Test_2
+447;Counterconditioning;1,000;0,0000000;Pass;Test_2
+450;Counterconditioning;0,625;0,5175492;Fail;Test_2
+451;Counterconditioning;1,000;0,0000000;Pass;Test_2
+457;Counterconditioning;1,000;0,0000000;Pass;Test_2

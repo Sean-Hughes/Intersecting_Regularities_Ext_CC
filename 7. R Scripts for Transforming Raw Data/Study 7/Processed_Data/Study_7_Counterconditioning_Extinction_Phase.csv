@@ -1,0 +1,238 @@
+subject;block_number;training_condition;mean_correct;sd_correct;training_performance;block_type
+  2;8;Extinction;0,25;0,4442617;Fail;Manipulation_Phase
+  3;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+  4;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+  4;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+  5;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+  6;5;Counterconditioning;0,50;0,5129892;Fail;Manipulation_Phase
+  7;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+  8;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+  9;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 11;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 12;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+ 12;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 14;4;Counterconditioning;0,95;0,2236068;Pass;Manipulation_Phase
+ 15;7;Extinction;0,95;0,2236068;Pass;Manipulation_Phase
+ 16;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+ 17;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 18;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 20;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+ 20;7;Extinction;0,90;0,3077935;Pass;Manipulation_Phase
+ 22;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 23;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+ 24;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 27;4;Counterconditioning;0,95;0,2236068;Pass;Manipulation_Phase
+ 27;7;Extinction;0,95;0,2236068;Pass;Manipulation_Phase
+ 28;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+ 29;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 30;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 31;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+ 31;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 32;5;Counterconditioning;0,45;0,5104178;Fail;Manipulation_Phase
+ 34;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 35;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 36;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+ 36;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 38;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 39;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+ 39;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 40;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 41;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+ 41;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 42;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 43;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+ 43;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 44;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+ 44;7;Extinction;0,95;0,2236068;Pass;Manipulation_Phase
+ 45;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+ 49;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+ 49;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 50;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 51;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+ 51;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 53;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+ 53;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 57;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 58;8;Extinction;0,30;0,4701623;Fail;Manipulation_Phase
+ 59;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 60;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+ 63;7;Extinction;0,95;0,2236068;Pass;Manipulation_Phase
+ 64;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 65;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 66;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+ 67;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 68;7;Extinction;0,90;0,3077935;Pass;Manipulation_Phase
+ 69;7;Extinction;0,95;0,2236068;Pass;Manipulation_Phase
+ 71;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 74;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 75;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 77;7;Extinction;0,95;0,2236068;Pass;Manipulation_Phase
+ 80;5;Counterconditioning;0,10;0,3077935;Fail;Manipulation_Phase
+ 83;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 86;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 87;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+ 88;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 89;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+ 89;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 91;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 92;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 94;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+ 94;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 95;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 96;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+ 96;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+ 99;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+100;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+101;8;Extinction;0,20;0,4103913;Fail;Manipulation_Phase
+104;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+105;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+107;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+113;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+115;5;Counterconditioning;0,30;0,4701623;Fail;Manipulation_Phase
+115;8;Extinction;0,55;0,5104178;Fail;Manipulation_Phase
+117;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+118;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+119;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+122;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+122;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+124;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+125;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+126;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+127;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+128;7;Extinction;0,95;0,2236068;Pass;Manipulation_Phase
+130;7;Extinction;0,95;0,2236068;Pass;Manipulation_Phase
+131;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+132;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+132;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+133;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+133;7;Extinction;0,95;0,2236068;Pass;Manipulation_Phase
+134;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+134;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+135;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+137;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+137;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+138;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+139;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+140;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+141;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+143;4;Counterconditioning;0,95;0,2236068;Pass;Manipulation_Phase
+143;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+145;9;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+146;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+147;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+148;4;Counterconditioning;0,85;0,3663475;Pass;Manipulation_Phase
+149;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+151;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+154;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+154;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+155;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+156;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+157;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+160;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+163;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+164;7;Extinction;0,95;0,2236068;Pass;Manipulation_Phase
+165;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+166;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+167;4;Counterconditioning;0,95;0,2236068;Pass;Manipulation_Phase
+169;4;Counterconditioning;0,95;0,2236068;Pass;Manipulation_Phase
+169;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+170;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+171;8;Extinction;0,85;0,3663475;Pass;Manipulation_Phase
+172;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+174;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+177;5;Counterconditioning;0,20;0,4103913;Fail;Manipulation_Phase
+178;7;Extinction;0,95;0,2236068;Pass;Manipulation_Phase
+179;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+180;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+180;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+182;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+183;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+184;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+185;7;Extinction;0,95;0,2236068;Pass;Manipulation_Phase
+186;7;Extinction;0,95;0,2236068;Pass;Manipulation_Phase
+187;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+191;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+191;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+192;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+194;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+195;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+196;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+197;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+198;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+199;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+201;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+204;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+205;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+205;8;Extinction;0,50;0,5129892;Fail;Manipulation_Phase
+206;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+207;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+208;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+208;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+211;7;Extinction;0,95;0,2236068;Pass;Manipulation_Phase
+213;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+214;8;Extinction;0,80;0,4103913;Pass;Manipulation_Phase
+215;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+217;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+218;9;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+220;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+223;7;Extinction;1,00;0,0000000;Pass;Manipulation_Phase
+231;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+237;5;Counterconditioning;0,75;0,4442617;Pass;Manipulation_Phase
+238;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+239;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+246;5;Counterconditioning;0,60;0,5026247;Fail;Manipulation_Phase
+248;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+250;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+254;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+256;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+261;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+264;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+270;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+271;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+280;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+282;4;Counterconditioning;0,95;0,2236068;Pass;Manipulation_Phase
+283;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+285;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+290;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+291;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+295;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+311;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+314;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+316;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+321;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+326;4;Counterconditioning;0,95;0,2236068;Pass;Manipulation_Phase
+331;5;Counterconditioning;0,80;0,4103913;Pass;Manipulation_Phase
+332;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+337;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+339;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+342;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+344;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+345;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+349;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+355;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+361;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+363;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+364;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+365;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+368;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+371;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+373;4;Counterconditioning;0,95;0,2236068;Pass;Manipulation_Phase
+377;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+380;5;Counterconditioning;0,30;0,4701623;Fail;Manipulation_Phase
+386;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+391;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+403;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+409;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+410;4;Counterconditioning;0,95;0,2236068;Pass;Manipulation_Phase
+414;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+428;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+430;5;Counterconditioning;0,40;0,5026247;Fail;Manipulation_Phase
+432;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+434;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+441;4;Counterconditioning;0,95;0,2236068;Pass;Manipulation_Phase
+442;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+446;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+447;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+450;5;Counterconditioning;0,50;0,5129892;Fail;Manipulation_Phase
+451;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase
+457;4;Counterconditioning;1,00;0,0000000;Pass;Manipulation_Phase

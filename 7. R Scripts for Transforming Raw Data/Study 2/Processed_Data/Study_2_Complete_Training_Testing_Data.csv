@@ -1,0 +1,104 @@
+subject;training_performance;experimental_condition
+  2;Pass;AQ
+  4;Pass;AQ
+  5;Pass;AQ
+  6;Pass;AQ
+  7;Fail;AQ
+  8;Pass;AQ
+  9;Pass;EX
+ 10;Pass;EX
+ 11;Pass;EX
+ 12;Pass;EX
+ 16;Pass;EX
+ 18;Pass;AQ
+ 19;Pass;AQ
+ 21;Pass;AQ
+ 22;Pass;AQ
+ 24;Pass;AQ
+ 25;Pass;EX
+ 27;Pass;EX
+ 28;Pass;AQ
+ 29;Pass;EX
+ 32;Pass;EX
+ 33;Pass;AQ
+ 34;Pass;AQ
+ 36;Pass;AQ
+ 37;Fail;AQ
+ 38;Pass;AQ
+ 39;Fail;AQ
+ 40;Pass;AQ
+ 42;Pass;EX
+ 44;Pass;EX
+ 45;Pass;EX
+ 46;Pass;EX
+ 47;Pass;EX
+ 48;Pass;EX
+ 49;Fail;AQ
+ 52;Pass;AQ
+ 53;Pass;AQ
+ 55;Pass;AQ
+ 56;Pass;AQ
+ 59;Pass;AQ
+ 63;Pass;EX
+ 64;Pass;EX
+ 65;Pass;AQ
+ 66;Pass;AQ
+ 69;Pass;AQ
+ 71;Fail;AQ
+ 72;Fail;AQ
+ 73;Pass;EX
+ 76;Pass;EX
+ 78;Pass;EX
+ 81;Pass;AQ
+ 82;Pass;AQ
+ 83;Fail;AQ
+ 84;Pass;AQ
+ 88;Pass;AQ
+ 89;Pass;EX
+ 90;Fail;EX
+ 91;Pass;EX
+ 95;Pass;EX
+ 96;Pass;EX
+ 99;Pass;AQ
+100;Pass;AQ
+101;Pass;AQ
+102;Pass;AQ
+105;Pass;EX
+106;Pass;EX
+109;Pass;EX
+111;Pass;EX
+112;Pass;EX
+114;Pass;AQ
+115;Pass;AQ
+116;Pass;AQ
+117;Pass;AQ
+119;Pass;AQ
+121;Pass;EX
+122;Pass;EX
+125;Pass;EX
+126;Pass;EX
+127;Pass;EX
+129;Pass;AQ
+131;Pass;AQ
+132;Fail;AQ
+133;Fail;AQ
+136;Pass;AQ
+137;Pass;EX
+139;Pass;EX
+141;Pass;AQ
+142;Pass;EX
+144;Fail;EX
+145;Pass;AQ
+147;Pass;AQ
+149;Pass;AQ
+151;Pass;AQ
+152;Pass;AQ
+153;Pass;EX
+156;Pass;EX
+157;Pass;EX
+158;Pass;EX
+159;Pass;EX
+161;Pass;AQ
+162;Fail;AQ
+163;Pass;AQ
+164;Fail;AQ

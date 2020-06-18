@@ -1,0 +1,131 @@
+---
+title: "Combining the Training and Testing Data"
+author: "Sean Hughes"
+date: "30-5-2020"
+output: 
+  html_document:
+    code_folding: hide
+    highlight: haddock
+    theme: flatly
+    toc: yes 
+    toc_float: yes
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(message=FALSE,
+                      warning=FALSE)
+```
+
+
+# Load the necessary packages
+
+```{r}
+library(ggthemes)
+library(foreign)
+library(tidyverse)
+library(Hmisc)
+library(car)
+library(readxl)
+library(ggplot2)
+library(dplyr)
+library(xlsx)
+```
+
+## 1. Import the raw data files from Excel into R
+
+```{r}
+
+getwd()
+
+wd <- list()
+wd$data_AQ   <- "C:/Users/Sean/Desktop/Intersecting_Regularties_/Study 7/Raw_Data/1_Acquisition_Only_Data/"
+wd$data_CC   <- "C:/Users/Sean/Desktop/Intersecting_Regularties_/Study 7/Raw_Data/2_Counterconditioning_Data/"
+wd$data_EX   <- "C:/Users/Sean/Desktop/Intersecting_Regularties_/Study 7/Raw_Data/3_Extinction_Data/"
+
+wd$output <- "C:/Users/Sean/Desktop/Intersecting_Regularties_/Study 7/Processed_Data/"
+
+raw_data_1 <- read_csv2(paste0(wd$output, "Study_7_Training_Phase.csv"), col_names = TRUE)
+raw_data_2 <- read_csv2(paste0(wd$output, "Study_7_Test_Phase_1.csv"), col_names = TRUE)
+raw_data_3 <- read_csv2(paste0(wd$output, "Study_7_Counterconditioning_Extinction_Phase.csv"), col_names = TRUE)
+raw_data_4 <- read_csv2(paste0(wd$output, "Study_7_Test_Phase_2.csv"), col_names = TRUE)
+
+# Order of the Experiment: 
+# 1. Intersecting Regularities Training
+# 2. Acquisition Phase Test (i.e., test if people learned anything during the training phase)
+# 3. Counterconditioning or Extinction Phase
+# 4. Counterconditioning or Extinction Phase Test (i.e., to see if people learned anything during the manipulation phase)
+
+
+```
+
+## 2. Join the files together
+
+```{r}
+
+processed_data <- raw_data_1 %>% 
+  bind_rows(raw_data_2, raw_data_3, raw_data_4) %>%
+  select(-block_number) %>%
+  arrange(subject, block_type) 
+
+```
+
+## 3. Calculate number of people in the different experimental conditions as a function of Fail vs. Pass 
+
+```{r}
+
+# Calculate mean and SD for accuracy (i.e., the correct row) 
+
+Final_data <- processed_data %>% 
+  group_by(block_type, training_condition, training_performance) %>% 
+  summarise(group_number = n(), mean_accuracy = mean(mean_correct), sd_accuracy = sd(mean_correct))
+
+```
+
+
+## 7. Graph accuracy across blocks for those who passed vs. failed
+
+```{r}
+
+# Covert Block Type to a factor and order the levels sequentially (i.e., from Training to Test_2)
+
+Final_data$block_type = as.factor(Final_data$block_type)
+Final_data$block_type <- ordered(Final_data$block_type, levels = c("Training", "Test_1", "Manipulation_Phase", "Test_2"))
+
+# Graph Mean and SD accuracy across blocks for Acquisition Only Group
+
+Final_data_AQ <- Final_data %>%
+  filter(training_condition == "Acquisition_Only")
+
+ggplot(Final_data_AQ, aes(x=block_type, y=mean_accuracy, fill = training_performance)) + geom_bar(colour="black", stat="identity", position = position_dodge()) + geom_errorbar(aes(ymin=mean_accuracy-sd_accuracy, ymax=mean_accuracy+sd_accuracy), width=.2, position=position_dodge(.9)) + xlab("Acquisition-Only Group") + ylab("Mean Accuracy on Final Block") + theme_classic()
+
+# Graph Mean and SD accuracy across blocks for Counterconditioning Group
+
+Final_data_CC <- Final_data %>%
+  filter(training_condition == "Counterconditioning")
+
+ggplot(Final_data_CC, aes(x=block_type, y=mean_accuracy, fill = training_performance)) + geom_bar(colour="black", stat="identity", position = position_dodge()) + geom_errorbar(aes(ymin=mean_accuracy-sd_accuracy, ymax=mean_accuracy+sd_accuracy), width=.2, position=position_dodge(.9)) + xlab("Counterconditioning Group") + ylab("Mean Accuracy on Final Block") + theme_classic()
+
+# Graph Mean and SD accuracy across blocks for Acquisition Only Group
+
+Final_data_EX <- Final_data %>%
+  filter(training_condition == "Extinction")
+
+ggplot(Final_data_EX, aes(x=block_type, y=mean_accuracy, fill = training_performance)) + geom_bar(colour="black", stat="identity", position = position_dodge()) + geom_errorbar(aes(ymin=mean_accuracy-sd_accuracy, ymax=mean_accuracy+sd_accuracy), width=.2, position=position_dodge(.9)) + xlab("Extinction Group") + ylab("Mean Accuracy on Final Block") + theme_classic()
+
+```
+
+
+##8. Write Data to File
+
+```{r}
+
+Study_7_data <- processed_data %>% 
+  group_by(subject, training_condition) %>% 
+  slice_tail() %>%
+  select(subject, training_condition, training_performance)
+
+
+write_csv2(as.data.frame(Study_7_data), path = paste0(wd$output, "Study_7_Complete_Training_Testing_Data.csv"))
+
+```
+

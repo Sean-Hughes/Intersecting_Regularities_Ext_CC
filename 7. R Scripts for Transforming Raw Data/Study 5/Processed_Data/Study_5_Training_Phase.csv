@@ -1,0 +1,103 @@
+subject;block_number;mean_correct;sd_correct;block_type;training_performance
+        2;5;1,00;0,0000000;Training;Pass
+        5;5;1,00;0,0000000;Training;Pass
+        6;5;0,95;0,2236068;Training;Pass
+        8;5;1,00;0,0000000;Training;Pass
+        9;5;1,00;0,0000000;Training;Pass
+       11;5;0,90;0,3077935;Training;Pass
+       14;5;1,00;0,0000000;Training;Pass
+       15;5;1,00;0,0000000;Training;Pass
+       16;5;0,75;0,4442617;Training;Pass
+       18;5;1,00;0,0000000;Training;Pass
+       19;5;1,00;0,0000000;Training;Pass
+       23;5;1,00;0,0000000;Training;Pass
+       25;5;1,00;0,0000000;Training;Pass
+       26;5;0,90;0,3077935;Training;Pass
+       28;5;1,00;0,0000000;Training;Pass
+       29;5;0,65;0,4893605;Training;Fail
+       31;5;0,85;0,3663475;Training;Pass
+       32;5;0,95;0,2236068;Training;Pass
+       34;5;1,00;0,0000000;Training;Pass
+       35;5;1,00;0,0000000;Training;Pass
+       36;5;0,95;0,2236068;Training;Pass
+       40;5;1,00;0,0000000;Training;Pass
+       41;5;0,95;0,2236068;Training;Pass
+       42;5;0,95;0,2236068;Training;Pass
+       43;5;0,85;0,3663475;Training;Pass
+       46;5;0,95;0,2236068;Training;Pass
+       47;5;1,00;0,0000000;Training;Pass
+       48;5;0,95;0,2236068;Training;Pass
+       49;5;0,90;0,3077935;Training;Pass
+       53;5;1,00;0,0000000;Training;Pass
+       56;5;0,95;0,2236068;Training;Pass
+       57;5;1,00;0,0000000;Training;Pass
+       59;5;1,00;0,0000000;Training;Pass
+       61;5;1,00;0,0000000;Training;Pass
+       62;5;1,00;0,0000000;Training;Pass
+       63;5;1,00;0,0000000;Training;Pass
+       65;5;1,00;0,0000000;Training;Pass
+       69;5;0,95;0,2236068;Training;Pass
+       71;5;0,95;0,2236068;Training;Pass
+       72;5;0,95;0,2236068;Training;Pass
+       74;5;1,00;0,0000000;Training;Pass
+       75;5;0,80;0,4103913;Training;Pass
+       76;5;0,70;0,4701623;Training;Pass
+       77;5;1,00;0,0000000;Training;Pass
+       78;5;1,00;0,0000000;Training;Pass
+       79;5;1,00;0,0000000;Training;Pass
+       81;5;0,95;0,2236068;Training;Pass
+       82;5;1,00;0,0000000;Training;Pass
+       83;5;0,85;0,3663475;Training;Pass
+       84;5;0,95;0,2236068;Training;Pass
+       85;5;1,00;0,0000000;Training;Pass
+       87;5;1,00;0,0000000;Training;Pass
+       88;5;1,00;0,0000000;Training;Pass
+       90;5;1,00;0,0000000;Training;Pass
+       93;5;0,25;0,4442617;Training;Fail
+       94;5;0,75;0,4442617;Training;Pass
+       95;5;0,95;0,2236068;Training;Pass
+       96;5;1,00;0,0000000;Training;Pass
+       98;5;1,00;0,0000000;Training;Pass
+       99;5;0,15;0,3663475;Training;Fail
+      102;5;1,00;0,0000000;Training;Pass
+      103;5;1,00;0,0000000;Training;Pass
+      104;5;0,15;0,3663475;Training;Fail
+      105;5;0,95;0,2236068;Training;Pass
+      110;5;1,00;0,0000000;Training;Pass
+      111;5;0,80;0,4103913;Training;Pass
+      112;5;1,00;0,0000000;Training;Pass
+      114;5;1,00;0,0000000;Training;Pass
+      116;5;1,00;0,0000000;Training;Pass
+      117;5;1,00;0,0000000;Training;Pass
+      118;5;0,95;0,2236068;Training;Pass
+      119;5;1,00;0,0000000;Training;Pass
+      120;5;1,00;0,0000000;Training;Pass
+      121;5;1,00;0,0000000;Training;Pass
+      122;5;0,95;0,2236068;Training;Pass
+      123;5;1,00;0,0000000;Training;Pass
+      124;5;1,00;0,0000000;Training;Pass
+      127;5;0,70;0,4701623;Training;Pass
+      128;5;0,70;0,4701623;Training;Pass
+      129;5;1,00;0,0000000;Training;Pass
+      131;5;0,65;0,4893605;Training;Fail
+      133;5;1,00;0,0000000;Training;Pass
+      135;5;1,00;0,0000000;Training;Pass
+      138;5;0,45;0,5104178;Training;Fail
+      139;5;1,00;0,0000000;Training;Pass
+      141;5;1,00;0,0000000;Training;Pass
+      143;5;1,00;0,0000000;Training;Pass
+      145;5;1,00;0,0000000;Training;Pass
+      147;5;1,00;0,0000000;Training;Pass
+      149;5;0,95;0,2236068;Training;Pass
+      151;5;1,00;0,0000000;Training;Pass
+      153;5;1,00;0,0000000;Training;Pass
+  6136792;5;1,00;0,0000000;Training;Pass
+230832027;5;1,00;0,0000000;Training;Pass
+426868661;5;0,95;0,2236068;Training;Pass
+442487679;5;1,00;0,0000000;Training;Pass
+470389932;5;1,00;0,0000000;Training;Pass
+489059492;5;1,00;0,0000000;Training;Pass
+504264674;5;0,70;0,4701623;Training;Pass
+563770584;5;0,95;0,2236068;Training;Pass
+761884654;5;1,00;0,0000000;Training;Pass
+934322159;5;0,65;0,4893605;Training;Fail

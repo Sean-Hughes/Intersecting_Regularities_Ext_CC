@@ -1,0 +1,53 @@
+subject;block_number;mean_correct;sd_correct;block_type;training_performance;training_condition
+        9;4;0,95;0,2236068;Counterconditioning;Pass;Counterconditioning_Condition
+       11;4;1,00;0,0000000;Counterconditioning;Pass;Counterconditioning_Condition
+       14;4;1,00;0,0000000;Counterconditioning;Pass;Counterconditioning_Condition
+       15;4;1,00;0,0000000;Counterconditioning;Pass;Counterconditioning_Condition
+       25;4;1,00;0,0000000;Counterconditioning;Pass;Counterconditioning_Condition
+       26;4;1,00;0,0000000;Counterconditioning;Pass;Counterconditioning_Condition
+       28;4;0,95;0,2236068;Counterconditioning;Pass;Counterconditioning_Condition
+       29;4;1,00;0,0000000;Counterconditioning;Pass;Counterconditioning_Condition
+       31;4;0,90;0,3077935;Counterconditioning;Pass;Counterconditioning_Condition
+       32;4;0,95;0,2236068;Counterconditioning;Pass;Counterconditioning_Condition
+       41;4;1,00;0,0000000;Counterconditioning;Pass;Counterconditioning_Condition
+       42;4;1,00;0,0000000;Counterconditioning;Pass;Counterconditioning_Condition
+       43;4;0,70;0,4701623;Counterconditioning;Pass;Counterconditioning_Condition
+       46;4;0,75;0,4442617;Counterconditioning;Pass;Counterconditioning_Condition
+       47;4;0,90;0,3077935;Counterconditioning;Pass;Counterconditioning_Condition
+       48;4;0,90;0,3077935;Counterconditioning;Pass;Counterconditioning_Condition
+       57;4;0,95;0,2236068;Counterconditioning;Pass;Counterconditioning_Condition
+       59;4;1,00;0,0000000;Counterconditioning;Pass;Counterconditioning_Condition
+       61;4;0,95;0,2236068;Counterconditioning;Pass;Counterconditioning_Condition
+       62;4;1,00;0,0000000;Counterconditioning;Pass;Counterconditioning_Condition
+       63;4;1,00;0,0000000;Counterconditioning;Pass;Counterconditioning_Condition
+       74;4;1,00;0,0000000;Counterconditioning;Pass;Counterconditioning_Condition
+       75;4;1,00;0,0000000;Counterconditioning;Pass;Counterconditioning_Condition
+       76;4;1,00;0,0000000;Counterconditioning;Pass;Counterconditioning_Condition
+       77;4;0,95;0,2236068;Counterconditioning;Pass;Counterconditioning_Condition
+       78;4;1,00;0,0000000;Counterconditioning;Pass;Counterconditioning_Condition
+       79;4;1,00;0,0000000;Counterconditioning;Pass;Counterconditioning_Condition
+       90;4;1,00;0,0000000;Counterconditioning;Pass;Counterconditioning_Condition
+       93;4;0,20;0,4103913;Counterconditioning;Fail;Counterconditioning_Condition
+       94;4;0,90;0,3077935;Counterconditioning;Pass;Counterconditioning_Condition
+       95;4;1,00;0,0000000;Counterconditioning;Pass;Counterconditioning_Condition
+       96;4;0,95;0,2236068;Counterconditioning;Pass;Counterconditioning_Condition
+      105;4;1,00;0,0000000;Counterconditioning;Pass;Counterconditioning_Condition
+      110;4;1,00;0,0000000;Counterconditioning;Pass;Counterconditioning_Condition
+      111;4;1,00;0,0000000;Counterconditioning;Pass;Counterconditioning_Condition
+      112;4;1,00;0,0000000;Counterconditioning;Pass;Counterconditioning_Condition
+      121;4;1,00;0,0000000;Counterconditioning;Pass;Counterconditioning_Condition
+      122;4;1,00;0,0000000;Counterconditioning;Pass;Counterconditioning_Condition
+      123;4;1,00;0,0000000;Counterconditioning;Pass;Counterconditioning_Condition
+      124;4;0,95;0,2236068;Counterconditioning;Pass;Counterconditioning_Condition
+      127;4;0,90;0,3077935;Counterconditioning;Pass;Counterconditioning_Condition
+      128;4;0,95;0,2236068;Counterconditioning;Pass;Counterconditioning_Condition
+      138;4;0,95;0,2236068;Counterconditioning;Pass;Counterconditioning_Condition
+      139;4;0,95;0,2236068;Counterconditioning;Pass;Counterconditioning_Condition
+      141;4;1,00;0,0000000;Counterconditioning;Pass;Counterconditioning_Condition
+      143;4;0,90;0,3077935;Counterconditioning;Pass;Counterconditioning_Condition
+      153;4;0,95;0,2236068;Counterconditioning;Pass;Counterconditioning_Condition
+230832027;4;1,00;0,0000000;Counterconditioning;Pass;Counterconditioning_Condition
+442487679;4;0,95;0,2236068;Counterconditioning;Pass;Counterconditioning_Condition
+470389932;4;1,00;0,0000000;Counterconditioning;Pass;Counterconditioning_Condition
+761884654;4;0,95;0,2236068;Counterconditioning;Pass;Counterconditioning_Condition
+934322159;4;1,00;0,0000000;Counterconditioning;Pass;Counterconditioning_Condition

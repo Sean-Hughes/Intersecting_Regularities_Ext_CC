@@ -1,0 +1,363 @@
+subject;training_condition;training_performance
+  2;Acquisition_Only;Pass
+  2;Extinction;Fail
+  3;Acquisition_Only;Pass
+  3;Extinction;Pass
+  4;Acquisition_Only;Pass
+  4;Counterconditioning;Pass
+  4;Extinction;Pass
+  5;Counterconditioning;Pass
+  6;Acquisition_Only;Pass
+  6;Counterconditioning;Pass
+  7;Counterconditioning;Pass
+  7;Extinction;Fail
+  8;Acquisition_Only;Pass
+  8;Extinction;Pass
+  9;Acquisition_Only;Fail
+  9;Extinction;Pass
+ 10;Acquisition_Only;Pass
+ 11;Acquisition_Only;Pass
+ 11;Extinction;Pass
+ 12;Counterconditioning;Pass
+ 12;Extinction;Pass
+ 13;Acquisition_Only;Pass
+ 14;Acquisition_Only;Pass
+ 14;Counterconditioning;Pass
+ 15;Acquisition_Only;Pass
+ 15;Extinction;Pass
+ 16;Counterconditioning;Pass
+ 17;Acquisition_Only;Pass
+ 17;Extinction;Fail
+ 18;Extinction;Pass
+ 20;Counterconditioning;Pass
+ 20;Extinction;Pass
+ 22;Acquisition_Only;Pass
+ 22;Extinction;Pass
+ 23;Acquisition_Only;Pass
+ 23;Counterconditioning;Pass
+ 23;Extinction;Fail
+ 24;Extinction;Fail
+ 25;Acquisition_Only;Pass
+ 27;Acquisition_Only;Pass
+ 27;Counterconditioning;Pass
+ 27;Extinction;Fail
+ 28;Acquisition_Only;Fail
+ 28;Counterconditioning;Pass
+ 29;Extinction;Pass
+ 30;Extinction;Pass
+ 31;Acquisition_Only;Pass
+ 31;Counterconditioning;Pass
+ 31;Extinction;Pass
+ 32;Counterconditioning;Fail
+ 34;Extinction;Pass
+ 35;Acquisition_Only;Pass
+ 35;Extinction;Pass
+ 36;Acquisition_Only;Pass
+ 36;Counterconditioning;Pass
+ 36;Extinction;Pass
+ 38;Extinction;Pass
+ 39;Counterconditioning;Pass
+ 39;Extinction;Pass
+ 40;Extinction;Pass
+ 41;Acquisition_Only;Pass
+ 41;Counterconditioning;Pass
+ 41;Extinction;Fail
+ 42;Extinction;Pass
+ 43;Counterconditioning;Pass
+ 43;Extinction;Pass
+ 44;Counterconditioning;Pass
+ 44;Extinction;Pass
+ 45;Counterconditioning;Pass
+ 47;Acquisition_Only;Fail
+ 49;Counterconditioning;Pass
+ 49;Extinction;Pass
+ 50;Extinction;Pass
+ 51;Acquisition_Only;Pass
+ 51;Counterconditioning;Pass
+ 51;Extinction;Pass
+ 53;Acquisition_Only;Pass
+ 53;Counterconditioning;Pass
+ 53;Extinction;Pass
+ 55;Acquisition_Only;Pass
+ 56;Acquisition_Only;Pass
+ 57;Acquisition_Only;Pass
+ 57;Extinction;Pass
+ 58;Extinction;Fail
+ 59;Acquisition_Only;Pass
+ 59;Extinction;Pass
+ 60;Acquisition_Only;Pass
+ 60;Counterconditioning;Pass
+ 61;Acquisition_Only;Pass
+ 63;Extinction;Pass
+ 64;Extinction;Pass
+ 65;Extinction;Fail
+ 66;Acquisition_Only;Fail
+ 66;Counterconditioning;Pass
+ 67;Acquisition_Only;Fail
+ 67;Extinction;Pass
+ 68;Acquisition_Only;Pass
+ 68;Extinction;Fail
+ 69;Acquisition_Only;Pass
+ 69;Extinction;Pass
+ 70;Acquisition_Only;Pass
+ 71;Acquisition_Only;Pass
+ 71;Extinction;Fail
+ 73;Acquisition_Only;Pass
+ 74;Acquisition_Only;Pass
+ 74;Extinction;Pass
+ 75;Extinction;Pass
+ 76;Acquisition_Only;Pass
+ 77;Acquisition_Only;Pass
+ 77;Extinction;Pass
+ 78;Acquisition_Only;Pass
+ 79;Acquisition_Only;Pass
+ 80;Acquisition_Only;Pass
+ 80;Counterconditioning;Fail
+ 81;Acquisition_Only;Fail
+ 83;Acquisition_Only;Pass
+ 83;Extinction;Pass
+ 85;Acquisition_Only;Pass
+ 86;Extinction;Pass
+ 87;Acquisition_Only;Pass
+ 87;Counterconditioning;Pass
+ 88;Acquisition_Only;Pass
+ 88;Extinction;Pass
+ 89;Counterconditioning;Pass
+ 89;Extinction;Pass
+ 90;Acquisition_Only;Fail
+ 91;Extinction;Pass
+ 92;Acquisition_Only;Fail
+ 92;Extinction;Fail
+ 93;Acquisition_Only;Pass
+ 94;Acquisition_Only;Pass
+ 94;Counterconditioning;Pass
+ 94;Extinction;Pass
+ 95;Acquisition_Only;Fail
+ 95;Extinction;Pass
+ 96;Acquisition_Only;Fail
+ 96;Counterconditioning;Pass
+ 96;Extinction;Pass
+ 97;Acquisition_Only;Pass
+ 98;Acquisition_Only;Pass
+ 99;Acquisition_Only;Pass
+ 99;Extinction;Pass
+100;Acquisition_Only;Pass
+100;Extinction;Pass
+101;Extinction;Fail
+102;Acquisition_Only;Pass
+104;Counterconditioning;Pass
+105;Acquisition_Only;Pass
+105;Extinction;Pass
+107;Extinction;Pass
+109;Acquisition_Only;Pass
+111;Acquisition_Only;Pass
+112;Acquisition_Only;Pass
+113;Extinction;Pass
+114;Acquisition_Only;Pass
+115;Counterconditioning;Fail
+115;Extinction;Fail
+117;Extinction;Pass
+118;Extinction;Pass
+119;Extinction;Pass
+120;Acquisition_Only;Pass
+121;Acquisition_Only;Fail
+122;Acquisition_Only;Pass
+122;Counterconditioning;Pass
+122;Extinction;Pass
+123;Acquisition_Only;Pass
+124;Acquisition_Only;Fail
+124;Extinction;Pass
+125;Acquisition_Only;Pass
+125;Extinction;Pass
+126;Acquisition_Only;Pass
+126;Extinction;Pass
+127;Acquisition_Only;Pass
+127;Extinction;Pass
+128;Acquisition_Only;Pass
+128;Extinction;Pass
+129;Acquisition_Only;Pass
+130;Acquisition_Only;Pass
+130;Extinction;Pass
+131;Acquisition_Only;Pass
+131;Extinction;Pass
+132;Acquisition_Only;Pass
+132;Counterconditioning;Pass
+132;Extinction;Fail
+133;Acquisition_Only;Pass
+133;Counterconditioning;Pass
+133;Extinction;Fail
+134;Acquisition_Only;Fail
+134;Counterconditioning;Pass
+134;Extinction;Pass
+135;Acquisition_Only;Pass
+135;Extinction;Pass
+136;Acquisition_Only;Pass
+137;Acquisition_Only;Pass
+137;Counterconditioning;Pass
+137;Extinction;Pass
+138;Acquisition_Only;Pass
+138;Extinction;Pass
+139;Acquisition_Only;Pass
+139;Extinction;Pass
+140;Counterconditioning;Pass
+141;Extinction;Pass
+143;Acquisition_Only;Pass
+143;Counterconditioning;Pass
+143;Extinction;Pass
+144;Acquisition_Only;Pass
+145;Extinction;Pass
+146;Acquisition_Only;Pass
+146;Extinction;Pass
+147;Acquisition_Only;Pass
+147;Extinction;Pass
+148;Counterconditioning;Pass
+149;Acquisition_Only;Pass
+149;Extinction;Pass
+150;Acquisition_Only;Pass
+151;Acquisition_Only;Pass
+151;Counterconditioning;Pass
+152;Acquisition_Only;Fail
+154;Acquisition_Only;Fail
+154;Counterconditioning;Pass
+154;Extinction;Pass
+155;Extinction;Pass
+156;Acquisition_Only;Pass
+156;Extinction;Fail
+157;Acquisition_Only;Pass
+157;Counterconditioning;Pass
+158;Acquisition_Only;Pass
+159;Acquisition_Only;Pass
+160;Counterconditioning;Pass
+162;Acquisition_Only;Fail
+163;Acquisition_Only;Pass
+163;Counterconditioning;Pass
+164;Acquisition_Only;Pass
+164;Extinction;Fail
+165;Acquisition_Only;Pass
+165;Extinction;Pass
+166;Counterconditioning;Pass
+167;Counterconditioning;Pass
+168;Acquisition_Only;Fail
+169;Acquisition_Only;Pass
+169;Counterconditioning;Pass
+169;Extinction;Pass
+170;Counterconditioning;Pass
+171;Acquisition_Only;Pass
+171;Extinction;Pass
+172;Extinction;Pass
+173;Acquisition_Only;Fail
+174;Acquisition_Only;Pass
+174;Extinction;Pass
+177;Acquisition_Only;Pass
+177;Counterconditioning;Fail
+178;Acquisition_Only;Pass
+178;Extinction;Pass
+179;Acquisition_Only;Pass
+179;Extinction;Pass
+180;Counterconditioning;Pass
+180;Extinction;Pass
+181;Acquisition_Only;Pass
+182;Acquisition_Only;Fail
+182;Extinction;Pass
+183;Acquisition_Only;Pass
+183;Extinction;Pass
+184;Acquisition_Only;Pass
+184;Extinction;Pass
+185;Extinction;Pass
+186;Acquisition_Only;Pass
+186;Extinction;Pass
+187;Acquisition_Only;Pass
+187;Extinction;Pass
+188;Acquisition_Only;Pass
+189;Acquisition_Only;Pass
+190;Acquisition_Only;Pass
+191;Counterconditioning;Fail
+191;Extinction;Pass
+192;Acquisition_Only;Fail
+192;Extinction;Pass
+194;Extinction;Pass
+195;Acquisition_Only;Fail
+195;Counterconditioning;Pass
+196;Acquisition_Only;Pass
+196;Counterconditioning;Pass
+197;Acquisition_Only;Pass
+197;Extinction;Pass
+198;Counterconditioning;Pass
+199;Extinction;Pass
+201;Extinction;Fail
+204;Counterconditioning;Pass
+205;Counterconditioning;Pass
+205;Extinction;Fail
+206;Extinction;Pass
+207;Extinction;Pass
+208;Counterconditioning;Pass
+208;Extinction;Pass
+211;Extinction;Fail
+213;Extinction;Pass
+214;Extinction;Fail
+215;Extinction;Pass
+217;Extinction;Pass
+218;Extinction;Pass
+219;Extinction;Fail
+220;Extinction;Pass
+223;Extinction;Pass
+231;Counterconditioning;Pass
+237;Counterconditioning;Fail
+238;Counterconditioning;Pass
+239;Counterconditioning;Pass
+246;Counterconditioning;Fail
+248;Counterconditioning;Pass
+250;Counterconditioning;Pass
+254;Counterconditioning;Pass
+256;Counterconditioning;Pass
+261;Counterconditioning;Pass
+264;Counterconditioning;Pass
+270;Counterconditioning;Fail
+271;Counterconditioning;Pass
+280;Counterconditioning;Pass
+282;Counterconditioning;Pass
+283;Counterconditioning;Pass
+285;Counterconditioning;Pass
+290;Counterconditioning;Pass
+291;Counterconditioning;Pass
+295;Counterconditioning;Pass
+311;Counterconditioning;Pass
+314;Counterconditioning;Pass
+316;Counterconditioning;Pass
+321;Counterconditioning;Pass
+326;Counterconditioning;Pass
+331;Counterconditioning;Fail
+332;Counterconditioning;Pass
+337;Counterconditioning;Pass
+339;Counterconditioning;Pass
+342;Counterconditioning;Pass
+344;Counterconditioning;Pass
+345;Counterconditioning;Pass
+349;Counterconditioning;Pass
+355;Counterconditioning;Pass
+361;Counterconditioning;Pass
+363;Counterconditioning;Pass
+364;Counterconditioning;Pass
+365;Counterconditioning;Pass
+368;Counterconditioning;Pass
+371;Counterconditioning;Pass
+373;Counterconditioning;Pass
+377;Counterconditioning;Pass
+380;Counterconditioning;Fail
+386;Counterconditioning;Pass
+391;Counterconditioning;Pass
+403;Counterconditioning;Pass
+409;Counterconditioning;Pass
+410;Counterconditioning;Pass
+414;Counterconditioning;Pass
+428;Counterconditioning;Pass
+430;Counterconditioning;Fail
+432;Counterconditioning;Pass
+434;Counterconditioning;Pass
+441;Counterconditioning;Pass
+442;Counterconditioning;Pass
+446;Counterconditioning;Pass
+447;Counterconditioning;Pass
+450;Counterconditioning;Fail
+451;Counterconditioning;Pass
+457;Counterconditioning;Pass

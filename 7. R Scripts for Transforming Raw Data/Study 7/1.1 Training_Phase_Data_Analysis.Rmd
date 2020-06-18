@@ -1,0 +1,228 @@
+---
+title: "Study 7: Acquisition Phase Data"
+author: "Sean Hughes"
+date: "30-5-2020"
+output: 
+  html_document:
+    code_folding: hide
+    highlight: haddock
+    theme: flatly
+    toc: yes 
+    toc_float: yes
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(message=FALSE,
+                      warning=FALSE)
+```
+
+
+# Load the necessary packages
+
+```{r}
+library(foreign)
+library(tidyverse)
+library(Hmisc)
+library(car)
+library(readxl)
+library(xlsx)
+library(ggthemes)
+```
+
+## 1. Import the raw data files from Excel into R
+
+```{r}
+getwd()
+
+wd <- list()
+wd$data_AQ   <- "C:/Users/Sean/Desktop/Intersecting_Regularties_/Study 7/Raw_Data/1_Acquisition_Only_Data/"
+wd$data_CC   <- "C:/Users/Sean/Desktop/Intersecting_Regularties_/Study 7/Raw_Data/2_Counterconditioning_Data/"
+wd$data_EX   <- "C:/Users/Sean/Desktop/Intersecting_Regularties_/Study 7/Raw_Data/3_Extinction_Data/"
+
+wd$output <- "C:/Users/Sean/Desktop/Intersecting_Regularties_/Study 7/Processed_Data/"
+
+# raw_data_1: Outcome 1 and Target 1 are Good/ Outcome 2 and Target 2 are Bad
+# raw_data_3: Outcome 1 and Target 1 are Good/ Outcome 2 and Target 2 are Bad
+
+# raw_data_2: Outcome 1 and Target 1 are Bad/ Outcome 2 and Target 2 are Good
+# raw_data_4: Outcome 1 and Target 1 are Bad/ Outcome 2 and Target 2 are Good
+
+# Acquisition Only Group Data
+raw_data_AQ_1 <- read_xlsx(paste0(wd$data_AQ, "intersecting_regularities_1_no_location_17_06_20.xlsx"), col_names = TRUE)
+raw_data_AQ_2 <- read_xlsx(paste0(wd$data_AQ, "intersecting_regularities_2_no_location_17_06_20.xlsx"), col_names = TRUE)
+
+# Counterconditioning Group Data
+
+raw_data_CC_1 <- read_xlsx(paste0(wd$data_CC, "intersecting_regularities_1_no_location_raw.xlsx"), col_names = TRUE)
+raw_data_CC_2 <- read_xlsx(paste0(wd$data_CC, "intersecting_regularities_2_no_location_raw.xlsx"), col_names = TRUE)
+  
+# Extinction Group Data
+
+raw_data_EX_1 <- read_xlsx(paste0(wd$data_EX, "intersecting_regularities_1_no_location_19_04_05.xlsx"), col_names = TRUE)
+raw_data_EX_2 <- read_xlsx(paste0(wd$data_EX, "intersecting_regularities_2_no_location_19_04_05.xlsx"), col_names = TRUE)
+
+```
+
+## 2. Join the training files together
+
+```{r}
+
+processed_data_AQ_1 <- raw_data_AQ_1 %>% 
+  filter(blockcode != "Begin") %>% 
+  select(subject, blocknum, trialnum, correct) %>%
+  mutate(stimulus_identity = "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad") %>%
+  mutate(training_condition = "Acquisition_Only", 
+         block_type = "Training") 
+
+processed_data_AQ_2 <- raw_data_AQ_2 %>% 
+  filter(blockcode != "Begin") %>% 
+  select(subject, blocknum, trialnum, correct) %>% 
+  mutate(stimulus_identity = "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good") %>%
+  mutate(training_condition = "Acquisition_Only", 
+         block_type = "Training")
+
+processed_data_CC_1 <- raw_data_CC_1 %>% 
+  filter(blockcode != "Begin") %>% 
+  select(subject, blocknum, trialnum, correct) %>%
+  mutate(stimulus_identity = "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad") %>%
+  mutate(training_condition = "Counterconditioning", 
+         block_type = "Training")
+
+processed_data_CC_2 <- raw_data_CC_2 %>% 
+  filter(blockcode != "Begin") %>% 
+  select(subject, blocknum, trialnum, correct) %>% 
+  mutate(stimulus_identity = "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good") %>%
+  mutate(training_condition = "Counterconditioning", 
+         block_type = "Training")
+
+processed_data_EX_1 <- raw_data_EX_1 %>% 
+  filter(blockcode != "Begin") %>% 
+  select(subject, blocknum, trialnum, correct) %>%
+  mutate(stimulus_identity = "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad") %>%
+  mutate(training_condition = "Extinction", 
+         block_type = "Training")
+
+processed_data_EX_2 <- raw_data_EX_2 %>% 
+  filter(blockcode != "Begin") %>% 
+  select(subject, blocknum, trialnum, correct) %>% 
+  mutate(stimulus_identity = "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good") %>%
+  mutate(training_condition = "Extinction", 
+         block_type = "Training")
+
+
+combined_data <- processed_data_AQ_1 %>% 
+  bind_rows(processed_data_AQ_2, processed_data_CC_1, processed_data_CC_2, processed_data_EX_1, processed_data_EX_2) %>%
+  rename(block_number = blocknum, trial_number = trialnum) %>% 
+  arrange(subject)
+
+# Select out the stimulus identity information for data analysis 
+stimulus_identity <- combined_data %>% 
+  select(subject, stimulus_identity, training_condition) %>%
+  distinct(subject, training_condition, stimulus_identity) %>% 
+  arrange(subject)
+
+# cannot use this method in Study 7 as the same participant numbers are used in multiple experimental conditions 
+# stimulus_identity[duplicated(stimulus_identity$subject), ]
+# stimulus_identity <- stimulus_identity[!duplicated(stimulus_identity$subject), ]
+
+```
+
+## 3. Exclude participants with incomplete data
+
+```{r}
+
+# Number of participants before exclusions
+
+Participants_before_exclusions <- combined_data %>% 
+  distinct(subject, training_condition) %>% 
+  count()
+
+# Check to see if everyone has complete data for the four training blocks - if block_number = 280 then they do. Otherwise they do not. If they do not then remove them 
+
+combined_data <- combined_data %>%
+  group_by(subject, training_condition) %>% 
+  mutate(complete_data_check = sum(block_number)) %>%
+  filter(complete_data_check > 400) %>%
+  ungroup() 
+
+# Number of participants post exclusions
+
+Participants_after_exclusions <- combined_data %>% 
+  distinct(subject, training_condition) %>% 
+  count()
+
+```
+
+## 4. Calculating Mean and SD of Accuracy for the training phase 
+
+```{r}
+
+# Calculate mean and SD for accuracy (i.e., the correct row) 
+
+summarised_data <- combined_data %>%
+  group_by(subject, block_number, training_condition) %>% 
+  summarise(mean_correct = mean(correct), sd_correct = sd(correct))%>%
+  arrange(subject, block_number) %>%
+  ungroup()
+
+```
+
+## 5. Identify those who passed (> 70%) OR failed (< 70%) the final block of the training phase 
+
+```{r}
+# Step 1: Identify those that failed training
+Pass_Fail_Group <- summarised_data %>%
+  group_by(subject, training_condition) %>%
+  slice_tail() %>%
+  mutate(training_performance = ifelse(mean_correct < .70, "Fail", "Pass"),
+         block_type = "Training") %>%
+  ungroup()
+
+# Step 2: Add the training performance (Fail/Pass) information to the entire data
+
+summarised_data <- summarised_data %>% 
+  full_join(Pass_Fail_Group, by = c("subject" = "subject", "block_number" = "block_number", "training_condition" = "training_condition")) %>%
+  select(-mean_correct.y, -sd_correct.y) %>%
+  rename(mean_correct = mean_correct.x,  sd_correct = sd_correct.x) %>%
+  mutate(block_type = "Training") %>%
+  group_by(subject, training_condition) %>%
+  fill(training_performance, .direction = "up") %>%
+  ungroup()
+
+```
+
+
+## 6. Graph accuracy in final training block for those who passed vs. failed in the three experimental conditions
+
+```{r}
+
+# Calculate  Mean and SD of accuracy for the FINAL training block in each experimental condition
+  data_for_graph <- Pass_Fail_Group %>% 
+    group_by(training_condition, training_performance) %>% 
+    summarise(mean_accuracy = mean(mean_correct), sd_accuracy = sd(sd_correct)) %>%
+    ungroup()
+
+# Graph Mean and SD accuracy across blocks
+ggplot(data_for_graph, aes(x=training_condition, y=mean_accuracy, fill = training_performance)) +
+    geom_bar(colour="black", stat="identity", position = position_dodge()) + geom_errorbar(aes(ymin=mean_accuracy-sd_accuracy, ymax=mean_accuracy+sd_accuracy), width=.2,
+                 position=position_dodge(.9)) + theme_classic()
+
+```
+
+## 7. Write data to file
+
+```{r}
+# Write to file the accuracy data for participants from the final block of training.
+
+stimulus_identity <- Pass_Fail_Group %>%
+  full_join(stimulus_identity, by = c("subject" = "subject", "training_condition" = "training_condition")) %>%
+  select(subject, training_condition, training_performance, stimulus_identity)
+
+
+write_csv2(Pass_Fail_Group, path = paste0(wd$output, "Study_7_Training_Phase.csv"))
+write_csv2(stimulus_identity, path = paste0(wd$output, "Study_7_Stimulus_Identity.csv"))
+
+```
+
+
+

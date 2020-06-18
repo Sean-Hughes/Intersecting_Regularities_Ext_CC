@@ -1,0 +1,234 @@
+---
+title: "Cleaning IAT Data"
+author: "Sean Hughes"
+date: "30-5-2020"
+output: 
+  html_document:
+    code_folding: hide
+    highlight: haddock
+    theme: flatly
+    toc: yes 
+    toc_float: yes
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(message=FALSE,
+                      warning=FALSE)
+```
+
+
+# Load the necessary packages
+
+```{r}
+library(ggthemes)
+library(foreign)
+library(tidyverse)
+library(Hmisc)
+library(car)
+library(readxl)
+library(xlsx)
+library(IATscores)
+```
+
+## 1. Import the raw data files from Excel into R
+
+```{r}
+
+wd <- list()
+wd$data   <- "C:/Users/Sean/Desktop/Intersecting_Regularties_/Study 3/Raw_Data/"
+wd$output <- "C:/Users/Sean/Desktop/Intersecting_Regularties_/Study 3/Processed_Data/"
+
+raw_IAT_data_1 <- read_xlsx(paste0(wd$data, "iat_symbols_before_17_03_28.xlsx"), col_names = TRUE)
+raw_IAT_data_2 <- read_xlsx(paste0(wd$data, "iat_symbols_after_17_03_28.xlsx"), col_names = TRUE)
+
+```
+
+## 2. Join the raw IAT files together
+
+```{r}
+
+# apparently the $response was a character in the first  IAT file and a numeric in the second so convert the first to a numeric as well
+raw_IAT_data_1$response <- as.integer(raw_IAT_data_1$response)
+raw_IAT_data_2$response <- as.integer(raw_IAT_data_2$response)
+
+combined_IAT_data <- raw_IAT_data_1 %>% 
+  bind_rows(raw_IAT_data_2) %>%
+  rename(block_type = blockcode, block = blocknum, trial_number = trialnum) %>%
+  select(subject, block_type, block, trial_number, correct, latency) %>% 
+    arrange(subject, block)
+
+
+```
+
+## 3. IAT Data Cleaning 
+
+```{r}
+
+# identify individuals with incomplete data 
+
+incomplete_data <- combined_IAT_data %>%
+  group_by(subject) %>%
+  summarise(trial_count = n()) %>%
+  filter(trial_count < 120) %>%
+  ungroup() 
+  
+# Remove individuals with incomplete data 
+
+processed_IAT_data <- combined_IAT_data %>% 
+  group_by(subject) %>%
+  mutate(data_completeness_check = sum(trial_number)) %>%
+  filter(data_completeness_check == 2790) %>%
+  select(-data_completeness_check) %>%
+  ungroup() %>%
+
+
+# trial_number on blocks 3 and 7 begins on 2. So delete 1 from trial_number in these two blocks so that trial_number begins at 1
+ mutate(trial_number = ifelse(block == 1 | block == 2 | block == 3 | block == 6 | block == 7, trial_number-1, trial_number)) %>%
+
+# the number of the blocks is incorrect. So renumber block 5 -> 4, 6 -> 5, 7 -> 6, 9 -> 7
+ mutate(block = ifelse(block == 5, 4, block)) %>%
+ mutate(block = ifelse(block == 6, 5, block)) %>%
+ mutate(block = ifelse(block == 7, 6, block)) %>%
+ mutate(block = ifelse(block == 9, 7, block)) 
+
+
+# Identify IAT block order for later analysis
+
+IAT_order <- processed_IAT_data %>% 
+  mutate(IAT_order = ifelse(block == 1 & block_type == "targetincompatiblepractice", "Learning_Inconsistent_First", "Learning_Consistent_First")) %>% 
+  rename(ID = subject) %>%
+  group_by(ID) %>% 
+  select(ID, IAT_order) %>%
+  slice(1)
+
+# 0. only retain the critical practice and test blocks (i.e., block_number = 3, 4, 6, 7)
+
+processed_IAT_data <- processed_IAT_data %>% 
+  filter(block == 3 | block == 4 | block == 6 | block == 7) %>% 
+  arrange(subject, block) 
+  
+# 1. identify participants who have a total error rate > 30% (i.e., > 36 trials incorrect)
+
+total_error <- processed_IAT_data %>% 
+  group_by(subject, correct) %>% 
+  summarise(error = n()) %>%
+  filter(correct == 0 & error > 35) %>%
+  ungroup()
+
+
+# 2. exclude participants who have a total error rate > 30%
+
+  processed_IAT_data <- processed_IAT_data %>%
+  filter(!subject %in% total_error)
+
+# 3. identify and remove participants who make more than 40% errors on any given block of trials (i.e., 8 errors on blocks 3 and 7 and 16 on blocks 5 and 9)
+  
+  block_3_error <- processed_IAT_data %>% 
+  filter(block == 3) %>%
+  group_by(subject, correct) %>% 
+  summarise(error = n()) %>%
+  filter(correct == 0 & error > 7) %>%
+  ungroup()
+
+  processed_IAT_data <- processed_IAT_data %>%
+  filter(!subject %in% block_3_error)
+  
+  block_4_error <- processed_IAT_data %>% 
+  filter(block == 4) %>%
+  group_by(subject, correct) %>% 
+  summarise(error = n()) %>%
+  filter(correct == 0 & error > 15) %>%
+  ungroup()
+
+  processed_IAT_data <- processed_IAT_data %>%
+  filter(!subject %in% block_4_error)
+  
+  block_6_error <- processed_IAT_data %>% 
+  filter(block == 6) %>%
+  group_by(subject, correct) %>% 
+  summarise(error = n()) %>%
+  filter(correct == 0 & error > 7) %>%
+  ungroup()
+
+  processed_IAT_data <- processed_IAT_data %>%
+  filter(!subject %in% block_6_error)
+  
+  block_7_error <- processed_IAT_data %>% 
+  filter(block == 7) %>%
+  group_by(subject, correct) %>% 
+  summarise(error = n()) %>%
+  filter(correct == 0 & error > 15) %>%
+  ungroup()
+
+  processed_IAT_data <- processed_IAT_data %>%
+  filter(!subject %in% block_7_error)
+  
+# 4. identify and remove participants with excessively fast trials: >10% (i.e., more than 12 trials where response latency is less than 300ms)
+  
+  speed <- processed_IAT_data %>% 
+  filter(latency < 300) %>%
+  group_by(subject, latency) %>% 
+  summarise(count = n()) %>% 
+  filter(count > 11) %>%
+  ungroup
+    
+  processed_IAT_data <- processed_IAT_data %>%
+  filter(!subject %in% speed)
+  
+  rm(speed, total_error, incomplete_data, block_3_error, block_4_error, block_6_error, block_7_error)
+  
+```
+
+
+## 4. Calculating IAT scores (D2) using the IATscores package
+
+
+```{r}
+
+# IATscores package requires block_pair1 and block_pair2 to be factors or strings. So convert numerical block_number to factor
+
+data_IAT_D2_scores <- processed_IAT_data %>%
+  rename(ID = subject) %>%
+  mutate(praccrit = ifelse(block_type == "incompatibletest1" | block_type == "compatibletest1", "prac", "crit")) %>%
+  mutate(blockcode = ifelse(block_type == "incompatibletest1" | block_type == "incompatibletest2", "incompatible_block","compatible_block")) %>%
+  select(ID, block, correct, latency, praccrit,  trial_number, block_type) %>%
+
+  # IATscores requires data to be in a specific format
+  mutate(blockcode = ifelse(block %in% c(3, 4), "pair1", 
+                            ifelse(block %in% c(6, 7), "pair2", NA)),
+         praccrit = ifelse(block %in% c(3, 6), "prac", 
+                            ifelse(block %in% c(4, 7), "crit", NA)))  %>%
+  rename(subject = ID) %>%
+  filter(!is.na(blockcode)) %>%
+  
+  # calculate D2 scores
+  # parameters are identical to those the package lists in the D2 wrapper function
+  IATscores::RobustScores(IATdata = .,
+                          P1 = "fxtrim",    # do not trim extreme values
+                          P2 = "ignore",  # do not trim errors
+                          P3 = "dscore",  # calculate d2 scores
+                          P4 = "dist",    # distinguish between the prac and test blocks
+                          verbose = FALSE,
+                          autoremove = FALSE)  %>%
+    rename(IAT_D2 = p2112,
+           ID = subject) 
+
+data_IAT_D2_scores <- data_IAT_D2_scores %>% 
+  full_join(IAT_order, by = "ID") %>% 
+  drop_na()
+
+# It seems that the IATscores package is reversing the direction of the IAT scores for those participants in the "inconsistent learning block first" condition (this can be seen by inspecting the raw IAT data). To correct this error I've reverse scored the IAT scores for those in the inconsistent first IAT block order. The scores now correspond to the raw IAT data and the D IAT scores in the raw IAT files. 
+
+data_IAT_D2_scores <- data_IAT_D2_scores %>% 
+  mutate(Reverse_Scored_IAT_D2 = ifelse(IAT_order == "Learning_Inconsistent_First", IAT_D2 * -1, IAT_D2))
+
+```
+
+## 5. Write IAT scores to csv file
+
+```{r}
+
+write_csv2(as.data.frame(data_IAT_D2_scores), path = paste0(wd$output, "Study_3_IAT_Scores.csv"))
+
+```
+
