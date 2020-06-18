@@ -1,6 +1,6 @@
 # Intersecting Regularities (Extinction & Counterconditioning)
 
-Data and code 
+Data and code
 
 
 
