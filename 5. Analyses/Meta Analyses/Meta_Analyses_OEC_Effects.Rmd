@@ -1,0 +1,207 @@
+---
+Title: "Meta analyses of OEC effects"
+Author: "Ian Hussey"
+---
+
+NBs 
+
+1. for all data files, columns should be named "experiment", "yi" (the effect size), "yi_upr", and "yi_lwr"
+2. NB csv files created on belgian machines often use semicolons for column spacing rating than commas, and commas instead of decimals. To read these into R we use the read.csv2() funtion rather than read.csv(). Ideally we'd use traditional csv files as these are more common.
+3. All data is dummy data for the moment.
+
+# For converting odds ratios to d scores 
+# library(timesavers)
+# timesavers::OR_to_d(c(0.55, 0.33, 0.89))
+# citation(package='metafor')
+
+```{r}
+
+# dependencies 
+library(foreign)
+library(metafor)
+library(tidyverse)
+library(dplyr) 
+```
+
+# Converting SPSS files into CSv
+
+```{r}
+# convert SPSS to csv
+input_data_exp_1_OEC_Effects <- 
+  read.spss("Meta_Analyses_OEC_Effects.sav", to.data.frame = TRUE)
+
+# tidy data
+tidied_data_exp_1_OEC_Effects <- input_data_exp_1_OEC_Effects %>%
+  mutate(Training_Condition = str_remove_all(Training_Condition, " "))
+
+write_csv2(tidied_data_exp_1_OEC_Effects, "OEC_Effect_Sizes.csv")
+
+```
+
+# Overall model
+
+```{r}
+
+# data acquisition - effect sizes produced elsewhere (eg JASP)
+
+data_OEC_effects <- read.csv2("OEC_Effect_Sizes.csv") %>%
+  mutate(Experiment = paste("Exp", Experiment)) %>%
+  select(Experiment, 
+         Training_Condition,
+         DV,
+         yi,
+         yi_lwr,
+         yi_upr)%>% 
+  filter(Training_Condition %in% c("Acquisition_Only",
+                                   "Extinction",
+                                   "Counterconditioning"))%>% 
+  mutate(sei = (yi_upr - yi_lwr)/(2*1.96))
+
+# fit a REML multivariate moderator meta analyis model
+fit <- rma.mv(yi = yi,
+              V = sei^2,
+              data = data_OEC_effects,
+              slab = paste(Experiment, Training_Condition, DV),
+              random = ~ DV | Experiment) # multiple DVs per participant, nested by experiment
+
+# print the meta effect size and heterogeneity stats
+fit
+
+```
+
+# Moderation model
+
+```{r}
+
+# fit a REML multivariate moderator meta analyis model
+fit_mod <- rma.mv(yi = yi,
+                  V = sei^2,
+                  data = data_OEC_effects,
+                  slab = paste(Experiment, Training_Condition, DV),
+                  random = ~ DV | Experiment, # multiple DVs per participant, nested by experiment
+                  mods = ~ Training_Condition) # moderated by experimental condition
+
+# print the meta effect size and heterogeneity stats
+fit_mod
+
+```
+
+# Acquisition only
+
+```{r}
+
+# If one wants the meta-analysis for acquisition only effects then:
+data_OEC_effects_acquisition <- data_OEC_effects %>%
+  filter(Training_Condition == "Acquisition_Only")
+
+# fit a default REML meta analyis model
+fit_ao <- rma.mv(yi = yi,
+                 V = sei^2,
+                 data = data_OEC_effects_acquisition,
+                 slab = paste(Experiment, DV),
+                 random = ~ DV | Experiment) # multiple DVs per participant, nested by experiment
+
+# produce a forest plot
+forest(fit_ao, 
+       refline = 0, 
+       addcred = TRUE,
+       xlab = "Cohen's d",
+       at = c(-0.5, 0, 0.5, 1.0, 1.5),
+       xlim = c(-2, 2.5))
+
+# print the meta effect size and heterogeneity stats
+fit_ao
+
+```
+
+# Counter conditioning
+
+```{r}
+
+# If one wants the meta-analysis for counterconditioning effects then:
+data_OEC_effects_counterconditioning <- data_OEC_effects %>%
+  filter(Training_Condition == "Counterconditioning")
+
+# fit a default REML meta analyis model
+fit_cc <- rma.mv(yi = yi,
+                 V = sei^2,
+                 data = data_OEC_effects_counterconditioning,
+                 slab = paste(Experiment, DV),
+                 random = ~ DV | Experiment) # multiple DVs per participant, nested by experiment
+
+# produce a forest plot
+forest(fit_cc, 
+       refline = 0, 
+       addcred = TRUE,
+       xlab = "Cohen's d",
+       at = c(-0.5, 0, 0.5, 1.0, 1.5),
+       xlim = c(-2.5, 2.5))
+
+# print the meta effect size and heterogeneity stats
+fit_cc
+
+```
+
+# Extinction
+
+```{r}
+
+# If one wants the meta-analysis for extinction effects then:
+data_OEC_effects_extinction <- data_OEC_effects %>%
+  filter(Training_Condition == "Extinction")
+
+# fit a default REML meta analyis model
+fit_ex <- rma.mv(yi = yi,
+                 V = sei^2,
+                 data = data_OEC_effects_extinction,
+                 slab = paste(Experiment, DV),
+                 random = ~ DV | Experiment) # multiple DVs per participant, nested by experiment
+
+# produce a forest plot
+forest(fit_ex, 
+       refline = 0, 
+       addcred = TRUE,
+       xlab = "Cohen's d",
+       at = c(-0.5, 0, 0.5, 1.0, 1.5),
+       xlim = c(-2.5, 2.5))
+
+# print the meta effect size and heterogeneity stats
+fit_ex
+
+```
+
+## visual comparison of plots
+
+```{r}
+
+forest(fit_ao, 
+       refline = 0, 
+       width = .5,
+       cex= 1.2,
+       cex.axis = 1.2,
+       addcred = TRUE,
+       xlab = "Cohen's d",
+       at = c(-0.5, 0, 0.5, 1.0, 1.5),
+       xlim = c(-1.9, 2.7))
+
+forest(fit_cc, 
+       refline = 0, 
+       width = .5,
+       cex= 1.2,
+       cex.axis = 1.2,
+       addcred = TRUE,
+       xlab = "Cohen's d",
+       at = c(-0.5, 0, 0.5, 1.0, 1.5),
+       xlim = c(-1.9, 2.7))
+
+forest(fit_ex, 
+       refline = 0, 
+       width = .5,
+       cex= 1.2,
+       cex.axis = 1.2,
+       addcred = TRUE,
+       xlab = "Cohen's d",
+       at = c(-0.5, 0, 0.5, 1.0, 1.5),
+       xlim = c(-1.9, 2.7))
+
+```

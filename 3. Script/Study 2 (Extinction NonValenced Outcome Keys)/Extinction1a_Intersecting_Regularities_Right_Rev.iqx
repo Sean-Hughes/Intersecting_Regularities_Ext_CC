@@ -1,0 +1,654 @@
+﻿***************************************************************************************
+***************************************************************************************
+											SCRIPT OVERVIEW (Intersecting Operant Regularities; Valence Study 1) Replication of Hughes et al. 2016 (JEP:G)
+***************************************************************************************
+***************************************************************************************
+Script Info
+
+Author: Sean Hughes (sean.hughes@ugent.be)
+last updated: 20-10-2016
+***************************************************************************************
+***************************************************************************************
+
+*************************General Variables****************************
+**********************************************************************
+
+<defaults>
+/ canvassize = (1024px, 768px)
+/ screencolor = white
+/ txcolor = black
+/ fontstyle = ("Arial", 3%)
+</defaults>
+
+<expt >
+/ blocks = [1 = Intersecting_Regularities_Training_block1_RL_E; 2 = Intersecting_Regularities_Training_block2_RL_E; 3 = Intersecting_Regularities_Training_block3_RL_E; 4 = Intersecting_Regularities_Training_block4_RL_E]
+</expt>
+
+
+**************  Conditioned Stimuli ***************
+
+<picture Stimulus_1>
+/ numitems = 1
+/ items = ("Stimulus_1.jpg")
+/ position = (50%, 30%)
+</picture>
+
+<picture Stimulus_2>
+/ numitems = 1
+/ items = ("Stimulus_2.jpg")
+/ position = (50%, 30%)
+</picture>
+
+<picture Stimulus_3>
+/ numitems = 1
+/ items = ("Stimulus_3.jpg")
+/ position = (50%, 30%)
+</picture>
+
+<picture Stimulus_4>
+/ numitems = 1
+/ items = ("Stimulus_4.jpg")
+/ position = (50%, 30%)
+</picture>
+
+<picture Positive_Image>
+/ numitems = 10
+/ items = ("Good_1.jpg", "Good_2.jpg", "Good_3.jpg", "Good_4.jpg", "Good_5.jpg", "Good_6.jpg", "Good_7.jpg", "Good_8.jpg", "Good_9.jpg", "Good_10.jpg")
+/ select = replacenorepeat
+/ position = (50%, 30%)
+</picture>
+
+<picture Negative_Image>
+/ numitems = 10
+/ items = ("Bad_1.jpg", "Bad_2.jpg", "Bad_3.jpg", "Bad_4.jpg", "Bad_5.jpg", "Bad_6.jpg", "Bad_7.jpg", "Bad_8.jpg", "Bad_9.jpg", "Bad_10.jpg")
+/ position = (50%, 30%)
+</picture>
+
+<picture Stimulus_1_target>
+/ numitems = 1
+/ items = ("Stimulus_1.jpg")
+/ position = (50%, 30%)
+</picture>
+
+<picture Stimulus_2_target>
+/ numitems = 1
+/ items = ("Stimulus_2.jpg")
+/ position = (50%, 30%)
+</picture>
+
+<picture Stimulus_3_target>
+/ numitems = 1
+/ items = ("Stimulus_3.jpg")
+/ position = (50%, 30%)
+</picture>
+
+<picture Stimulus_4_target>
+/ numitems = 1
+/ items = ("Stimulus_4.jpg")
+/ position = (50%, 30%)
+</picture>
+
+<picture Stimulus_1_sample1>
+/ numitems = 1
+/ items = ("Stimulus_1.jpg")
+/ position = (10%, 70%)
+</picture>
+
+<picture Stimulus_2_sample1>
+/ numitems = 1
+/ items = ("Stimulus_2.jpg")
+/ position = (10%, 70%)
+</picture>
+
+<picture Stimulus_3_sample1>
+/ numitems = 1
+/ items = ("Stimulus_3.jpg")
+/ position = (10%, 70%)
+</picture>
+
+<picture Stimulus_4_sample1>
+/ numitems = 1
+/ items = ("Stimulus_4.jpg")
+/ position = (10%, 70%)
+</picture>
+
+
+<picture Stimulus_1_sample2>
+/ numitems = 1
+/ items = ("Stimulus_1.jpg")
+/ position = (90%, 70%)
+</picture>
+
+<picture Stimulus_2_sample2>
+/ numitems = 1
+/ items = ("Stimulus_2.jpg")
+/ position = (90%, 70%)
+</picture>
+
+<picture Stimulus_3_sample2>
+/ numitems = 1
+/ items = ("Stimulus_3.jpg")
+/ position = (90%, 70%)
+</picture>
+
+<picture Stimulus_4_sample2>
+/ numitems = 1
+/ items = ("Stimulus_4.jpg")
+/ position = (90%, 70%)
+</picture>
+
+*************** Unconditioned Stimuli ******************
+
+<picture Positive_Image_target>
+/ numitems = 10
+/ items = ("Good_1.jpg", "Good_2.jpg", "Good_3.jpg", "Good_4.jpg", "Good_5.jpg", "Good_6.jpg", "Good_7.jpg", "Good_8.jpg", "Good_9.jpg", "Good_10.jpg")
+/ select = replacenorepeat
+/ position = (50%, 30%)
+</picture>
+
+<picture Positive_Image_sample1>
+/ numitems = 10
+/ items = ("Good_1.jpg", "Good_2.jpg", "Good_3.jpg", "Good_4.jpg", "Good_5.jpg", "Good_6.jpg", "Good_7.jpg", "Good_8.jpg", "Good_9.jpg", "Good_10.jpg")
+/ select = replacenorepeat
+/ position = (10%, 70%)
+</picture>
+
+<picture Positive_Image_sample2>
+/ numitems = 10
+/ items = ("Good_1.jpg", "Good_2.jpg", "Good_3.jpg", "Good_4.jpg", "Good_5.jpg", "Good_6.jpg", "Good_7.jpg", "Good_8.jpg", "Good_9.jpg", "Good_10.jpg")
+/ select = replacenorepeat
+/ position = (90%, 70%)
+</picture>
+
+
+<picture Negative_Image_target>
+/ numitems = 10
+/ items = ("Bad_1.jpg", "Bad_2.jpg", "Bad_3.jpg", "Bad_4.jpg", "Bad_5.jpg", "Bad_6.jpg", "Bad_7.jpg", "Bad_8.jpg", "Bad_9.jpg", "Bad_10.jpg")
+/ position = (50%, 30%)
+</picture>
+
+<picture Negative_Image_sample1>
+/ numitems = 10
+/ items = ("Bad_1.jpg", "Bad_2.jpg", "Bad_3.jpg", "Bad_4.jpg", "Bad_5.jpg", "Bad_6.jpg", "Bad_7.jpg", "Bad_8.jpg", "Bad_9.jpg", "Bad_10.jpg")
+/ position = (10%, 70%)
+</picture>
+
+<picture Negative_Image_sample2>
+/ numitems = 10
+/ items = ("Bad_1.jpg", "Bad_2.jpg", "Bad_3.jpg", "Bad_4.jpg", "Bad_5.jpg", "Bad_6.jpg", "Bad_7.jpg", "Bad_8.jpg", "Bad_9.jpg", "Bad_10.jpg")
+/ position = (90%, 70%)
+</picture>
+
+<picture erasebig>
+/ erase = false 
+/ numitems = 1
+/ items = ("erasebig.jpg")
+</picture>
+
+**************** text ************************
+<text Key_instruction>
+/numitems =1
+/items= ("The four response options are: D, C, J, or N")
+/ txcolor = darkgrey
+/ txbgcolor = white
+/ position = (50%, 80%)
+/ fontstyle = ("Arial", 3%)
+</text>
+
+<text RedX>
+/ numitems = 1
+/ items = ("Incorrect")
+/ txcolor = (255, 0, 0)
+/ txbgcolor = (255, 255, 255)
+/ position = (50%, 50%)
+/ fontstyle = ("Arial", 15%)
+</text>
+
+<text verder>
+/numitems =1
+/items= ("Press the spacebar to continue.")
+/ txcolor = (255, 255, 255)
+/ txbgcolor = (0, 0, 0)
+/ position = (50%, 95%)
+/ font = ("Times New Roman", -18, 700, 0, 49)
+</text>
+
+<text liking>
+/numitems =1
+/items= ("Please indicate how much you like or dislike the image below")
+/ txcolor = (255, 255, 255)
+/ txbgcolor = (0, 0, 0)
+/ position = (50%, 78%)
+/ font = ("Times New Roman", -20, 700, 0, 49)
+</text>
+
+<text demand>
+/numitems =1
+/items= ("Demand Question")
+/ txcolor = (255, 255, 255)
+/ txbgcolor = (0, 0, 0)
+/ position = (50%, 78%)
+/ font = ("Times New Roman", -20, 700, 0, 49)
+</text>
+
+
+********** Intersecting Regularities Training ***********
+
+< trial pause>
+/trialcode = "pause"
+/stimulustimes = [ 1 = erasebig]
+/trialduration = 1000
+</trial>
+
+<trial Intersecting_Regularities_Training_Trial_1_left> 
+/ inputdevice = keyboard
+/ responsemessage = ("d", erasebig, 2000)
+/ correctresponse = ("d")
+/ errormessage = (RedX, 2000)
+/ response = free
+/ validresponse = ("d", "c", "j", "n")
+/ stimulustimes = [0 = key_instruction; 500 = Positive_Image]
+/ pretrialpause = 750
+/ responseinterrupt = trial
+</trial>
+
+<trial Intersecting_Regularities_Training_Trial_2_left> 
+/ inputdevice = keyboard
+/ responsemessage = ("c", Stimulus_3, 2000)
+/ correctresponse = ("c")
+/ errormessage = (RedX, 2000)
+/ response = free
+/ validresponse = ("d", "c", "j", "n")
+/ stimulustimes = [0 = key_instruction; 500 = Stimulus_4]
+/ pretrialpause = 750
+/ responseinterrupt = trial
+</trial>
+
+<trial Intersecting_Regularities_Training_Trial_3_right> 
+/ inputdevice = keyboard
+/ responsemessage = ("j", erasebig, 2000)
+/ correctresponse = ("j")
+/ errormessage = (RedX, 2000)
+/ response = free
+/ validresponse = ("d", "c", "j", "n")
+/ stimulustimes = [0 = key_instruction; 500 = Negative_Image]
+/ pretrialpause = 750
+/ responseinterrupt = trial
+</trial>
+
+<trial Intersecting_Regularities_Training_Trial_4_right> 
+/ inputdevice = keyboard
+/ responsemessage = ("n", Stimulus_1, 2000)
+/ correctresponse = ("n")
+/ errormessage = (RedX, 2000)
+/ response = free
+/ validresponse = ("d", "c", "j", "n")
+/ stimulustimes = [0 = key_instruction; 500 = Stimulus_2]
+/ pretrialpause = 750
+/ responseinterrupt = trial
+</trial>
+
+
+<trial Intersecting_Regularities_Training_Trial_1_right> 
+/ inputdevice = keyboard
+/ responsemessage = ("j", erasebig, 2000)
+/ correctresponse = ("j")
+/ errormessage = (RedX, 2000)
+/ response = free
+/ validresponse = ("d", "c", "j", "n")
+/ stimulustimes = [0 = key_instruction; 500 = Positive_Image]
+/ pretrialpause = 750
+/ responseinterrupt = trial
+</trial>
+
+<trial Intersecting_Regularities_Training_Trial_2_right> 
+/ inputdevice = keyboard
+/ responsemessage = ("n", Stimulus_3, 2000)
+/ correctresponse = ("n")
+/ errormessage = (RedX, 2000)
+/ response = free
+/ validresponse = ("d", "c", "j", "n")
+/ stimulustimes = [0 = key_instruction; 500 = Stimulus_4]
+/ pretrialpause = 750
+/ responseinterrupt = trial
+</trial>
+
+<trial Intersecting_Regularities_Training_Trial_3_left> 
+/ inputdevice = keyboard
+/ responsemessage = ("d", erasebig, 2000)
+/ correctresponse = ("d")
+/ errormessage = (RedX, 2000)
+/ response = free
+/ validresponse = ("d", "c", "j", "n")
+/ stimulustimes = [0 = key_instruction; 500 = Negative_Image]
+/ pretrialpause = 750
+/ responseinterrupt = trial
+</trial>
+
+<trial Intersecting_Regularities_Training_Trial_4_left> 
+/ inputdevice = keyboard
+/ responsemessage = ("c", Stimulus_1, 2000)
+/ correctresponse = ("c")
+/ errormessage = (RedX, 2000)
+/ response = free
+/ validresponse = ("d", "c", "j", "n")
+/ stimulustimes = [0 = key_instruction; 500 = Stimulus_2]
+/ pretrialpause = 750
+/ responseinterrupt = trial
+</trial>
+
+
+
+********** Relational Testing Phase ***********
+
+<trial Relational_Testing_Procedure_Trial_1> # A2-C2-C1 Trial (Combinatorial Entailment Trial)
+/ inputdevice = mouse
+/ correctresponse = (Stimulus_4_sample1)
+/ validresponse = (Stimulus_4_sample1, Stimulus_2_sample2)
+/ stimulustimes = [500 = Negative_Image_target; 750 = Stimulus_4_sample1, Stimulus_2_sample2]
+/ pretrialpause = 500
+</trial>
+
+<trial Relational_Testing_Procedure_Trial_2> # A2-C2-C1 Trial (Combinatorial Entailment Trial)
+/ inputdevice = mouse
+/ correctresponse = (Stimulus_4_sample2)
+/ validresponse = (Stimulus_4_sample2, Stimulus_2_sample1)
+/ stimulustimes = [500 = Negative_Image_target; 750 = Stimulus_4_sample2, Stimulus_2_sample1]
+/ pretrialpause = 500
+</trial>
+
+<trial Relational_Testing_Procedure_Trial_3> # C2-A1-A2 Trial (Combinatorial Entailment Trial)
+/ inputdevice = mouse
+/ correctresponse = (Negative_Image_sample1)
+/ validresponse = (Negative_Image_sample1, Positive_Image_sample2)
+/ stimulustimes = [500 = Stimulus_4_target; 750 = Negative_Image_sample1, Positive_Image_sample2]
+/ pretrialpause = 500
+</trial>
+
+<trial Relational_Testing_Procedure_Trial_4> # C2-A1-A2 Trial (Combinatorial Entailment Trial)
+/ inputdevice = mouse
+/ correctresponse = (Negative_Image_sample2)
+/ validresponse = (Negative_Image_sample2, Positive_Image_sample1)
+/ stimulustimes = [500 = Stimulus_4_target; 750 = Negative_Image_sample2, Positive_Image_sample1]
+/ pretrialpause = 500
+</trial>
+
+<trial Relational_Testing_Procedure_Trial_5> # B2-C1-C2 Trial (Mutual Entailment Trial)
+/ inputdevice = mouse
+/ correctresponse = (Stimulus_4_sample1)
+/ validresponse = (Stimulus_4_sample1, Stimulus_2_sample2)
+/ stimulustimes = [500 = Stimulus_3_target; 750 = Stimulus_4_sample1, Stimulus_2_sample2]
+/ pretrialpause = 500
+</trial>
+
+<trial Relational_Testing_Procedure_Trial_6> # B2-C1-C2 Trial (Mutual Entailment Trial)
+/ inputdevice = mouse
+/ correctresponse = (Stimulus_4_sample2)
+/ validresponse = (Stimulus_4_sample2, Stimulus_2_sample1)
+/ stimulustimes = [500 = Stimulus_3_target; 750 = Stimulus_4_sample2, Stimulus_2_sample1]
+/ pretrialpause = 500
+</trial>
+
+<trial Relational_Testing_Procedure_Trial_7>  # B2-A1-A2 Trial (Mutual Entailment Trial)
+/ inputdevice = mouse
+/ correctresponse = (Negative_Image_sample1)
+/ validresponse = (Negative_Image_sample1, Positive_Image_sample2)
+/ stimulustimes = [500 = Stimulus_3_target; 750 = Negative_Image_sample1, Positive_Image_sample2]
+/ pretrialpause = 500
+</trial>
+
+<trial Relational_Testing_Procedure_Trial_8> # B2-A1-A2 Trial (Mutual Entailment Trial)
+/ inputdevice = mouse
+/ correctresponse = (Negative_Image_sample2)
+/ validresponse = (Negative_Image_sample2, Positive_Image_sample1)
+/ stimulustimes = [500 = Stimulus_3_target; 750 = Negative_Image_sample2, Positive_Image_sample1]
+/ pretrialpause = 500
+</trial>
+
+<trial Relational_Testing_Procedure_Trial_9> # A1-C1-C2 Trial (Combinatorial Entailment Trial)
+/ inputdevice = mouse
+/ correctresponse = (Stimulus_2_sample1)
+/ validresponse = (Stimulus_2_sample1, Stimulus_4_sample2)
+/ stimulustimes = [500 = Positive_Image_target; 750 = Stimulus_2_sample1, Stimulus_4_sample2]
+/ pretrialpause = 500
+</trial>
+
+<trial Relational_Testing_Procedure_Trial_10> # A1-C1-C2 Trial (Combinatorial Entailment Trial)
+/ inputdevice = mouse
+/ correctresponse = (Stimulus_2_sample2)
+/ validresponse = (Stimulus_2_sample2, Stimulus_4_sample1)
+/ stimulustimes = [500 = Positive_Image_target; 750 = Stimulus_2_sample2, Stimulus_4_sample1]
+/ pretrialpause = 500
+</trial>
+
+<trial Relational_Testing_Procedure_Trial_11> # C1-A1-A2 Trial (Combinatorial Entailment Trial)
+/ inputdevice = mouse
+/ correctresponse = (Positive_Image_sample1)
+/ validresponse = (Positive_Image_sample1, Negative_Image_sample2)
+/ stimulustimes = [500 = Stimulus_2_target; 750 = Positive_Image_sample1, Negative_Image_sample2]
+/ pretrialpause = 500
+</trial>
+
+<trial Relational_Testing_Procedure_Trial_12> # C1-A1-A2 Trial (Combinatorial Entailment Trial)
+/ inputdevice = mouse
+/ correctresponse = (Positive_Image_sample2)
+/ validresponse = (Positive_Image_sample2, Negative_Image_sample1)
+/ stimulustimes = [500 = Stimulus_2_target; 750 = Positive_Image_sample2, Negative_Image_sample1]
+/ pretrialpause = 500
+</trial>
+
+<trial Relational_Testing_Procedure_Trial_13> # B1-C1-C2 Trial (Mutual Entailment Trial)
+/ inputdevice = mouse
+/ correctresponse = (Stimulus_2_sample1)
+/ validresponse = (Stimulus_2_sample1, Stimulus_4_sample2)
+/ stimulustimes = [500 = Stimulus_1_target; 750 = Stimulus_2_sample1, Stimulus_4_sample2]
+/ pretrialpause = 500
+</trial>
+
+<trial Relational_Testing_Procedure_Trial_14> # B1-C1-C2 Trial (Mutual Entailment Trial)
+/ inputdevice = mouse
+/ correctresponse = (Stimulus_2_sample2)
+/ validresponse = (Stimulus_2_sample2, Stimulus_4_sample1)
+/ stimulustimes = [500 = Stimulus_1_target; 750 = Stimulus_2_sample2, Stimulus_4_sample1]
+/ pretrialpause = 500
+</trial>
+
+<trial Relational_Testing_Procedure_Trial_15> # B1-A1-A2 Trial (Mutual Entailment Trial)
+/ inputdevice = mouse
+/ correctresponse = (Positive_Image_sample1)
+/ validresponse = (Positive_Image_sample1, Negative_Image_sample2)
+/ stimulustimes = [500 = Stimulus_1_target; 750 = Positive_Image_sample1, Negative_Image_sample2]
+/ pretrialpause = 500
+</trial>
+
+<trial Relational_Testing_Procedure_Trial_16> # B1-A1-A2 Trial (Mutual Entailment Trial)
+/ inputdevice = mouse
+/ correctresponse = (Positive_Image_sample2)
+/ validresponse = (Positive_Image_sample2, Negative_Image_sample1)
+/ stimulustimes = [500 = Stimulus_1_target; 750 = Positive_Image_sample2, Negative_Image_sample1]
+/ pretrialpause = 500
+</trial>
+
+**********  block  **********
+
+
+<block Intersecting_Regularities_Training_block1_LR_E>
+/ preinstructions = (Intersecting_Regularities_Instructions_1)
+/trials = [1-20 = noreplacenorepeat(Intersecting_Regularities_Training_Trial_1_left, Intersecting_Regularities_Training_Trial_2_left, Intersecting_Regularities_Training_Trial_3_right, Intersecting_Regularities_Training_Trial_4_right)]
+/postinstructions = (Feedback_IRT_block1_LR_E)
+</block>
+
+<block Intersecting_Regularities_Training_block2_LR_E>
+/ preinstructions = (Intersecting_Regularities_Instructions2)
+/trials = [1-20 = noreplacenorepeat(Intersecting_Regularities_Training_Trial_1_left, Intersecting_Regularities_Training_Trial_2_left, Intersecting_Regularities_Training_Trial_3_right, Intersecting_Regularities_Training_Trial_4_right)]
+/postinstructions = (Feedback_IRT_block2_LR_E)
+</block>
+
+<block Intersecting_Regularities_Training_block3_LR_E>
+/ preinstructions = (Intersecting_Regularities_Instructions3)
+/trials = [1-20 = noreplacenorepeat(Intersecting_Regularities_Training_Trial_1_left, Intersecting_Regularities_Training_Trial_2_left, Intersecting_Regularities_Training_Trial_3_right, Intersecting_Regularities_Training_Trial_4_right)]
+/postinstructions = (Feedback_IRT_block3_LR_E)
+</block>
+
+<block Intersecting_Regularities_Training_block4_LR_E>
+/ preinstructions = (Intersecting_Regularities_Instructions4)
+/trials = [1-20 = noreplacenorepeat(Intersecting_Regularities_Training_Trial_1_left, Intersecting_Regularities_Training_Trial_2_left, Intersecting_Regularities_Training_Trial_3_right, Intersecting_Regularities_Training_Trial_4_right)]
+/postinstructions = (Feedback_IRT_block4_LR_E)
+</block>
+
+<block Intersecting_Regularities_Training_block1_RL_E>
+/ preinstructions = (Intersecting_Regularities_Instructions_1)
+/trials = [1-20 = noreplacenorepeat(Intersecting_Regularities_Training_Trial_1_right, Intersecting_Regularities_Training_Trial_2_right, Intersecting_Regularities_Training_Trial_3_left, Intersecting_Regularities_Training_Trial_4_left)]
+/postinstructions = (Feedback_IRT_block1_RL_E)
+</block>
+
+<block Intersecting_Regularities_Training_block2_RL_E>
+/ preinstructions = (Intersecting_Regularities_Instructions2)
+/trials = [1-20 = noreplacenorepeat(Intersecting_Regularities_Training_Trial_1_right, Intersecting_Regularities_Training_Trial_2_right, Intersecting_Regularities_Training_Trial_3_left, Intersecting_Regularities_Training_Trial_4_left)]
+/postinstructions = (Feedback_IRT_block2_RL_E)
+</block>
+
+<block Intersecting_Regularities_Training_block3_RL_E>
+/ preinstructions = (Intersecting_Regularities_Instructions3)
+/trials = [1-20 = noreplacenorepeat(Intersecting_Regularities_Training_Trial_1_right, Intersecting_Regularities_Training_Trial_2_right, Intersecting_Regularities_Training_Trial_3_left, Intersecting_Regularities_Training_Trial_4_left)]
+/postinstructions = (Feedback_IRT_block3_RL_E)
+</block>
+
+<block Intersecting_Regularities_Training_block4_RL_E>
+/ preinstructions = (Intersecting_Regularities_Instructions4)
+/trials = [1-20 = noreplacenorepeat(Intersecting_Regularities_Training_Trial_1_right, Intersecting_Regularities_Training_Trial_2_right, Intersecting_Regularities_Training_Trial_3_left, Intersecting_Regularities_Training_Trial_4_left)]
+/postinstructions = (Feedback_IRT_block4_RL_E)
+</block>
+
+*********************
+
+<block Relational_Testing_Phase>
+/ preinstructions = (Relational_Training_Phase_Instructions)
+/trials = [1-32 = noreplacenorepeat(Relational_Testing_Procedure_Trial_1, Relational_Testing_Procedure_Trial_2, Relational_Testing_Procedure_Trial_3, Relational_Testing_Procedure_Trial_4, Relational_Testing_Procedure_Trial_5, Relational_Testing_Procedure_Trial_6, Relational_Testing_Procedure_Trial_7, Relational_Testing_Procedure_Trial_8, Relational_Testing_Procedure_Trial_9, Relational_Testing_Procedure_Trial_10, Relational_Testing_Procedure_Trial_11, Relational_Testing_Procedure_Trial_12, Relational_Testing_Procedure_Trial_13, Relational_Testing_Procedure_Trial_14, Relational_Testing_Procedure_Trial_15, Relational_Testing_Procedure_Trial_16)]
+/postinstructions = (Feedback_Relational_Training_Phase)
+</block>
+
+*****************************
+
+<block end>
+/ screencolor = (255, 255, 255)
+/ trials = [1 = pause]
+</block>
+
+**********  Instructions  *************
+
+<instruct>  
+/ fontstyle = ("Arial", 3%)
+/ windowsize = (800px, 600px)
+/ inputdevice = keyboard
+/ nextkey = (" ")
+/ nextlabel = "Druk op de spatiebalk om verder te gaan"
+/ prevlabel = "Druk t om terug te gaan"
+/ prevkey = ("t")
+</instruct>
+
+<page info>
+^^ In this study we will show you brand products that will soon enter the European marketplace. You have probably never encountered these products before. 
+
+^^ We will show you some BRAND NAMES and CHINESE SYMBOLS 
+
+^^ Please pay careful attention to these BRAND NAMES and SYMBOLS because we will ask you questions about them later on.
+</page>
+
+
+<page Intersecting_Regularities_Instructions_1>
+
+^^ In the following part you will complete another task that is similar to that you completed before.
+
+^^ You will see again a chinese symbol or food item on the screen.
+
+^^ Your job is to figure out ***which key to press when you see a certain item on the screen***  
+
+^^ If you are wrong a Red X will appear (you will then have to wait and try again).
+
+^^ IMPORTANT: Accuracy is more important than speed. So take you time and try to be as accurate as possible. 
+</page>
+
+<page Intersecting_Regularities_instructions2>
+^^ We are on phase 2 of 4. We will practice the same task as before.
+
+^^ Try to be as accurate as possible!
+</page>
+
+<page Intersecting_Regularities_instructions3>
+^^ We are on phase 3 of 4. We will practice the same task as before.
+
+^^ Try to be as accurate as possible!
+</page>
+
+<page Intersecting_Regularities_instructions4>
+^^ We are on phase 4 of 4. We will practice this task one last time.
+
+^^ Please try your best to respond with at least 90% accuracy.
+
+^^ Take your time and try to be as accurate as possible. 
+</page>
+
+<page Feedback_IRT_block1_RL_E>
+^^ Your accuracy in the previous block was <% block.Intersecting_Regularities_Training_block1_RL_E.percentcorrect %> %
+</page> 
+
+<page Feedback_IRT_block2_RL_E>
+^^ Your accuracy in the previous block was <% block.Intersecting_Regularities_Training_block2_RL_E.percentcorrect %> %
+</page> 
+
+<page Feedback_IRT_block3_RL_E>
+^^ Your accuracy in the previous block was <% block.Intersecting_Regularities_Training_block3_RL_E.percentcorrect %> %
+</page> 
+
+<page Feedback_IRT_block4_RL_E>
+^^ Your accuracy in the previous block was <% block.Intersecting_Regularities_Training_block4_RL_E.percentcorrect %> %
+</page> 
+
+<page Feedback_IRT_block1_LR_E>
+^^ Your accuracy in the previous block was <% block.Intersecting_Regularities_Training_block1_LR_E.percentcorrect %> %
+</page> 
+
+<page Feedback_IRT_block2_LR_E>
+^^ Your accuracy in the previous block was <% block.Intersecting_Regularities_Training_block2_LR_E.percentcorrect %> %
+</page> 
+
+<page Feedback_IRT_block3_LR_E>
+^^ Your accuracy in the previous block was <% block.Intersecting_Regularities_Training_block3_LR_E.percentcorrect %> %
+</page> 
+
+<page Feedback_IRT_block4_LR_E>
+^^ Your accuracy in the previous block was <% block.Intersecting_Regularities_Training_block4_LR_E.percentcorrect %> %
+</page> 
+
+<page Relational_Training_Phase_Instructions>
+^^ We will now TEST what you have just learned! 
+
+^^ You will see an item at the top of the screen and two items at the bottom of the screen. 
+
+^^ ***You have to click on the item at the bottom that best goes with the item at the top.*** 
+
+^^ This is a test: the computer will NOT tell you if you are correct or incorrect.
+
+^^ So try to be as accurate as possible. If you accuracy is lower than 80% you will have to do this task again.
+</page>
+
+<page Feedback_Relational_Training_Phase>
+^^ Your accuracy in the previous block was <% block.Relational_Testing_Phase.percentcorrect %> %
+</page> 
+
+<data>
+/ columns = [date time subject blockcode blocknum trialcode trialnum latency correct pretrialpause posttrialpause response stimulus stimulus stimulus stimulus stimulus stimulus stimulus stimulus stimulus stimulus stimulus stimulus stimulus stimulus stimulus stimulus]
+/ labels = true
+/ header = true
+/ format = fixed
+</data>
+
+***********************************************************************
+Test Monkey
+***********************************************************************
+<monkey>
+/ latencydistribution = normal(500, 100)
+/ percentcorrect = 60
+</monkey>
+

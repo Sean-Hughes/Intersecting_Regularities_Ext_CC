@@ -1,0 +1,45 @@
+Experiment;Training_Condition;yi;yi_lwr;yi_upr;DV
+1;Overall;0,83; 0,59;1,07;Self Reports           
+1;Acquisition_Only;0,97; 0,60;1,32;Self Reports           
+1;Extinction;1,02; 0,64;1,39;Self Reports           
+2;Overall;1,04; 0,79;1,29;Self Reports           
+2;Acquisition_Only;0,73; 0,42;1,04;Self Reports           
+2;Extinction;1,68; 1,19;2,15;Self Reports           
+3;Overall;0,63; 0,40;0,85;Self Reports           
+3;Acquisition_Only;0,85; 0,50;1,19;Self Reports           
+3;Extinction;0,44; 0,13;0,74;Self Reports           
+4;Overall;0,81; 0,57;1,04;Self Reports           
+4;Acquisition_Only;0,97; 0,62;1,30;Self Reports           
+4;Extinction;0,65; 0,32;0,98;Self Reports           
+5;Overall;0,27; 0,05;0,48;Self Reports           
+5;Acquisition_Only;0,78; 0,43;1,13;Self Reports           
+5;Counterconditioning;0,26;-0,55;0,03;Self Reports           
+6;Overall;0,69; 0,45;0,93;Self Reports           
+6;Acquisition_Only;0,45; 0,11;0,78;Self Reports           
+6;Counterconditioning;0,92; 0,56;1,27;Self Reports           
+7;Overall;0,58; 0,46;0,70;Self Reports           
+7;Acquisition_Only;0,53; 0,32;0,73;Self Reports           
+7;Extinction;0,51; 0,31;0,71;Self Reports           
+7;Counterconditioning;0,75; 0,52;0,96;Self Reports           
+1;Overall;1,15; 0,68;1,61;Intentions             
+1;Acquisition_Only;1,75; 0,65;2,86;Intentions             
+1;Extinction;0,86; 0,33;1,39;Intentions             
+2;Overall;1,42; 0,86;1,98;Intentions             
+2;Acquisition_Only;1,15; 0,48;1,81;Intentions             
+2;Extinction;1,86; 0,76;2,96;Intentions             
+3;Overall;0,88; 0,48;1,27;Intentions             
+3;Acquisition_Only;1,17; 0,51;1,83;Intentions             
+3;Extinction;0,63; 0,13;1,14;Intentions             
+4;Overall;0,70; 0,35;1,06;Intentions             
+4;Acquisition_Only;0,74; 0,25;1,24;Intentions             
+4;Extinction;0,66; 0,16;1,17;Intentions             
+5;Overall;0,32; 0,02;0,63;Intentions             
+5;Acquisition_Only;0,66; 0,19;1,12;Intentions             
+5;Counterconditioning;0,00;-0,42;0,42;Intentions             
+6;Overall;1,03; 0,59;1,47;Intentions             
+6;Acquisition_Only;0,92; 0,24;1,60;Intentions             
+6;Counterconditioning;1,09; 0,51;1,67;Intentions             
+7;Overall;0,59; 0,40;0,76;Intentions             
+7;Acquisition_Only;0,52; 0,20;0,84;Intentions             
+7;Extinction;0,57; 0,27;0,88;Intentions             
+7;Counterconditioning;0,65; 0,34;0,96;Intentions             

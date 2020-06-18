@@ -1,0 +1,366 @@
+﻿***************************************************************************************
+***************************************************************************************
+											SCRIPT OVERVIEW (Intersecting Operant Regularities; Valence Study 1) Replication of Hughes et al. 2016 (JEP:G)
+***************************************************************************************
+***************************************************************************************
+Script Info
+
+Author: Sean Hughes (sean.hughes@ugent.be)
+last updated: 20-10-2016
+***************************************************************************************
+***************************************************************************************
+
+*************************General Variables****************************
+**********************************************************************
+
+<defaults>
+/ canvassize = (1024px, 768px)
+/ screencolor = white
+/ txcolor = black
+/ fontstyle = ("Arial", 3%)
+</defaults>
+
+<expt >
+/ blocks = [1 = Intersecting_Regularities_Training_block1_LR_E; 2 = Intersecting_Regularities_Training_block2_LR_E; 3 = Intersecting_Regularities_Training_block3_LR_E; 4 = Intersecting_Regularities_Training_block4_LR_E]
+</expt>
+
+
+**************  Conditioned Stimuli ***************
+
+<picture Stimulus_1>
+/ numitems = 1
+/ items = ("Stimulus_1.jpg")
+/ position = (50%, 30%)
+</picture>
+
+<picture Stimulus_2>
+/ numitems = 1
+/ items = ("Stimulus_2.jpg")
+/ position = (50%, 30%)
+</picture>
+
+<picture Stimulus_3>
+/ numitems = 1
+/ items = ("Stimulus_3.jpg")
+/ position = (50%, 30%)
+</picture>
+
+<picture Stimulus_4>
+/ numitems = 1
+/ items = ("Stimulus_4.jpg")
+/ position = (50%, 30%)
+</picture>
+
+<picture Positive_Image>
+/ numitems = 10
+/ items = ("Good_1.jpg", "Good_2.jpg", "Good_3.jpg", "Good_4.jpg", "Good_5.jpg", "Good_6.jpg", "Good_7.jpg", "Good_8.jpg", "Good_9.jpg", "Good_10.jpg")
+/ select = replacenorepeat
+/ position = (50%, 30%)
+</picture>
+
+<picture Negative_Image>
+/ numitems = 10
+/ items = ("Bad_1.jpg", "Bad_2.jpg", "Bad_3.jpg", "Bad_4.jpg", "Bad_5.jpg", "Bad_6.jpg", "Bad_7.jpg", "Bad_8.jpg", "Bad_9.jpg", "Bad_10.jpg")
+/ position = (50%, 30%)
+</picture>
+
+<picture Stimulus_1_target>
+/ numitems = 1
+/ items = ("Stimulus_1.jpg")
+/ position = (50%, 30%)
+</picture>
+
+<picture Stimulus_2_target>
+/ numitems = 1
+/ items = ("Stimulus_2.jpg")
+/ position = (50%, 30%)
+</picture>
+
+<picture Stimulus_3_target>
+/ numitems = 1
+/ items = ("Stimulus_3.jpg")
+/ position = (50%, 30%)
+</picture>
+
+<picture Stimulus_4_target>
+/ numitems = 1
+/ items = ("Stimulus_4.jpg")
+/ position = (50%, 30%)
+</picture>
+
+<picture Stimulus_1_sample1>
+/ numitems = 1
+/ items = ("Stimulus_1.jpg")
+/ position = (10%, 70%)
+</picture>
+
+<picture Stimulus_2_sample1>
+/ numitems = 1
+/ items = ("Stimulus_2.jpg")
+/ position = (10%, 70%)
+</picture>
+
+<picture Stimulus_3_sample1>
+/ numitems = 1
+/ items = ("Stimulus_3.jpg")
+/ position = (10%, 70%)
+</picture>
+
+<picture Stimulus_4_sample1>
+/ numitems = 1
+/ items = ("Stimulus_4.jpg")
+/ position = (10%, 70%)
+</picture>
+
+
+<picture Stimulus_1_sample2>
+/ numitems = 1
+/ items = ("Stimulus_1.jpg")
+/ position = (90%, 70%)
+</picture>
+
+<picture Stimulus_2_sample2>
+/ numitems = 1
+/ items = ("Stimulus_2.jpg")
+/ position = (90%, 70%)
+</picture>
+
+<picture Stimulus_3_sample2>
+/ numitems = 1
+/ items = ("Stimulus_3.jpg")
+/ position = (90%, 70%)
+</picture>
+
+<picture Stimulus_4_sample2>
+/ numitems = 1
+/ items = ("Stimulus_4.jpg")
+/ position = (90%, 70%)
+</picture>
+
+*************** Unconditioned Stimuli ******************
+
+<picture Positive_Image_target>
+/ numitems = 10
+/ items = ("Good_1.jpg", "Good_2.jpg", "Good_3.jpg", "Good_4.jpg", "Good_5.jpg", "Good_6.jpg", "Good_7.jpg", "Good_8.jpg", "Good_9.jpg", "Good_10.jpg")
+/ select = replacenorepeat
+/ position = (50%, 30%)
+</picture>
+
+<picture Positive_Image_sample1>
+/ numitems = 10
+/ items = ("Good_1.jpg", "Good_2.jpg", "Good_3.jpg", "Good_4.jpg", "Good_5.jpg", "Good_6.jpg", "Good_7.jpg", "Good_8.jpg", "Good_9.jpg", "Good_10.jpg")
+/ select = replacenorepeat
+/ position = (10%, 70%)
+</picture>
+
+<picture Positive_Image_sample2>
+/ numitems = 10
+/ items = ("Good_1.jpg", "Good_2.jpg", "Good_3.jpg", "Good_4.jpg", "Good_5.jpg", "Good_6.jpg", "Good_7.jpg", "Good_8.jpg", "Good_9.jpg", "Good_10.jpg")
+/ select = replacenorepeat
+/ position = (90%, 70%)
+</picture>
+
+
+<picture Negative_Image_target>
+/ numitems = 10
+/ items = ("Bad_1.jpg", "Bad_2.jpg", "Bad_3.jpg", "Bad_4.jpg", "Bad_5.jpg", "Bad_6.jpg", "Bad_7.jpg", "Bad_8.jpg", "Bad_9.jpg", "Bad_10.jpg")
+/ position = (50%, 30%)
+</picture>
+
+<picture Negative_Image_sample1>
+/ numitems = 10
+/ items = ("Bad_1.jpg", "Bad_2.jpg", "Bad_3.jpg", "Bad_4.jpg", "Bad_5.jpg", "Bad_6.jpg", "Bad_7.jpg", "Bad_8.jpg", "Bad_9.jpg", "Bad_10.jpg")
+/ position = (10%, 70%)
+</picture>
+
+<picture Negative_Image_sample2>
+/ numitems = 10
+/ items = ("Bad_1.jpg", "Bad_2.jpg", "Bad_3.jpg", "Bad_4.jpg", "Bad_5.jpg", "Bad_6.jpg", "Bad_7.jpg", "Bad_8.jpg", "Bad_9.jpg", "Bad_10.jpg")
+/ position = (90%, 70%)
+</picture>
+
+<picture erasebig>
+/ erase = false 
+/ numitems = 1
+/ items = ("erasebig.jpg")
+</picture>
+
+**************** text ************************
+<text Key_instruction>
+/numitems =1
+/items= ("The four response options are: D, C, J, or N")
+/ txcolor = darkgrey
+/ txbgcolor = white
+/ position = (50%, 80%)
+/ fontstyle = ("Arial", 3%)
+</text>
+
+<text RedX>
+/ numitems = 1
+/ items = ("Incorrect")
+/ txcolor = (255, 0, 0)
+/ txbgcolor = (255, 255, 255)
+/ position = (50%, 50%)
+/ fontstyle = ("Arial", 15%)
+</text>
+
+<text verder>
+/numitems =1
+/items= ("Press the spacebar to continue.")
+/ txcolor = (255, 255, 255)
+/ txbgcolor = (0, 0, 0)
+/ position = (50%, 95%)
+/ font = ("Times New Roman", -18, 700, 0, 49)
+</text>
+
+<text liking>
+/numitems =1
+/items= ("Please indicate how much you like or dislike the image below")
+/ txcolor = (255, 255, 255)
+/ txbgcolor = (0, 0, 0)
+/ position = (50%, 78%)
+/ font = ("Times New Roman", -20, 700, 0, 49)
+</text>
+
+<text demand>
+/numitems =1
+/items= ("Demand Question")
+/ txcolor = (255, 255, 255)
+/ txbgcolor = (0, 0, 0)
+/ position = (50%, 78%)
+/ font = ("Times New Roman", -20, 700, 0, 49)
+</text>
+
+
+
+********** Intersecting Regularities Training ***********
+
+< trial pause>
+/trialcode = "pause"
+/stimulusframes = [ 1 = erasebig]
+/trialduration = 1000
+</trial>
+
+<trial Intersecting_Regularities_Training_Trial_1_left> 
+/ stimulusframes = [1 = Stimulus_1]
+/timeout = 2250
+/posttrialpause = 750
+/pretrialpause = 750
+</trial>
+
+<trial Intersecting_Regularities_Training_Trial_2_left> 
+/ stimulusframes = [1 = Stimulus_2]
+/timeout = 2250
+/posttrialpause = 750
+/pretrialpause = 750
+</trial>
+
+<trial Intersecting_Regularities_Training_Trial_3_right> 
+/ stimulusframes = [1 = Stimulus_3]
+/timeout = 2250
+/posttrialpause = 750
+/pretrialpause = 750
+</trial>
+
+<trial Intersecting_Regularities_Training_Trial_4_right> 
+/ stimulusframes = [1 = Stimulus_4]
+/timeout = 2250
+/posttrialpause = 750
+/pretrialpause = 750
+</trial>
+
+
+
+**********  block  **********
+
+
+<block Intersecting_Regularities_Training_block1_LR_E>
+/ preinstructions = (Intersecting_Regularities_Instructions_1)
+/trials = [1-20 = noreplacenorepeat(Intersecting_Regularities_Training_Trial_1_left, Intersecting_Regularities_Training_Trial_2_left, Intersecting_Regularities_Training_Trial_3_right, Intersecting_Regularities_Training_Trial_4_right)]
+</block>
+
+<block Intersecting_Regularities_Training_block2_LR_E>
+/ preinstructions = (Intersecting_Regularities_Instructions2)
+/trials = [1-20 = noreplacenorepeat(Intersecting_Regularities_Training_Trial_1_left, Intersecting_Regularities_Training_Trial_2_left, Intersecting_Regularities_Training_Trial_3_right, Intersecting_Regularities_Training_Trial_4_right)]
+</block>
+
+<block Intersecting_Regularities_Training_block3_LR_E>
+/ preinstructions = (Intersecting_Regularities_Instructions3)
+/trials = [1-20 = noreplacenorepeat(Intersecting_Regularities_Training_Trial_1_left, Intersecting_Regularities_Training_Trial_2_left, Intersecting_Regularities_Training_Trial_3_right, Intersecting_Regularities_Training_Trial_4_right)]
+</block>
+
+<block Intersecting_Regularities_Training_block4_LR_E>
+/ preinstructions = (Intersecting_Regularities_Instructions4)
+/trials = [1-20 = noreplacenorepeat(Intersecting_Regularities_Training_Trial_1_left, Intersecting_Regularities_Training_Trial_2_left, Intersecting_Regularities_Training_Trial_3_right, Intersecting_Regularities_Training_Trial_4_right)]
+</block>
+
+
+
+
+<block end>
+/ screencolor = (255, 255, 255)
+/ trials = [1 = pause]
+</block>
+
+**********  Instructions  *************
+
+<instruct>  
+/ fontstyle = ("Arial", 3%)
+/ windowsize = (800px, 600px)
+/ inputdevice = keyboard
+/ nextkey = (" ")
+/ nextlabel = "Druk op de spatiebalk om verder te gaan"
+/ prevlabel = "Druk t om terug te gaan"
+/ prevkey = ("t")
+</instruct>
+
+<page info>
+^^ In this study we will show you brand products that will soon enter the European marketplace. You have probably never encountered these products before. 
+
+^^ We will show you some BRAND NAMES and their CHINESE SYMBOLS 
+
+^^ Please pay careful attention to these BRAND NAMES and SYMBOLS because we will ask you questions about them later on.
+</page>
+
+
+<page Intersecting_Regularities_Instructions_1>
+
+^^ In what follows you will complete the next task.
+
+^^ You will see an item on the screen. 
+
+^^ Your job is just to observe the items without doing anything else.  
+
+^^ Please pay attention to all of them.
+
+</page>
+
+<page Intersecting_Regularities_instructions2>
+^^ Press the button to continue to phase 2 of 4. 
+</page>
+
+<page Intersecting_Regularities_instructions3>
+^^ Press the button to continue to phase 3 of 4. 
+</page>
+
+<page Intersecting_Regularities_instructions4>
+^^ Press the button to continue to phase 4 of 4.  
+</page>
+
+
+
+<data>
+/ columns = [date time subject blockcode blocknum trialcode trialnum latency correct pretrialpause posttrialpause response stimulus stimulus stimulus stimulus stimulus stimulus stimulus stimulus stimulus stimulus stimulus stimulus stimulus stimulus stimulus stimulus]
+/ labels = true
+/ header = true
+/ format = fixed
+</data>
+
+***********************************************************************
+Test Monkey
+***********************************************************************
+<monkey>
+/ latencydistribution = normal(500, 100)
+/ percentcorrect = 60
+</monkey>
+

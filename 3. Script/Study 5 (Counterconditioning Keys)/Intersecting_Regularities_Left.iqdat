@@ -1,0 +1,4 @@
+date	time	subject	blockcode	blocknum	trialcode	trialnum	latency	correct	pretrialpause	posttrialpause	response	stimulus1	stimulus2	stimulus3	stimulus4	stimulus5	stimulus6	stimulus7	stimulus8	stimulus9	stimulus10	stimulus11	stimulus12	stimulus13	stimulus14	stimulus15	stimulus16
+041819	15:40:36	1	Begin	1	pause	1	1000	0	0	0	0	erasebig.jpg	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+041819	15:40:36	1	Intersecting_Regularities_Training_block1_LR	2	Intersecting_Regularities_Training_Trial_3_right	1	1676	1	750	0	36	The four response options are: D, C, J, or N	Bad_1.jpg	Stimulus_3.jpg	0	0	0	0	0	0	0	0	0	0	0	0	0
+041819	15:40:36	1	Intersecting_Regularities_Training_block1_LR	2	Intersecting_Regularities_Training_Trial_2_left	2	509	1	750	0	Ctrl+'Q'	The four response options are: D, C, J, or N	Stimulus_2.jpg	Stimulus_1.jpg	0	0	0	0	0	0	0	0	0	0	0	0	0

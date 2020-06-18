@@ -1,0 +1,450 @@
+﻿************************************************
+       ADDITIONAL DERIVATION OPPORTUNITIES
+************************************************
+Authors: Sean Hughes (sean.hughes@ugent.be)
+Last updated: 9-09-2016
+
+************* general variables ****************
+
+<defaults>
+/ canvassize = (1024px, 768px)
+/ screencolor = white
+/ txcolor = black
+/ fontstyle = ("Arial", 3%)
+</defaults>
+
+<expt>
+/ blocks = [1 = block1]
+</expt>
+
+<variables>
+/group = (1 of 1) (block1 = Derivation_Opportunities_1)
+</variables>
+
+<values>
+/ errorcountlearninga = 0
+</values>
+
+<expressions>
+/ randomWords = noreplace(1,2,3,4,5,6)
+/ randomPosition1 = noreplace(25, 75)
+/ randomPosition2 = noreplace(25, 75)
+/ errorLa = (values.errorcountlearninga)
+</expressions>
+
+************** stimuli exemplars ***************
+
+<picture Source1_Target>
+/ numitems = 1
+/ items = ("Good_1.jpg")
+/ position = (50%, 30%)
+</picture>
+
+<picture Source1_Sample1>
+/ numitems = 1
+/ items = ("Good_1.jpg")
+/ position = (25%, 70%)
+</picture>
+
+<picture Source1_Sample2>
+/ numitems = 1
+/ items = ("Good_1.jpg")
+/ position = (75%, 70%)
+</picture>
+
+<picture Outcome1_Target>
+/ numitems = 1
+/ items = ("Stimulus_1.jpg")
+/ position = (50%, 30%)
+</picture>
+
+<picture Outcome1_Sample1>
+/ numitems = 1
+/ items = ("Stimulus_1.jpg")
+/ position = (25%, 70%)
+</picture>
+
+<picture Outcome1_Sample2>
+/ numitems = 1
+/ items = ("Stimulus_1.jpg")
+/ position = (75%, 70%)
+</picture>
+
+<picture Target1_Target>
+/ numitems = 1
+/ items = ("Stimulus_2.jpg")
+/ position = (50%, 30%)
+</picture>
+
+<picture Target1_Sample1>
+/ numitems = 1
+/ items = ("Stimulus_2.jpg")
+/ position = (25%, 70%)
+</picture>
+
+<picture Target1_Sample2>
+/ numitems = 1
+/ items = ("Stimulus_2.jpg")
+/ position = (75%, 70%)
+</picture>
+
+<picture Source2_Target>
+/ numitems = 1
+/ items = ("Bad_4.jpg")
+/ position = (50%, 30%)
+</picture>
+
+<picture Source2_Sample1>
+/ numitems = 1
+/ items = ("Bad_4.jpg")
+/ position = (25%, 70%)
+</picture>
+
+<picture Source2_Sample2>
+/ numitems = 1
+/ items = ("Bad_4.jpg")
+/ position = (75%, 70%)
+</picture>
+
+<picture Outcome2_Target>
+/ numitems = 1
+/ items = ("Stimulus_3.jpg")
+/ position = (50%, 30%)
+</picture>
+
+<picture Outcome2_Sample1>
+/ numitems = 1
+/ items = ("Stimulus_3.jpg")
+/ position = (25%, 70%)
+</picture>
+
+<picture Outcome2_Sample2>
+/ numitems = 1
+/ items = ("Stimulus_3.jpg")
+/ position = (75%, 70%)
+</picture>
+
+<picture Target2_Target>
+/ numitems = 1
+/ items = ("Stimulus_4.jpg")
+/ position = (50%, 30%)
+</picture>
+
+<picture Target2_Sample1>
+/ numitems = 1
+/ items = ("Stimulus_4.jpg")
+/ position = (25%, 70%)
+</picture>
+
+<picture Target2_Sample2>
+/ numitems = 1
+/ items = ("Stimulus_4.jpg")
+/ position = (75%, 70%)
+</picture>
+
+******************Method Stimuli   *************
+************************************************
+
+<picture erase_end>
+/ erase = false 
+/ numitems = 1
+/ items = ("erasebig.jpg")
+</picture>
+
+***************** labels etc *******************
+
+<text continue>
+/numitems = 1
+/items= ("Press the spacebar to continue")
+/ txcolor = white
+/ txbgcolor = black
+/ position = (50, 95)
+/ font = ("Arial", -18, 700, 0, 49)
+</text>
+
+<text blank>
+/ font = ("Arial", -48, 700, 0, 34)
+/ numitems = 1
+/ txbgcolor = black
+/ erase = false
+/ items = ("                     ")
+</text>
+
+<text s_key>
+/ numitems = 1
+/ items = ("Press 'S' for")
+/ txcolor = Black
+/ txbgcolor = White
+/ position = (25%, 52%)
+/ fontstyle = ("Arial", 3%)
+</text>
+
+<text k_key>
+/ numitems = 1
+/ items = ("Press 'K' for")
+/ txcolor = Black
+/ txbgcolor = White
+/ position = (75%, 52%)
+/ fontstyle = ("Arial", 3%)
+</text>
+
+********* Relational Testing Phase *************
+
+<trial Outcome1_Target1_Target2> 
+/ inputdevice = keyboard
+/ correctresponse = ("s")
+/ validresponse = ("s", "k")
+/ stimulustimes = [500 = Outcome1_target; 1000 = Target1_sample1, Target2_sample2, s_key, k_key]
+/ pretrialpause = 500
+</trial>
+
+<trial Outcome1_Target2_Target1> 
+/ inputdevice = keyboard
+/ correctresponse = ("k")
+/ validresponse = ("s", "k")
+/ stimulustimes = [500 = Outcome1_target; 1000 = Target1_sample2, Target2_sample1, s_key, k_key]
+/ pretrialpause = 500
+</trial>
+
+<trial Target1_Outcome1_Outcome2> 
+/ inputdevice = keyboard
+/ correctresponse = ("s")
+/ validresponse = ("s", "k")
+/ stimulustimes = [500 = Target1_target; 1000 = Outcome1_sample1, Outcome2_sample2, s_key, k_key]
+/ pretrialpause = 500
+</trial>
+
+<trial Target1_Outcome2_Outcome1> 
+/ inputdevice = keyboard
+/ correctresponse = ("k")
+/ validresponse = ("s", "k")
+/ stimulustimes = [500 = Target1_target; 1000 = Outcome1_sample2, Outcome2_sample1, s_key, k_key]
+/ pretrialpause = 500
+</trial>
+
+<trial Outcome2_Target2_Target1> 
+/ inputdevice = keyboard
+/ correctresponse = ("s")
+/ validresponse = ("s", "k")
+/ stimulustimes = [500 = Outcome2_target; 1000= Target2_sample1, Target1_sample2, s_key, k_key]
+/ pretrialpause = 500
+</trial>
+
+<trial Outcome2_Target1_Target2> 
+/ inputdevice = keyboard
+/ correctresponse = ("k")
+/ validresponse = ("s", "k")
+/ stimulustimes = [500 = Outcome2_target; 1000 = Target2_sample2, Target1_sample1, s_key, k_key]
+/ pretrialpause = 500
+</trial>
+
+<trial Target2_Outcome1_Outcome2> 
+/ inputdevice = keyboard
+/ correctresponse = ("k")
+/ validresponse = ("s", "k")
+/ stimulustimes = [500 = Target2_target; 1000 = Outcome1_sample1, Outcome2_sample2, s_key, k_key]
+/ pretrialpause = 500
+</trial>
+
+<trial Target2_Outcome2_Outcome1> 
+/ inputdevice = keyboard
+/ correctresponse = ("s")
+/ validresponse = ("s", "k")
+/ stimulustimes = [500 = Target2_target; 1000 = Outcome1_sample2, Outcome2_sample1, s_key, k_key]
+/ pretrialpause = 500
+</trial>
+
+<trial Outcome1_Source1_Source2> 
+/ inputdevice = keyboard
+/ correctresponse = ("k")
+/ validresponse = ("s", "k")
+/ stimulustimes = [500 = Outcome1_target; 1000 = Source1_sample1, Source2_sample2, s_key, k_key]
+/ pretrialpause = 500
+</trial>
+
+<trial Outcome1_Source2_Source1> 
+/ inputdevice = keyboard
+/ correctresponse = ("s")
+/ validresponse = ("s", "k")
+/ stimulustimes = [500 = Outcome1_target; 1000 = Source1_sample2, Source2_sample1, s_key, k_key]
+/ pretrialpause = 500
+</trial>
+
+<trial Target1_Source1_Source2> 
+/ inputdevice = keyboard
+/ correctresponse = ("k")
+/ validresponse = ("s", "k")
+/ stimulustimes = [500 = Target1_target; 1000 = Source1_sample1, Source2_sample2, s_key, k_key]
+/ pretrialpause = 500
+</trial>
+
+<trial Target1_Source2_Source1> 
+/ inputdevice = keyboard
+/ correctresponse = ("s")
+/ validresponse = ("s", "k")
+/ stimulustimes = [500 = Target1_target; 1000 = Source1_sample2, Source2_sample1, s_key, k_key]
+/ pretrialpause = 500
+</trial>
+
+<trial Outcome2_Source2_Source1> 
+/ inputdevice = keyboard
+/ correctresponse = ("k")
+/ validresponse = ("s", "k")
+/ stimulustimes = [500 = Outcome2_target; 1000= Source2_sample1, Source1_sample2, s_key, k_key]
+/ pretrialpause = 500
+</trial>
+
+<trial Outcome2_Source1_Source2> 
+/ inputdevice = keyboard
+/ correctresponse = ("s")
+/ validresponse = ("s", "k")
+/ stimulustimes = [500 = Outcome2_target; 1000 = Source2_sample2, Source1_sample1, s_key, k_key]
+/ pretrialpause = 500
+</trial>
+
+<trial Target2_Source1_Source2> 
+/ inputdevice = keyboard
+/ correctresponse = ("s")
+/ validresponse = ("s", "k")
+/ stimulustimes = [500 = Target2_target; 1000 = Source1_sample1, Source2_sample2, s_key, k_key]
+/ pretrialpause = 500
+</trial>
+
+<trial Target2_Source2_Source1> 
+/ inputdevice = keyboard
+/ correctresponse = ("k")
+/ validresponse = ("s", "k")
+/ stimulustimes = [500 = Target2_target; 1000 = Source1_sample2, Source2_sample1, s_key, k_key]
+/ pretrialpause = 500
+</trial>
+
+
+
+
+<trial Source1_Outcome1_Outcome2> 
+/ inputdevice = keyboard
+/ correctresponse = ("k")
+/ validresponse = ("s", "k")
+/ stimulustimes = [500 = Source1_target; 1000 = Outcome1_sample1, Outcome2_sample2, s_key, k_key]
+/ pretrialpause = 500
+</trial>
+
+<trial Source1_Outcome2_Outcome1> 
+/ inputdevice = keyboard
+/ correctresponse = ("s")
+/ validresponse = ("s", "k")
+/ stimulustimes = [500 = Source1_target; 1000 = Outcome1_sample2, Outcome2_sample1, s_key, k_key]
+/ pretrialpause = 500
+</trial>
+
+
+<trial Source2_Outcome1_Outcome2> 
+/ inputdevice = keyboard
+/ correctresponse = ("s")
+/ validresponse = ("s", "k")
+/ stimulustimes = [500 = Source2_target; 1000 = Outcome1_sample1, Outcome2_sample2, s_key, k_key]
+/ pretrialpause = 500
+</trial>
+
+<trial Source2_Outcome2_Outcome1> 
+/ inputdevice = keyboard
+/ correctresponse = ("k")
+/ validresponse = ("s", "k")
+/ stimulustimes = [500 = Source2_target; 1000 = Outcome1_sample2, Outcome2_sample1, s_key, k_key]
+/ pretrialpause = 500
+</trial>
+
+
+
+
+
+<trial Source1_Target1_Target2> 
+/ inputdevice = keyboard
+/ correctresponse = ("k")
+/ validresponse = ("s", "k")
+/ stimulustimes = [500 = Source1_target; 1000 = Target1_sample1, Target2_sample2, s_key, k_key]
+/ pretrialpause = 500
+</trial>
+
+<trial Source1_Target2_Target1> 
+/ inputdevice = keyboard
+/ correctresponse = ("s")
+/ validresponse = ("s", "k")
+/ stimulustimes = [500 = Source1_target; 1000 = Target1_sample2, Target2_sample1, s_key, k_key]
+/ pretrialpause = 500
+</trial>
+
+
+<trial Source2_Target1_Target2> 
+/ inputdevice = keyboard
+/ correctresponse = ("s")
+/ validresponse = ("s", "k")
+/ stimulustimes = [500 = Source2_target; 1000 = Target1_sample1, Target2_sample2, s_key, k_key]
+/ pretrialpause = 500
+</trial>
+
+<trial Source2_Target2_Target1> 
+/ inputdevice = keyboard
+/ correctresponse = ("k")
+/ validresponse = ("s", "k")
+/ stimulustimes = [500 = Source2_target; 1000 = Target1_sample2, Target2_sample1, s_key, k_key]
+/ pretrialpause = 500
+</trial>
+
+
+
+< trial pause>
+/trialcode = "pause"
+/stimulustimes = [ 1 = erase_end]
+/trialduration = 1000
+</trial>
+
+< trial exit>
+/trialcode = "exit"
+/stimulustimes = [ 1 = erase_end]
+/trialduration = 1000
+</trial>
+
+
+*****************  block  **********************
+
+<block Derivation_Opportunities_1>
+/ preinstructions = (RTP_instructions_1)
+/ trials = [1-24 = noreplace(Outcome1_Target1_Target2, Outcome1_Target2_Target1, Target1_Outcome1_Outcome2, Target1_Outcome2_Outcome1, Outcome2_Target2_Target1, Outcome2_Target1_Target2, Target2_Outcome1_Outcome2, Target2_Outcome2_Outcome1, Outcome1_Source1_Source2, Outcome1_Source2_Source1, Target1_Source1_Source2, Target1_Source2_Source1, Outcome2_Source2_Source1, Outcome2_Source1_Source2, Target2_Source1_Source2, Target2_Source2_Source1, Source1_Outcome1_Outcome2, Source1_Outcome2_Outcome1, Source2_Outcome1_Outcome2, Source2_Outcome2_Outcome1, Source1_Target1_Target2, Source1_Target2_Target1, Source2_Target1_Target2, Source2_Target2_Target1)]
+</block>
+
+<block Derivation_Opportunities_2>
+/ preinstructions = (RTP_instructions_2)
+/ trials = [1-24 = noreplace(Outcome1_Target1_Target2, Outcome1_Target2_Target1, Target1_Outcome1_Outcome2, Target1_Outcome2_Outcome1, Outcome2_Target2_Target1, Outcome2_Target1_Target2, Target2_Outcome1_Outcome2, Target2_Outcome2_Outcome1, Outcome1_Source1_Source2, Outcome1_Source2_Source1, Target1_Source1_Source2, Target1_Source2_Source1, Outcome2_Source2_Source1, Outcome2_Source1_Source2, Target2_Source1_Source2, Target2_Source2_Source1, Source1_Outcome1_Outcome2, Source1_Outcome2_Outcome1, Source2_Outcome1_Outcome2, Source2_Outcome2_Outcome1, Source1_Target1_Target2, Source1_Target2_Target1, Source2_Target1_Target2, Source2_Target2_Target1)]
+</block>
+
+**************  instructions  ******************
+
+<instruct>  
+/ fontstyle = ("Arial", 3%)
+/ inputdevice = keyboard
+/ nextkey = (" ")
+/ nextlabel = "Press the spacebar to continue"
+/ prevlabel = "Press the 't' key to go back"
+/ prevkey = ("t")
+</instruct>
+
+<page RTP_instructions_1>
+^^ Finally, we are going to test what you've learned previously in the experiment.
+
+^^ You will now see one item at the top of the screen and two items at the bottom. 
+
+^^ ***Your job is to pick the item at the bottom that goes with the item at the top*** 
+
+^^ We will not tell you if you are correct or incorrect. Please take your time and be as ***ACCURATE AS POSSIBLE***. 
+</page>
+
+<page RTP_instructions_2>
+^^  Thank you. 
+
+^^ We will test what you've learned one last time. 
+
+^^ Please take your time and try to be as ACCURATE as possible.
+</page>
+
+

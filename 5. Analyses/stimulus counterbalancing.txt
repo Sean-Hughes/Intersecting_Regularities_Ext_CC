@@ -1,0 +1,46 @@
+Morag_and_(=)_are_bad_and_straun_and_(#)_are_good
+Morag_and_(=)_are_good_and_straun_and_(#)_are_bad
+
+acquisition left: morag = left with good struan and # right with bad
+acquisition left rev: left struan # with good morag and = right bad
+acquisition right: left struan # bad right morag = good
+acquisition right rev: left morag  = bad right struan # good
+
+counterconditioning left: struan # with good morag and = right bad
+counterconditioning left_rev: morag = left with good struan and # right with bad
+counterconditioning right: morag  = bad right struan # good
+counterconditioning right_rev:  struan # bad right morag = good
+
+
+IAT
+Positive value is = is good and # is bad
+negative value is # is good and = is bad
+
+so when Morag_and_(=)_are_good_and_straun_and_(#)_are_bad
+positive is consistent and negative is inconsistent 
+
+so when Morag_and_(=)_are_bad_and_straun_and_(#)_are_good
+negative is consistent and positive is inconsistent 
+
+
+1 = struan # bad morag = good
+2 = struan # good morag = good
+
+Study 7 ReWiring Intersection
+
+Morag_and_(#)_are_good_and_straun_and_(=)_are_bad
+Morag_and_(#)_are_bad_and_straun_and_(=)_are_good
+
+Counterconditioning left: morag # good struan = neg 
+Counterconditioning left rev: morag # neg struan = pos 
+Counterconditioning right: morag # pos struan = neg
+Counterconditioning right_rev: morag # neg struan = pos
+
+Study 7 ReWiring Intersection Mouse 
+counterconditioning 1b: 
+
+morag # good struan = neg 
+
+counterconditioning 2b
+
+morag # neg struan = pos 

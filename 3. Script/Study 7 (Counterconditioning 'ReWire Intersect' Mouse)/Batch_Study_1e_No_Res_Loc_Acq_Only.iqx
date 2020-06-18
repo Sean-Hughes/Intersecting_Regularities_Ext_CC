@@ -1,0 +1,153 @@
+﻿***************************************************************************************
+***************************************************************************************
+			BATCH FOR INTERSECTING REGULARITIES PILOT NO KEY LOCATION 1a (MATTAVELLI, HUGHES & DE HOUWER)
+***************************************************************************************
+***************************************************************************************
+Script Info
+
+Author: Simone Mattavelli (s.mattavelli@campus.unimib.it)
+last updated: 11-15-11:35
+
+
+***************************************************************************************
+CONSENT - DEMOGRAPHICS - INTERSECTING REGULARITIES 1 - MEMORY 1 - POST-RATINGS - IAT (CON) - EXPLORATORY QUESTIONS - EQUIVALENCE 1
+***************************************************************************************
+ 
+<batch>
+/ subjects=(1 of 8)
+/ groupassignment = subjectnumber
+/ file="consent.iqx"
+/ file="Demographics.iqx"
+/ file="Intersecting_Regularities_1_No_Location.iqx"
+/ file="testing1_NoKeyLocation.iqx"
+/ file="Stimulus_Ratings_Before.iqx"
+/ file="IAT_Symbols_After.exp"
+/ file="Exploratory_Questions.iqx"
+/ file="EquivalenceTest1_NoKeyLocation.iqx"
+</batch>
+
+ 
+***************************************************************************************
+CONSENT - DEMOGRAPHICS - INTERSECTING REGULARITIES 1 - MEMORY 1 - POST-RATINGS - IAT (INCON) - EXPLORATORY QUESTIONS - EQUIVALENCE 1
+***************************************************************************************
+ 
+<batch>
+/ subjects=(2 of 8)
+/ groupassignment = subjectnumber
+/ file="consent.iqx"
+/ file="Demographics.iqx"
+/ file="Intersecting_Regularities_1_No_Location.iqx"
+/ file="testing1_NoKeyLocation.iqx"
+/ file="Stimulus_Ratings_Before.iqx"
+/ file="IAT_Symbols_After.exp"
+/ file="Exploratory_Questions.iqx"
+/ file="EquivalenceTest1_NoKeyLocation.iqx"
+</batch>
+
+
+***************************************************************************************
+CONSENT - DEMOGRAPHICS - INTERSECTING REGULARITIES 1 - MEMORY 1 - IAT (CON) - POST-RATINGS - EXPLORATORY QUESTIONS - EQUIVALENCE 1
+***************************************************************************************
+ 
+<batch>
+/ subjects=(3 of 8)
+/ groupassignment = subjectnumber
+/ file="consent.iqx"
+/ file="Demographics.iqx"
+/ file="Intersecting_Regularities_1_No_Location.iqx"
+/ file="testing1_NoKeyLocation.iqx"
+/ file="IAT_Symbols_Before.exp"
+/ file="Stimulus_Ratings_After.iqx"
+/ file="Exploratory_Questions.iqx"
+/ file="EquivalenceTest1_NoKeyLocation.iqx"
+</batch>
+
+ 
+***************************************************************************************
+CONSENT - DEMOGRAPHICS - INTERSECTING REGULARITIES 1 - MEMORY 1 - IAT (CON) - POST-RATINGS - EXPLORATORY QUESTIONS - EQUIVALENCE 1
+***************************************************************************************
+ 
+<batch>
+/ subjects=(4 of 8)
+/ groupassignment = subjectnumber
+/ file="consent.iqx"
+/ file="Demographics.iqx"
+/ file="Intersecting_Regularities_1_No_Location.iqx"
+/ file="testing1_NoKeyLocation.iqx"
+/ file="IAT_Symbols_Before.exp"
+/ file="Stimulus_Ratings_After.iqx"
+/ file="Exploratory_Questions.iqx"
+/ file="EquivalenceTest1_NoKeyLocation.iqx"
+</batch>
+
+
+***************************************************************************************
+CONSENT - DEMOGRAPHICS - INTERSECTING REGULARITIES 2 - MEMORY 2 - POST-RATINGS - IAT (CON) - EXPLORATORY QUESTIONS - EQUIVALENCE 2
+***************************************************************************************
+ 
+<batch>
+/ subjects=(5 of 8)
+/ groupassignment = subjectnumber
+/ file="consent.iqx"
+/ file="Demographics.iqx"
+/ file="Intersecting_Regularities_2_No_Location.iqx"
+/ file="testing2_NoKeyLocation.iqx"
+/ file="Stimulus_Ratings_Before.iqx"
+/ file="IAT_Symbols_After.exp"
+/ file="Exploratory_Questions.iqx"
+/ file="EquivalenceTest2_NoKeyLocation.iqx"
+</batch>
+
+ 
+***************************************************************************************
+CONSENT - DEMOGRAPHICS - INTERSECTING REGULARITIES 2 - MEMORY 2 - POST-RATINGS - IAT (INCON) - EXPLORATORY QUESTIONS - EQUIVALENCE 2
+***************************************************************************************
+ 
+<batch>
+/ subjects=(6 of 8)
+/ groupassignment = subjectnumber
+/ file="consent.iqx"
+/ file="Demographics.iqx"
+/ file="Intersecting_Regularities_2_No_Location.iqx"
+/ file="testing2_NoKeyLocation.iqx"
+/ file="Stimulus_Ratings_Before.iqx"
+/ file="IAT_Symbols_After.exp"
+/ file="Exploratory_Questions.iqx"
+/ file="EquivalenceTest2_NoKeyLocation.iqx"
+</batch>
+
+
+***************************************************************************************
+CONSENT - DEMOGRAPHICS - INTERSECTING REGULARITIES 2 - MEMORY 2 - IAT (CON) - POST-RATINGS - EXPLORATORY QUESTIONS - EQUIVALENCE 2
+***************************************************************************************
+ 
+<batch>
+/ subjects=(7 of 8)
+/ groupassignment = subjectnumber
+/ file="consent.iqx"
+/ file="Demographics.iqx"
+/ file="Intersecting_Regularities_2_No_Location.iqx"
+/ file="testing2_NoKeyLocation.iqx"
+/ file="IAT_Symbols_Before.exp"
+/ file="Stimulus_Ratings_After.iqx"
+/ file="Exploratory_Questions.iqx"
+/ file="EquivalenceTest2_NoKeyLocation.iqx"
+</batch>
+
+ 
+***************************************************************************************
+CONSENT - DEMOGRAPHICS - INTERSECTING REGULARITIES 2 - MEMORY 2 - IAT (CON) - POST-RATINGS - EXPLORATORY QUESTIONS  - EQUIVALENCE 2
+***************************************************************************************
+ 
+<batch>
+/ subjects=(8 of 8)
+/ groupassignment = subjectnumber
+/ file="consent.iqx"
+/ file="Demographics.iqx"
+/ file="Intersecting_Regularities_2_No_Location.iqx"
+/ file="testing2_NoKeyLocation.iqx"
+/ file="IAT_Symbols_Before.exp"
+/ file="Stimulus_Ratings_After.iqx"
+/ file="Exploratory_Questions.iqx"
+/ file="EquivalenceTest2_NoKeyLocation.iqx"
+</batch>
