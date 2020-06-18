@@ -1,10 +1,9 @@
 # Intersecting Regularities (Extinction & Counterconditioning)
 
-Data and code 
+Data and code
 
-To Do 
+To Do
 
-Remove the SPSS files once they are no longer needed 
+Remove the SPSS files once they are no longer needed
 
-Better organize file structure 
-
+Better organize file structure
