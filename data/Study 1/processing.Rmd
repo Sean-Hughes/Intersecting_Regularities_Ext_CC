@@ -13,8 +13,8 @@ output:
 
 # to dos
 
-- why is task_order discerned from stimulus_ratings_before_17_03_17.xlsx and after? why are there missing values?
-- exploratory_questions_17_03_17.xlsx currently not used
+- why is task_order discerned from stimulus_ratings_before.xlsx and after? why are there missing values?
+- exploratory_questions.xlsx currently not used
 - reverse scoring done for self reported ratings, but what about other self-reports and iats?
 
 ```{r include=FALSE}
@@ -40,12 +40,12 @@ Some experimental conditions are not recorded in the data produced by inquisit b
 
 The_training conditions are defined by which file the data come from:
 
-intersecting_regularities_left_17_03_17.xlsx & 
-intersecting_regularities_right_17_03_17.xlsx: 
+intersecting_regularities_left.xlsx & 
+intersecting_regularities_right.xlsx: 
 - Outcome 1 and Target 1 are Good/ Outcome 2 and Target 2 are Bad
 
-intersecting_regularities_left_rev_17_03_17.xlsx & 
-intersecting_regularities_right_rev_17_03_17.xlsx: 
+intersecting_regularities_left_rev.xlsx & 
+intersecting_regularities_right_rev.xlsx: 
 - Outcome 1 and Target 1 are Bad/ Outcome 2 and Target 2 are Good
 
 
@@ -54,13 +54,13 @@ intersecting_regularities_right_rev_17_03_17.xlsx:
 # stimulus identity using acquisition_training file names
 data_stimulus_identity_condition <- 
   bind_rows(
-    read_xlsx("raw/intersecting_regularities_left_17_03_17.xlsx") %>%
+    read_xlsx("raw/intersecting_regularities_left.xlsx") %>%
       mutate(stimulus_identity_condition = "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad"),
-    read_xlsx("raw/intersecting_regularities_right_17_03_17.xlsx") %>%
+    read_xlsx("raw/intersecting_regularities_right.xlsx") %>%
       mutate(stimulus_identity_condition = "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad"),
-    read_xlsx("raw/intersecting_regularities_left_rev_17_03_17.xlsx") %>%
+    read_xlsx("raw/intersecting_regularities_left_rev.xlsx") %>%
       mutate(stimulus_identity_condition = "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good"),
-    read_xlsx("raw/intersecting_regularities_right_rev_17_03_17.xlsx") %>%
+    read_xlsx("raw/intersecting_regularities_right_rev.xlsx") %>%
       mutate(stimulus_identity_condition = "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good")
   ) %>%
   select(subject, stimulus_identity_condition) %>%
@@ -70,22 +70,22 @@ data_stimulus_identity_condition <-
 data_extinction_condition <- 
   bind_rows(
     #_training
-    read_xlsx("raw/extinction1a_intersecting_regularities_left_17_03_17.xlsx") %>% 
+    read_xlsx("raw/extinction1a_intersecting_regularities_left.xlsx") %>% 
       mutate(response = as.character(response)),
-    read_xlsx("raw/extinction1a_intersecting_regularities_left_rev_17_03_17.xlsx") %>% 
+    read_xlsx("raw/extinction1a_intersecting_regularities_left_rev.xlsx") %>% 
       mutate(response = as.character(response)),
-    read_xlsx("raw/extinction1a_intersecting_regularities_right_17_03_17.xlsx") %>% 
+    read_xlsx("raw/extinction1a_intersecting_regularities_right.xlsx") %>% 
       mutate(response = as.character(response)),
-    read_xlsx("raw/extinction1a_intersecting_regularities_right_rev_17_03_17.xlsx") %>% 
+    read_xlsx("raw/extinction1a_intersecting_regularities_right_rev.xlsx") %>% 
       mutate(response = as.character(response)),
     #_testing
-    read_xlsx("raw/testing_left1a_17_03_17.xlsx") %>% 
+    read_xlsx("raw/testing_left1a.xlsx") %>% 
       mutate(response = as.character(response)),
-    read_xlsx("raw/testing_left1a_rev_17_03_17.xlsx") %>% 
+    read_xlsx("raw/testing_left1a_rev.xlsx") %>% 
       mutate(response = as.character(response)),
-    read_xlsx("raw/testing_right1a_17_03_17.xlsx") %>% 
+    read_xlsx("raw/testing_right1a.xlsx") %>% 
       mutate(response = as.character(response)),
-    read_xlsx("raw/testing_right1a_rev_17_03_17.xlsx") %>% 
+    read_xlsx("raw/testing_right1a_rev.xlsx") %>% 
       mutate(response = as.character(response))
   ) %>%
   mutate(extinction_condition = "acquisition and extinction") %>%
@@ -94,10 +94,10 @@ data_extinction_condition <-
 
 # task order
 data_task_order <- 
-  bind_rows(read_xlsx("raw/stimulus_ratings_before_17_03_17.xlsx") %>% 
+  bind_rows(read_xlsx("raw/stimulus_ratings_before.xlsx") %>% 
               select(subject) %>% 
               mutate(task_order = "Explicits First"),
-            read_xlsx("raw/stimulus_ratings_after_17_03_17.xlsx") %>% 
+            read_xlsx("raw/stimulus_ratings_after.xlsx") %>% 
               select(subject) %>% 
               mutate(task_order = "Implicits First"))
 
@@ -116,7 +116,7 @@ rm(data_stimulus_identity_condition, data_extinction_condition, data_task_order)
 
 ```{r}
 
-data_demographics <- read_xlsx("raw/demographics_17_03_17.xlsx") %>%
+data_demographics <- read_xlsx("raw/demographics.xlsx") %>%
   select(subject, trialcode, response) %>% 
   pivot_wider(names_from = trialcode,
               values_from = response) %>%
@@ -138,10 +138,10 @@ data_input <-
   bind_rows(
     # acquisition_training 
     bind_rows(
-      read_xlsx("raw/intersecting_regularities_left_17_03_17.xlsx"),
-      read_xlsx("raw/intersecting_regularities_right_17_03_17.xlsx"),
-      read_xlsx("raw/intersecting_regularities_left_rev_17_03_17.xlsx"),
-      read_xlsx("raw/intersecting_regularities_right_rev_17_03_17.xlsx")
+      read_xlsx("raw/intersecting_regularities_left.xlsx"),
+      read_xlsx("raw/intersecting_regularities_right.xlsx"),
+      read_xlsx("raw/intersecting_regularities_left_rev.xlsx"),
+      read_xlsx("raw/intersecting_regularities_right_rev.xlsx")
     ) %>%
       mutate(phase = "acquisition_training",
              blocknum = blocknum-1,
@@ -149,30 +149,30 @@ data_input <-
     
     # acquisition test 
     bind_rows(
-      read_xlsx("raw/testing_left_17_03_17.xlsx"),
-      read_xlsx("raw/testing_left_rev_17_03_17.xlsx"),
-      read_xlsx("raw/testing_right_17_03_17.xlsx"),
-      read_xlsx("raw/testing_right_rev_17_03_17.xlsx")
+      read_xlsx("raw/testing_left.xlsx"),
+      read_xlsx("raw/testing_left_rev.xlsx"),
+      read_xlsx("raw/testing_right.xlsx"),
+      read_xlsx("raw/testing_right_rev.xlsx")
     ) %>%
       mutate(phase = "acquisition_testing",
              response = as.character(response)),
     
     # extinction_training
     bind_rows(
-      read_xlsx("raw/extinction1a_intersecting_regularities_left_17_03_17.xlsx"),
-      read_xlsx("raw/extinction1a_intersecting_regularities_left_rev_17_03_17.xlsx"),
-      read_xlsx("raw/extinction1a_intersecting_regularities_right_17_03_17.xlsx"),
-      read_xlsx("raw/extinction1a_intersecting_regularities_right_rev_17_03_17.xlsx")
+      read_xlsx("raw/extinction1a_intersecting_regularities_left.xlsx"),
+      read_xlsx("raw/extinction1a_intersecting_regularities_left_rev.xlsx"),
+      read_xlsx("raw/extinction1a_intersecting_regularities_right.xlsx"),
+      read_xlsx("raw/extinction1a_intersecting_regularities_right_rev.xlsx")
     ) %>%
       mutate(phase = "extinction_training",
              response = as.character(response)),
     
     # extinction test 
     bind_rows(
-      read_xlsx("raw/testing_left1a_17_03_17.xlsx"),
-      read_xlsx("raw/testing_left1a_rev_17_03_17.xlsx"),
-      read_xlsx("raw/testing_right1a_17_03_17.xlsx"),
-      read_xlsx("raw/testing_right1a_rev_17_03_17.xlsx")
+      read_xlsx("raw/testing_left1a.xlsx"),
+      read_xlsx("raw/testing_left1a_rev.xlsx"),
+      read_xlsx("raw/testing_right1a.xlsx"),
+      read_xlsx("raw/testing_right1a_rev.xlsx")
     ) %>%
       mutate(phase = "extinction_testing",
              response = as.character(response))
@@ -267,7 +267,7 @@ data_performance <- data_performance_temp %>%
 
 ```{r}
 
-data_demand <- read_xlsx("raw/demand_17_03_17.xlsx") %>% 
+data_demand <- read_xlsx("raw/demand.xlsx") %>% 
   mutate(demand_response = case_when(Demand_response == "What I learned during the experiment" ~ "Not Demand Compliant",
                                      Demand_response == "I don't know why I evaluated the items as I did" ~ "Not Demand Compliant",
                                      Demand_response == "What I learned during the experiment" ~ "Not Demand Compliant",
@@ -275,26 +275,26 @@ data_demand <- read_xlsx("raw/demand_17_03_17.xlsx") %>%
                                      Demand_response == "I based my ratings on some some factor that was not what I learned or what the experimenter wanted me to do" ~ "Not Demand Compliant")) %>%
   select(subject, demand_response)
 
-data_reactance <- read_xlsx("raw/reactance_17_03_17.xlsx") %>% 
+data_reactance <- read_xlsx("raw/reactance.xlsx") %>% 
   select(subject, 
          reactance_response_1 = react1_response, 
          reactance_response_2 = react2_response) %>%
   mutate(reactance_response_2 = str_remove_all(reactance_response_2, "[^0-9]"))
 
-data_believability <- read_xlsx("raw/cover_belief_17_03_17.xlsx") %>% 
+data_believability <- read_xlsx("raw/cover_belief.xlsx") %>% 
   select(subject, 
          believability_response_1 = belief1_response, 
          believability_response_2 = belief2_response) %>%
   mutate(believability_response_2 = str_remove_all(believability_response_2, "[^0-9]"))
 
-data_confidence_ratings <- read_xlsx("raw/confidence_ratings_17_03_17.xlsx") %>% 
+data_confidence_ratings <- read_xlsx("raw/confidence_ratings.xlsx") %>% 
   select(subject, 
          confidence_stim_1 = Stimulus_1_Confidence_Confidence_response, 
          confidence_stim_2 = Stimulus_2_Confidence_Confidence_response, 
          confidence_stim_3 = Stimulus_3_Confidence_Confidence_response, 
          confidence_stim_4 = Stimulus_4_Confidence_Confidence_response)
 
-data_ratings <- read_xlsx("raw/valence_ratings_17_03_17.xlsx") %>% 
+data_ratings <- read_xlsx("raw/valence_ratings.xlsx") %>% 
   select(subject, 
          Outcome_1_Pos_Neg = Stimulus_1_Positive_Negative_Positive_Negative_response,
          Outcome_1_Good_Bad = Stimulus_1_Good_Bad_Good_Bad_response,
@@ -326,9 +326,9 @@ data_ratings <- read_xlsx("raw/valence_ratings_17_03_17.xlsx") %>%
 
 # behavioural intentions
 data_intentions <- 
-  full_join(read_xlsx("raw/intention_ratings_1_3_17_03_17.xlsx") %>%
+  full_join(read_xlsx("raw/intention_ratings_1_3.xlsx") %>%
               select(subject, intentions_response_1_3 = Intentions_1_3_response),
-            read_xlsx("raw/intention_ratings_2_4_17_03_17.xlsx") %>%
+            read_xlsx("raw/intention_ratings_2_4.xlsx") %>%
               select(subject, intentions_response_2_4 = Intentions_2_4_response),
             by = "subject")
 
