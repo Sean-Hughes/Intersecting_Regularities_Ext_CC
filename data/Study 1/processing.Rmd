@@ -19,6 +19,7 @@ output:
 - ensure reverse scoring is congruent between outcome measures
 - iat processing comment states "# trial_number on blocks 3 and 7 begins on 2: correct to begin at 1" but then the code changes it for blocks othe rthan these two: "mutate(trial_number = ifelse(block %in% c(1, 2, 3, 6, 7), trial_number-1, trial_number))"
 - do intentions items need sum scoring of some sort? 
+- assess whehter all raw data files are used by this processing script or not. if not, why? this may also differ for other studies.
 
 ```{r include=FALSE}
 knitr::opts_chunk$set(message=FALSE,
@@ -54,6 +55,8 @@ intersecting_regularities_right_rev.xlsx:
 
 
 ```{r}
+
+current_experiment_number <- 1
 
 # stimulus identity using acquisition_training file names
 data_stimulus_identity_condition <- 
@@ -109,7 +112,7 @@ data_task_order <-
 data_conditions <- data_stimulus_identity_condition %>%
   full_join(data_extinction_condition, by = "subject") %>%
   full_join(data_task_order, by = "subject") %>%
-  mutate(experiment = 1,
+  mutate(experiment = current_experiment_number,
          extinction_condition = ifelse(is.na(extinction_condition), "acquisition only", extinction_condition))
 
 rm(data_stimulus_identity_condition, data_extinction_condition, data_task_order)
@@ -351,7 +354,7 @@ data_iat_input <-
       mutate(task_order = "iat after explicits",
              response = as.character(response))
   ) %>%
-  mutate(experiment = 1) %>%
+  mutate(experiment = current_experiment_number) %>%
   select(subject, experiment, 
          block_type = blockcode, block = blocknum, trial_number = trialnum, 
          correct, latency) %>%
