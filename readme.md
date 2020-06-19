@@ -52,3 +52,4 @@ I'll leave it this way for the moment, but just FYI that there are differences i
 - Eventually remove redundant manually processed spss files
 - Integrate Sean's data processing code
 - Ian to code review Sean's data processing code
+- There is one participant in Study 1 (training 1) with duplicate data. Figure out what do with this (retain them?). Without further action they will likely be excluded.

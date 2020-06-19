@@ -22,15 +22,11 @@ knitr::opts_chunk$set(message=FALSE,
 
 ```{r}
 library(tidyverse)
-#library(Hmisc)
-#library(car)
 library(readxl)
 library(ggthemes)
 library(knitr)
 library(kableExtra)
 ```
-
-- Ian: I removed packages you don't actually use here. Try not to load packages you don't use, as if you run into dependency issues down the line you are less sure why.
 
 ## 1. Get data, trim vars
 
@@ -44,7 +40,7 @@ intersecting_regularities_right_rev_17_03_17.xlsx:
 
 ```{r}
 
-combined_data <- 
+data_input <- 
   # read in data, appending a new column
   bind_rows(
     read_xlsx("raw/intersecting_regularities_left_17_03_17.xlsx", col_names = TRUE) %>%
@@ -56,183 +52,83 @@ combined_data <-
     read_xlsx("raw/intersecting_regularities_right_rev_17_03_17.xlsx", col_names = TRUE) %>%
       mutate(stimulus_identity = "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good")
   ) %>%
+  mutate(experiment = 1) %>%
   filter(blockcode != "Begin") %>% 
   # select and rename vars
-  select(subject, block_number = blocknum, trial_number = trialnum, correct) %>%
+  select(experiment, subject, stimulus_identity, block_number = blocknum, trial_number = trialnum, correct) %>%
   arrange(subject)
     
 ```
 
-- Ian: you were repeating your filter/select/arrange calls, if you do the binding before this then you only only do it once. 
-
-## 2. Join the training files together
+# Completeness
 
 ```{r}
 
-# Select out the stimulus identity information for data analysis 
-stimulus_identity <- combined_data %>% 
-  select(subject, stimulus_identity) 
-  
-stimulus_identity[duplicated(stimulus_identity$subject), ]
-stimulus_identity <- stimulus_identity[!duplicated(stimulus_identity$subject), ]
+# Check to see if everyone has complete data for the four training blocks
 
-```
-
-- Ian: this doesn't work for me, as stimulus_identity wasn't in the selected variables.
-
-## 3. Exclude incomplete data
-
-```{r}
-
-# Number of participants before exclusions
-
-# Participants_before_exclusions <- combined_data %>% 
-#   distinct(subject) %>% 
-#   count()
-
-combined_data %>%
-  distinct(subject) %>%
-  count() %>%
-  kable() %>%
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
-
-```
-
-- Ian: what's the purpose of Participants_before_exclusions? Is it intended to be run and then inspected? If so, no need to create it; just have it print the output rather than assign it to a new tibble.
-
-```{r}
-
-# Check to see if everyone has complete data for the four training blocks - if block_number = 280 then they do. Otherwise they do not. If they do not then remove them 
-
-# combined_data <- combined_data %>%
-#   group_by(subject) %>% 
-#   mutate(complete_data_check = sum(block_number)) %>%
-#   filter(complete_data_check == 280) %>%
-#   ungroup() 
-
-combined_data_2 <- combined_data %>%
+data_completeness <- data_input %>%
   group_by(subject) %>%
-  mutate(complete_data = ifelse(sum(block_number) == 280, TRUE, FALSE)) %>%
+  mutate(complete_data = ifelse(sum(block_number) == 280, "complete", 
+                                ifelse(sum(block_number) > 280, "excess", "partial"))) %>%
   ungroup()
 
-```
-
-- Ian: try to avoid modifying variables in place. i.e., avoid "combined_data <- combined_data" because its contents is then dependant on the order in which I run things. To put this another way, you could skip this chunk and the code below it 'might' still run because combined_data does indeed exist - it's contents is just not correct. so, instead, assign new tibbles as needed. eg. "combined_data_2 <- combined_data"
-- Ian: avoid silently dropping participants as you have here with your filter call. instead, flag them with a new variable (e.g., complete_data) to retain a record of them having been excluded. 
-
-```{r}
-
-# Number of participants post exclusions
-
-# Participants_after_exclusions <- combined_data %>% 
-#   distinct(subject) %>% 
-#   count()
-
-combined_data_2 %>%
+data_completeness %>%
   distinct(subject, .keep_all = TRUE) %>%
   count(complete_data) %>%
   kable() %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 
+data_completeness_by_participant <- data_completeness %>%
+  distinct(subject, stimulus_identity, complete_data)
+
 ```
 
-
-## 4. Calculating Mean and SD of Accuracy 
+# Performance
 
 ```{r}
 
 # Calculate mean and SD for accuracy (i.e., the correct row) 
 
-summarised_data <- combined_data_2 %>%
+data_performance <- data_completeness %>%
+  # summarize performance by block
   group_by(subject, block_number) %>% 
   summarise(mean_correct = mean(correct), 
-            sd_correct = sd(correct))%>%
-  arrange(subject, block_number) %>%
-  ungroup()
-
-```
-
-## 5. Identify those who failed the training phase (< 70%)
-
-```{r}
-# Step 1: Identify those that failed training
-Fail_Group <- summarised_data %>% 
-  filter(block_number == 5 & mean_correct < .70) %>%
-  distinct(subject)
-
-# Create a subset of the summarised data for the failed group
-Fail_Group <- summarised_data %>% 
-  semi_join(Fail_Group, by = "subject") %>%
-  mutate(block_type = "Training", training_performance = "Fail")
-
-```
-
-## 6. Identify those who passed the training phase (> 70%)
-
-```{r}
-
-# Step 1: Identify those that passed training
-Pass_Group <- summarised_data %>% 
-  filter(block_number == 5 & mean_correct > .69) %>%
-  distinct(subject)
-
-# Create a subset of the summarised data for the pass group
-Pass_Group <- summarised_data %>% 
-  semi_join(Pass_Group, by = "subject") %>%
-  mutate(block_type = "Training", training_performance = "Pass")
-
-
-```
-
-## 7. Graph accuracy across blocks for those who passed vs. failed
-
-```{r}
-
-# Combine the Pass and Fail Groups 
-
-summarised_data  <- Pass_Group %>% 
-  bind_rows(Fail_Group) %>% 
+            sd_correct = sd(correct)) %>%
+  mutate(training_performance_by_block = ifelse(mean_correct < .70, "Fail", "Pass")) %>%
+  ungroup() %>% 
+  # summarize performance by participant (final block only)
+  group_by(subject) %>% 
+  mutate(training_performance = ifelse(block_number == 5 & training_performance_by_block == "Pass", "Pass", "Fail")) %>%
+  ungroup() %>%
   arrange(subject, block_number)
 
-# Pass_Group -> Calculate  Mean and SD for accuracy in each training block
-  data_for_graph <- summarised_data %>% 
-    group_by(block_number, training_performance) %>% 
-    summarise(mean_accuracy = mean(mean_correct), sd_accuracy = sd(sd_correct))
+# plot
+data_performance %>% 
+  group_by(block_number, training_performance_by_block) %>% 
+  summarise(mean_accuracy = mean(mean_correct), sd_accuracy = sd(sd_correct)) %>%
+  ggplot(aes(x=block_number, y=mean_accuracy, fill = training_performance_by_block)) +
+  geom_bar(colour="black", stat="identity", position = position_dodge()) + 
+  geom_errorbar(aes(ymin=mean_accuracy-sd_accuracy, ymax=mean_accuracy+sd_accuracy), width=.2,
+                position=position_dodge(.9)) + theme_classic()
 
-# Graph Mean and SD accuracy across blocks
-ggplot(data_for_graph, aes(x=block_number, y=mean_accuracy, fill = training_performance)) +
-    geom_bar(colour="black", stat="identity", position = position_dodge()) + geom_errorbar(aes(ymin=mean_accuracy-sd_accuracy, ymax=mean_accuracy+sd_accuracy), width=.2,
-                 position=position_dodge(.9)) + theme_classic()
+
+data_performance_by_participant <- data_performance %>%
+  filter(block_number == 5) %>%
+  select(-block_number, -training_performance_by_block)
 
 ```
 
-## 8. Merge the datasets
+# Combine and write to disk
 
 ```{r}
-#Write data back to disk in csv format.
 
-# Create a subject list indicating if people passed or failed (note this is not being written)
-Fail_Group <- summarised_data %>% 
-  filter(block_number == 5 & mean_correct < .70) %>%
-  distinct(subject) %>% 
-  mutate(block_type = "Training", training_performance = "Fail")
+data_training_phase <- 
+  full_join(data_completeness_by_participant, 
+            data_performance_by_participant, 
+            by = "subject")
 
-Pass_Group <- summarised_data %>% 
-  filter(block_number == 5 & mean_correct > .69) %>%
-  distinct(subject) %>% 
-  mutate(block_type = "Training", training_performance = "Pass")
 
-Study_1_pass_fail_group <- Pass_Group %>% 
-  bind_rows(Fail_Group) %>% 
-  arrange(subject)
-
-# Write to file the accuracy data for participants from the final block of training.
-
-summarised_data <- summarised_data %>%
-  filter(block_number == 5)
-
-write_csv2(summarised_data, path = paste0(wd$output, "Study_1_Training_Phase.csv"))
-write_csv2(stimulus_identity, path = paste0(wd$output, "Study_1_Stimulus_Identity.csv"))
+write_csv2(data_training_phase, "processed/data_training_phase.csv")
 
 ```
 
