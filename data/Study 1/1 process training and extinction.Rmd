@@ -1,0 +1,155 @@
+---
+title: "Study 1: Acquisition Phase Data"
+subtitle: "Data processing"
+author: "Sean Hughes & Ian Hussey"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output: 
+  html_document:
+    code_folding: hide
+    highlight: haddock
+    theme: flatly
+    toc: yes 
+    toc_float: yes
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(message=FALSE,
+                      warning=FALSE)
+```
+
+
+# Load the necessary packages
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(ggthemes)
+library(knitr)
+library(kableExtra)
+```
+
+## 1. Get data, trim vars
+
+The training conditions are defined by which file the data come from:
+
+intersecting_regularities_left_17_03_17.xlsx & 
+intersecting_regularities_right_17_03_17.xlsx: 
+- Outcome 1 and Target 1 are Good/ Outcome 2 and Target 2 are Bad
+
+intersecting_regularities_left_rev_17_03_17.xlsx & 
+intersecting_regularities_right_rev_17_03_17.xlsx: 
+- Outcome 1 and Target 1 are Bad/ Outcome 2 and Target 2 are Good
+
+```{r}
+
+data_input <- 
+  # read in data, appending a new column
+  bind_rows(
+    bind_rows(
+      # acquisition data
+      read_xlsx("raw/intersecting_regularities_left_17_03_17.xlsx", col_names = TRUE) %>%
+        mutate(stimulus_identity = "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad"),
+      read_xlsx("raw/intersecting_regularities_right_17_03_17.xlsx", col_names = TRUE) %>%
+        mutate(stimulus_identity = "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad"),
+      read_xlsx("raw/intersecting_regularities_left_rev_17_03_17.xlsx", col_names = TRUE) %>%
+        mutate(stimulus_identity = "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good"),
+      read_xlsx("raw/intersecting_regularities_right_rev_17_03_17.xlsx", col_names = TRUE) %>%
+        mutate(stimulus_identity = "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good")
+    ) %>%
+    mutate(phase = "acquisition",
+           blocknum = blocknum-1),
+    
+    bind_rows(
+      read_xlsx("raw/extinction1a_intersecting_regularities_left_17_03_17.xlsx"),
+      read_xlsx("raw/extinction1a_intersecting_regularities_left_rev_17_03_17.xlsx"),
+      read_xlsx("raw/extinction1a_intersecting_regularities_right_17_03_17.xlsx"),
+      read_xlsx("raw/extinction1a_intersecting_regularities_right_rev_17_03_17.xlsx")
+    ) %>%
+      mutate(phase = "extinction")
+  ) %>%
+  mutate(experiment = 1) %>%
+  filter(blockcode != "Begin") %>% 
+  # select and rename vars
+  select(experiment, subject, phase, stimulus_identity, block_number = blocknum, trial_number = trialnum, correct) %>%
+  arrange(subject, phase)
+    
+```
+
+# Completeness
+
+```{r}
+
+# Check to see if everyone has complete data for the four training blocks
+
+data_completeness <- data_input %>%
+  group_by(subject, phase) %>%
+  mutate(complete_data = case_when((phase == "acquisition" & sum(block_number) == 280) |
+                                     (phase == "extinction" & sum(block_number) == 200) ~ "complete", 
+                                   (phase == "acquisition" & sum(block_number) > 280) |
+                                     (phase == "extinction" & sum(block_number) > 200) ~ "excess", 
+                                   (phase == "acquisition" & sum(block_number) < 280) |
+                                     (phase == "extinction" & sum(block_number) < 200) ~ "partial")) %>%
+  ungroup()
+                      
+data_completeness %>%
+  distinct(subject, phase, .keep_all = TRUE) %>%
+  count(phase, complete_data) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+data_completeness_by_participant <- data_completeness %>%
+  distinct(subject, phase, stimulus_identity, complete_data)
+
+```
+
+# Performance
+
+```{r}
+
+# Calculate mean and SD for accuracy (i.e., the correct row) 
+
+data_performance <- data_completeness %>%
+  # summarize performance by block
+  group_by(subject, phase, block_number) %>% 
+  summarise(mean_correct = mean(correct), 
+            sd_correct = sd(correct)) %>%
+  mutate(training_performance_by_block = ifelse(mean_correct < .70, "Fail", "Pass")) %>%
+  ungroup() %>% 
+  # summarize performance by participant (final block only)
+  group_by(subject) %>% 
+  mutate(training_performance = ifelse(block_number == 5 & training_performance_by_block == "Pass", "Pass", "Fail")) %>%
+  ungroup() %>%
+  arrange(subject, phase, block_number)
+
+# plot
+data_performance %>% 
+  group_by(phase, block_number, training_performance_by_block) %>% 
+  summarise(mean_accuracy = mean(mean_correct), sd_accuracy = sd(sd_correct)) %>%
+  ggplot(aes(x=block_number, y=mean_accuracy, fill = training_performance_by_block)) +
+  geom_bar(colour="black", stat="identity", position = position_dodge()) + 
+  geom_errorbar(aes(ymin=mean_accuracy-sd_accuracy, ymax=mean_accuracy+sd_accuracy), width=.2,
+                position=position_dodge(.9)) + theme_classic() +
+  facet_wrap(~phase, ncol = 1)
+
+
+data_performance_by_participant <- data_performance %>%
+  filter(block_number == 4) %>%
+  select(-block_number, -training_performance_by_block)
+
+```
+
+# Combine and write to disk
+
+```{r}
+
+data_acquisition_and_extinction_phases <- 
+  full_join(data_completeness_by_participant, 
+            data_performance_by_participant, 
+            by = c("subject", "phase"))
+
+write_csv2(data_acquisition_and_extinction_phases, "processed/data_acquisition_and_extinction_phases.csv")
+
+```
+
+
+

@@ -1,0 +1,152 @@
+subject;phase;stimulus_identity;complete_data;mean_correct;sd_correct;training_performance
+  2;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;NA;NA;NA
+  3;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;NA;NA;NA
+  4;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;0,750;0,4442617;Fail
+  5;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;1,000;0,0000000;Fail
+  6;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;1,000;0,0000000;Fail
+  7;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;1,000;0,0000000;Fail
+  8;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;0,900;0,3077935;Fail
+  9;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;0,950;0,2236068;Fail
+  9;extinction;NA;complete;1,000;0,0000000;Fail
+ 11;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;1,000;0,0000000;Fail
+ 11;extinction;NA;complete;1,000;0,0000000;Fail
+ 12;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;1,000;0,0000000;Fail
+ 12;extinction;NA;complete;1,000;0,0000000;Fail
+ 14;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;0,950;0,2236068;Fail
+ 14;extinction;NA;complete;1,000;0,0000000;Fail
+ 16;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;1,000;0,0000000;Fail
+ 16;extinction;NA;complete;1,000;0,0000000;Fail
+ 17;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+ 18;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+ 19;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;0,950;0,2236068;Fail
+ 21;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;0,900;0,3077935;Fail
+ 22;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;0,350;0,4893605;Fail
+ 23;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+ 24;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+ 27;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;0,650;0,4893605;Fail
+ 27;extinction;NA;complete;0,600;0,5026247;Fail
+ 28;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+ 28;extinction;NA;complete;1,000;0,0000000;Fail
+ 30;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+ 30;extinction;NA;complete;1,000;0,0000000;Fail
+ 32;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+ 32;extinction;NA;complete;1,000;0,0000000;Fail
+ 33;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;1,000;0,0000000;Fail
+ 35;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;0,400;0,5026247;Fail
+ 36;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;0,800;0,4103913;Fail
+ 37;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;1,000;0,0000000;Fail
+ 39;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;0,100;0,3077935;Fail
+ 43;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;0,450;0,5104178;Fail
+ 43;extinction;NA;complete;0,950;0,2236068;Fail
+ 45;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;0,950;0,2236068;Fail
+ 45;extinction;NA;complete;1,000;0,0000000;Fail
+ 47;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;0,550;0,5104178;Fail
+ 47;extinction;NA;complete;1,000;0,0000000;Fail
+ 49;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;0,800;0,4103913;Fail
+ 50;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+ 52;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+ 53;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+ 54;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;0,650;0,4893605;Fail
+ 55;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+ 56;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;0,650;0,4893605;Fail
+ 57;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+ 57;extinction;NA;complete;1,000;0,0000000;Fail
+ 61;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+ 61;extinction;NA;complete;0,950;0,2236068;Fail
+ 62;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;0,700;0,4701623;Fail
+ 62;extinction;NA;complete;1,000;0,0000000;Fail
+ 63;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+ 63;extinction;NA;complete;1,000;0,0000000;Fail
+ 66;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;0,850;0,3663475;Fail
+ 70;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;1,000;0,0000000;Fail
+ 71;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;1,000;0,0000000;Fail
+ 72;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;0,950;0,2236068;Fail
+ 73;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;0,800;0,4103913;Fail
+ 73;extinction;NA;complete;0,950;0,2236068;Fail
+ 74;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;0,800;0,4103913;Fail
+ 74;extinction;NA;complete;1,000;0,0000000;Fail
+ 75;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;1,000;0,0000000;Fail
+ 75;extinction;NA;complete;1,000;0,0000000;Fail
+ 76;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;1,000;0,0000000;Fail
+ 82;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+ 83;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;0,950;0,2236068;Fail
+ 84;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;0,950;0,2236068;Fail
+ 85;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;0,900;0,3077935;Fail
+ 86;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+ 88;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;0,800;0,4103913;Fail
+ 89;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+ 89;extinction;NA;complete;0,950;0,2236068;Fail
+ 91;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+ 91;extinction;NA;complete;1,000;0,0000000;Fail
+ 92;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+ 92;extinction;NA;complete;1,000;0,0000000;Fail
+ 93;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+ 93;extinction;NA;complete;1,000;0,0000000;Fail
+ 95;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;0,950;0,2236068;Fail
+ 95;extinction;NA;complete;1,000;0,0000000;Fail
+ 96;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+ 96;extinction;NA;complete;1,000;0,0000000;Fail
+ 99;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;1,000;0,0000000;Fail
+100;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;0,950;0,2236068;Fail
+103;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;1,000;0,0000000;Fail
+104;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;1,000;0,0000000;Fail
+106;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;1,000;0,0000000;Fail
+106;extinction;NA;complete;1,000;0,0000000;Fail
+107;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;0,400;0,5026247;Fail
+107;extinction;NA;complete;1,000;0,0000000;Fail
+108;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;1,000;0,0000000;Fail
+108;extinction;NA;complete;1,000;0,0000000;Fail
+111;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;0,950;0,2236068;Fail
+111;extinction;NA;complete;1,000;0,0000000;Fail
+113;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+115;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+117;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;0,950;0,2236068;Fail
+118;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+119;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+120;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;0,900;0,3077935;Fail
+124;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+124;extinction;NA;complete;1,000;0,0000000;Fail
+125;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;0,900;0,3077935;Fail
+125;extinction;NA;complete;1,000;0,0000000;Fail
+131;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;1,000;0,0000000;Fail
+132;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;0,250;0,4442617;Fail
+133;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;0,300;0,4701623;Fail
+134;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;0,100;0,3077935;Fail
+135;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;1,000;0,0000000;Fail
+137;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;0,800;0,4103913;Fail
+137;extinction;NA;complete;0,800;0,4103913;Fail
+139;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;0,400;0,5026247;Fail
+139;extinction;NA;complete;1,000;0,0000000;Fail
+140;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;0,500;0,5129892;Fail
+140;extinction;NA;complete;1,000;0,0000000;Fail
+141;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;excess;0,950;0,2207214;Fail
+141;extinction;NA;excess;0,975;0,1581139;Fail
+142;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;1,000;0,0000000;Fail
+142;extinction;NA;complete;0,850;0,3663475;Fail
+147;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;0,900;0,3077935;Fail
+150;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+152;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;0,700;0,4701623;Fail
+153;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+153;extinction;NA;complete;0,950;0,2236068;Fail
+155;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+155;extinction;NA;complete;1,000;0,0000000;Fail
+156;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+156;extinction;NA;complete;1,000;0,0000000;Fail
+157;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;0,950;0,2236068;Fail
+157;extinction;NA;complete;1,000;0,0000000;Fail
+158;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;1,000;0,0000000;Fail
+158;extinction;NA;complete;1,000;0,0000000;Fail
+159;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;0,950;0,2236068;Fail
+159;extinction;NA;complete;1,000;0,0000000;Fail
+160;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;0,900;0,3077935;Fail
+160;extinction;NA;complete;1,000;0,0000000;Fail
+163;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;0,300;0,4701623;Fail
+167;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;1,000;0,0000000;Fail
+172;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;1,000;0,0000000;Fail
+172;extinction;NA;complete;1,000;0,0000000;Fail
+174;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;0,250;0,4442617;Fail
+174;extinction;NA;complete;0,300;0,4701623;Fail
+175;acquisition;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad;partial;1,000;0,0000000;Fail
+175;extinction;NA;complete;1,000;0,0000000;Fail
+180;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;0,950;0,2236068;Fail
+182;acquisition;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good;partial;0,950;0,2236068;Fail
