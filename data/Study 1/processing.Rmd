@@ -16,6 +16,9 @@ output:
 - why is task_order discerned from stimulus_ratings_before.xlsx and after? why are there missing values?
 - exploratory_questions.xlsx currently not used
 - reverse scoring done for self reported ratings, but what about other self-reports and iats?
+- ensure reverse scoring is congruent between outcome measures
+- iat processing comment states "# trial_number on blocks 3 and 7 begins on 2: correct to begin at 1" but then the code changes it for blocks othe rthan these two: "mutate(trial_number = ifelse(block %in% c(1, 2, 3, 6, 7), trial_number-1, trial_number))"
+- do intentions items need sum scoring of some sort? 
 
 ```{r include=FALSE}
 knitr::opts_chunk$set(message=FALSE,
@@ -31,6 +34,7 @@ library(readxl)
 library(ggthemes)
 library(knitr)
 library(kableExtra)
+library(IATscores)
 
 ```
 
@@ -134,7 +138,7 @@ data_demographics <- read_xlsx("raw/demographics.xlsx") %>%
 
 ```{r}
 
-data_input <- 
+data_training_and_testing_input <- 
   bind_rows(
     # acquisition_training 
     bind_rows(
@@ -187,7 +191,7 @@ data_input <-
 
 ```{r}
 
-data_completeness_temp <- data_input %>%
+data_training_and_testing_completeness_temp <- data_training_and_testing_input %>%
   group_by(subject, phase) %>%
   summarize(n = n()) %>%
   mutate(complete_training_testing_data = 
@@ -206,12 +210,12 @@ data_completeness_temp <- data_input %>%
   ungroup() %>%
   select(-n) 
 
-data_completeness_temp %>%
+data_training_and_testing_completeness_temp %>%
   count(phase, complete_training_testing_data) %>%
   kable() %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 
-data_completeness <- data_completeness_temp %>%
+data_training_and_testing_completeness <- data_training_and_testing_completeness_temp %>%
   pivot_wider(names_from = phase, 
               values_from = complete_training_testing_data,
               names_prefix = "completeness_")
@@ -222,7 +226,7 @@ data_completeness <- data_completeness_temp %>%
 
 ```{r}
 
-data_performance_temp <- data_input %>%
+data_training_and_testing_performance_temp <- data_training_and_testing_input %>%
   # summarize performance by block
   group_by(subject, phase, block_number) %>% 
   summarise(mean_correct = mean(correct), 
@@ -241,7 +245,7 @@ data_performance_temp <- data_input %>%
   drop_na()
 
 # plot
-data_performance_temp %>% 
+data_training_and_testing_performance_temp %>% 
   group_by(phase, block_number, passed_performance_criterion_by_block) %>% 
   summarise(mean_accuracy = mean(mean_correct), sd_accuracy = sd(sd_correct)) %>%
   ggplot(aes(x=block_number, y=mean_accuracy, fill = passed_performance_criterion_by_block)) +
@@ -250,8 +254,7 @@ data_performance_temp %>%
                 position=position_dodge(.9)) + theme_classic() +
   facet_wrap(~phase, ncol = 1)
 
-
-data_performance <- data_performance_temp %>%
+data_training_and_testing_performance <- data_training_and_testing_performance_temp %>%
   group_by(subject, phase) %>% 
   filter(block_number == max(block_number)) %>%
   ungroup() %>%
@@ -334,20 +337,176 @@ data_intentions <-
 
 ```
 
+# IAT
+
+## Tidying
+
+```{r}
+
+data_iat_input <- 
+  bind_rows(
+    read_xlsx("raw/iat_symbols_before.xlsx") %>%
+      mutate(task_order = "iat before explicits"),
+    read_xlsx("raw/iat_symbols_after.xlsx") %>%
+      mutate(task_order = "iat after explicits",
+             response = as.character(response))
+  ) %>%
+  mutate(experiment = 1) %>%
+  select(subject, experiment, 
+         block_type = blockcode, block = blocknum, trial_number = trialnum, 
+         correct, latency) %>%
+  # trial_number on blocks 3 and 7 begins on 2: correct to begin at 1
+  mutate(trial_number = ifelse(block %in% c(1, 2, 3, 6, 7), trial_number-1, trial_number)) %>%
+  # the number of the blocks is incorrect due to the way the task was coded, recode
+  mutate(block = case_when(block == 1 ~ 1,
+                           block == 2 ~ 2,
+                           block == 3 ~ 3,
+                           block == 5 ~ 4,
+                           block == 6 ~ 5,
+                           block == 7 ~ 6,
+                           block == 9 ~ 7))
+
+# block order
+data_iat_block_order <- data_iat_input %>%
+  filter(block == 1 & trial_number == 1) %>%
+  mutate(iat_block_order = case_when(block_type == "targetincompatiblepractice" ~ "learning_inconsistent_first",
+                                     block_type == "targetcompatiblepractice" ~ "learning_consistent_first")) %>%
+  select(subject, iat_block_order)
+
+# only retain the critical practice and test blocks (i.e., block_number = 3, 4, 6, 7)
+data_iat_cleaned <- data_iat_block_order %>%
+  left_join(data_iat_input, by = "subject") %>% 
+  filter(block %in% c(3, 4, 6, 7))
+
+```
+
+## Completeness
+
+```{r}
+
+data_iat_completeness <- data_iat_cleaned %>%
+  group_by(subject) %>%
+  summarize(n = n()) %>%
+  mutate(complete_iat_data = case_when(n == 120 ~ "complete", 
+                                       n > 120 ~ "excess", 
+                                       n < 120 ~"partial")) %>%
+  ungroup() %>%
+  select(-n)
+
+data_iat_completeness %>%
+  distinct(subject, .keep_all = TRUE) %>%
+  count(complete_iat_data) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+```
+
+## Performance
+
+```{r}
+
+# exclude if total error rate > 30% 
+data_iat_accuracy_overall <- data_iat_cleaned %>% 
+  group_by(subject) %>% 
+  summarise(iat_accuracy_overall = sum(correct)/n()) %>%
+  ungroup() %>%
+  mutate(passed_iat_accuracy_overall = ifelse(iat_accuracy_overall >= .70, TRUE, FALSE)) %>%
+  select(subject, passed_iat_accuracy_overall)
+
+# exclude if error rate on any one block > 40% 
+data_iat_accuracy_by_block <- data_iat_cleaned %>% 
+  group_by(subject, block) %>% 
+  summarise(iat_accuracy_by_block = sum(correct)/n()) %>%
+  ungroup() %>%
+  mutate(passed_iat_accuracy_by_block = ifelse(iat_accuracy_by_block >= .60, TRUE, FALSE)) %>%
+  group_by(subject) %>%
+  summarize(passed_iat_accuracy_by_block = as.logical(min(passed_iat_accuracy_by_block))) %>%
+  ungroup()
+
+data_iat_fast_responding <- data_iat_cleaned %>% 
+  mutate(fast_response = ifelse(latency < 300, 1, 0)) %>%
+  group_by(subject) %>% 
+  summarise(iat_percent_fast_responses = sum(fast_response)/n()) %>%
+  ungroup() %>%
+  mutate(passed_iat_percent_fast_responses = ifelse(iat_percent_fast_responses <= .10, TRUE, FALSE)) %>%
+  select(subject, passed_iat_percent_fast_responses)
+
+data_iat_performance <- data_iat_accuracy_overall %>%
+  full_join(data_iat_accuracy_by_block, by = "subject") %>%
+  full_join(data_iat_fast_responding, by = "subject") %>%
+  mutate(passed_iat_performance = min(c(passed_iat_accuracy_overall, 
+                                        passed_iat_accuracy_by_block,   
+                                        passed_iat_percent_fast_responses), na.rm = TRUE)) %>%
+  select(subject, passed_iat_performance)
+
+rm(data_iat_accuracy_overall, data_iat_accuracy_by_block, data_iat_fast_responding)
+
+```
+
+## D2 scoring
+
+```{r}
+
+data_iat_D2_scores <- data_iat_cleaned %>%
+  # rename and recode to create the input format that the IATscores package requires
+  mutate(praccrit = ifelse(block_type == "incompatibletest1" | block_type == "compatibletest1", 
+                           "prac", "crit"),
+         blockcode = ifelse(block_type == "incompatibletest1" | block_type == "incompatibletest2",
+                            "incompatible_block", "compatible_block")) %>%
+  select(subject, block, correct, latency, praccrit,  trial_number, block_type) %>%
+  mutate(blockcode = ifelse(block %in% c(3, 4), "pair1", 
+                            ifelse(block %in% c(6, 7), "pair2", NA)),
+         praccrit = ifelse(block %in% c(3, 6), "prac", 
+                           ifelse(block %in% c(4, 7), "crit", NA)))  %>%
+  filter(!is.na(blockcode)) %>%
+  # calculate D2 scores
+  # parameters are identical to those the package lists in the D2 wrapper function
+  IATscores::RobustScores(IATdata = .,
+                          P1 = "fxtrim",  # Trim values < 400ms
+                          P2 = "ignore",  # do not trim errors
+                          P3 = "dscore",  # calculate d2 scores
+                          P4 = "dist",    # distinguish between the prac and test blocks
+                          verbose = FALSE,
+                          autoremove = FALSE) %>%
+  rename(IAT_D2_native = p2112) 
+
+```
+
 # Combine and write to disk
 
 ```{r}
 
 data_processed <- data_conditions %>%
   full_join(data_demographics, by = "subject") %>%
-  full_join(data_completeness, by = "subject") %>%
-  full_join(data_performance, by = "subject") %>%
+  full_join(data_training_and_testing_completeness, by = "subject") %>%
+  full_join(data_training_and_testing_performance, by = "subject") %>%
+  full_join(data_ratings, by = "subject") %>%
+  full_join(data_iat_completeness, by = "subject") %>%
+  full_join(data_iat_performance, by = "subject") %>%
+  full_join(data_iat_D2_scores, by = "subject") %>%
+  full_join(data_intentions, by = "subject") %>%
   full_join(data_demand, by = "subject") %>%
   full_join(data_reactance, by = "subject") %>%
   full_join(data_confidence_ratings, by = "subject") %>%
   full_join(data_believability, by = "subject") %>%
-  full_join(data_ratings, by = "subject") %>%
-  full_join(data_intentions, by = "subject") %>%
+  # reverse-score the scores the self-reports based on stimulus_identity_condition
+  mutate(
+    OEC_effect = case_when(
+      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" ~ OEC_effect_native,
+      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" ~ OEC_effect_native*-1
+    ),
+    IR_effect = case_when(
+      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" ~ IR_effect_native,
+      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" ~ IR_effect_native*-1
+    )
+  ) %>%
+  # reverse score IAT so that a positive IAT score indicates that people preferred the Target that was related to the Positive Source more than the Target related to the Negative source and vice versa
+  mutate(
+    IAT_D2 = case_when(
+      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" ~ IAT_D2_native*-1, 
+      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" ~ IAT_D2_native
+    )
+  ) %>%
   select(experiment, 
          subject, 
          age, 
@@ -361,26 +520,15 @@ data_processed <- data_conditions %>%
          mean_correct_extinction_testing, mean_correct_extinction_training, 
          passed_performance_criterion_acquisition_training, passed_performance_criterion_acquisition_testing, 
          passed_performance_criterion_extinction_testing, passed_performance_criterion_extinction_training, 
-         OEC_effect_native, IR_effect_native, 
+         OEC_effect, IR_effect, 
+         complete_iat_data, 
+         passed_iat_performance,
+         IAT_D2,
          intentions_response_1_3, intentions_response_2_4,
          demand_response, 
          reactance_response_1, reactance_response_2, 
          confidence_stim_1, confidence_stim_2, confidence_stim_3, confidence_stim_4,
-         believability_response_1, believability_response_2) %>%
-  # reverse-score the scores the self-reports based on stimulus_identity_condition
-  mutate(
-    OEC_effect = case_when(
-      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" ~ OEC_effect_native,
-      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" ~ OEC_effect_native*-1
-    ),
-    IR_effect = case_when(
-      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" ~ IR_effect_native,
-      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" ~ IR_effect_native*-1
-    )
-  ) 
-  # reverse score IAT so that a positive IAT score indicates that people preferred the Target that was related to the Positive Source more than the Target related to the Negative source and vice versa
-  # mutate(Transformed_IAT_D2 = ifelse(stimulus_identity == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good", Reverse_Scored_IAT_D2 * -1, Reverse_Scored_IAT_D2))
-
+         believability_response_1, believability_response_2)
 
 # write to disk
 write_csv(data_processed, "processed/data_processed.csv")
