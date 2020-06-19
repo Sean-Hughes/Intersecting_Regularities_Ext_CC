@@ -1,6 +1,7 @@
 ---
 title: "Study 1: Acquisition Phase Data"
-author: "Sean Hughes"
+subtitle: "Data processing"
+author: "Sean Hughes & Ian Hussey"
 date: "30-5-2020"
 output: 
   html_document:
@@ -20,64 +21,53 @@ knitr::opts_chunk$set(message=FALSE,
 # Load the necessary packages
 
 ```{r}
-library(foreign)
 library(tidyverse)
-library(Hmisc)
-library(car)
+#library(Hmisc)
+#library(car)
 library(readxl)
-library(xlsx)
 library(ggthemes)
+library(knitr)
+library(kableExtra)
 ```
 
-## 1. Import the raw data files from Excel into R
+- Ian: I removed packages you don't actually use here. Try not to load packages you don't use, as if you run into dependency issues down the line you are less sure why.
+
+## 1. Get data, trim vars
+
+intersecting_regularities_left_17_03_17.xlsx & 
+intersecting_regularities_right_17_03_17.xlsx: 
+- Outcome 1 and Target 1 are Good/ Outcome 2 and Target 2 are Bad
+
+intersecting_regularities_left_rev_17_03_17.xlsx & 
+intersecting_regularities_right_rev_17_03_17.xlsx: 
+- Outcome 1 and Target 1 are Bad/ Outcome 2 and Target 2 are Good
 
 ```{r}
 
-wd <- list()
-wd$data   <- "C:/Users/Sean/Desktop/Study_1/Raw_Data/"
-wd$output <- "C:/Users/Sean/Desktop/Study_1/Processed_Data/"
-
-# raw_data_1: Outcome 1 and Target 1 are Good/ Outcome 2 and Target 2 are Bad
-# raw_data_3: Outcome 1 and Target 1 are Good/ Outcome 2 and Target 2 are Bad
-
-# raw_data_2: Outcome 1 and Target 1 are Bad/ Outcome 2 and Target 2 are Good
-# raw_data_4: Outcome 1 and Target 1 are Bad/ Outcome 2 and Target 2 are Good
-
-raw_data_1 <- read_xlsx(paste0(wd$data, "intersecting_regularities_left_17_03_17.xlsx"), col_names = TRUE)
-raw_data_2 <- read_xlsx(paste0(wd$data, "intersecting_regularities_left_rev_17_03_17.xlsx"), col_names = TRUE)
-raw_data_3 <- read_xlsx(paste0(wd$data, "intersecting_regularities_right_17_03_17.xlsx"), col_names = TRUE)
-raw_data_4 <- read_xlsx(paste0(wd$data, "intersecting_regularities_right_rev_17_03_17.xlsx"), col_names = TRUE)
-  
+combined_data <- 
+  # read in data, appending a new column
+  bind_rows(
+    read_xlsx("raw/intersecting_regularities_left_17_03_17.xlsx", col_names = TRUE) %>%
+      mutate(stimulus_identity = "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad"),
+    read_xlsx("raw/intersecting_regularities_right_17_03_17.xlsx", col_names = TRUE) %>%
+      mutate(stimulus_identity = "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad"),
+    read_xlsx("raw/intersecting_regularities_left_rev_17_03_17.xlsx", col_names = TRUE) %>%
+      mutate(stimulus_identity = "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good"),
+    read_xlsx("raw/intersecting_regularities_right_rev_17_03_17.xlsx", col_names = TRUE) %>%
+      mutate(stimulus_identity = "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good")
+  ) %>%
+  filter(blockcode != "Begin") %>% 
+  # select and rename vars
+  select(subject, block_number = blocknum, trial_number = trialnum, correct) %>%
+  arrange(subject)
+    
 ```
+
+- Ian: you were repeating your filter/select/arrange calls, if you do the binding before this then you only only do it once. 
 
 ## 2. Join the training files together
 
 ```{r}
-
-processed_data_1 <- raw_data_1 %>% 
-  filter(blockcode != "Begin") %>% 
-  select(subject, blocknum, trialnum, correct) %>%
-  mutate(stimulus_identity = "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad")
-
-processed_data_2 <- raw_data_2 %>% 
-  filter(blockcode != "Begin") %>% 
-  select(subject, blocknum, trialnum, correct) %>% 
-  mutate(stimulus_identity = "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good")
-
-processed_data_3 <- raw_data_3 %>% 
-  filter(blockcode != "Begin") %>% 
-  select(subject, blocknum, trialnum, correct) %>%
-  mutate(stimulus_identity = "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad")
-
-processed_data_4 <- raw_data_4 %>% 
-  filter(blockcode != "Begin") %>% 
-  select(subject, blocknum, trialnum, correct) %>% 
-  mutate(stimulus_identity = "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good")
-
-combined_data <- processed_data_1 %>% 
-  bind_rows(processed_data_2, processed_data_3, processed_data_4) %>%
-  rename(block_number = blocknum, trial_number = trialnum) %>% 
-  arrange(subject)
 
 # Select out the stimulus identity information for data analysis 
 stimulus_identity <- combined_data %>% 
@@ -88,31 +78,64 @@ stimulus_identity <- stimulus_identity[!duplicated(stimulus_identity$subject), ]
 
 ```
 
+- Ian: this doesn't work for me, as stimulus_identity wasn't in the selected variables.
+
 ## 3. Exclude incomplete data
 
 ```{r}
 
 # Number of participants before exclusions
 
-Participants_before_exclusions <- combined_data %>% 
-  distinct(subject) %>% 
-  count()
+# Participants_before_exclusions <- combined_data %>% 
+#   distinct(subject) %>% 
+#   count()
+
+combined_data %>%
+  distinct(subject) %>%
+  count() %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+```
+
+- Ian: what's the purpose of Participants_before_exclusions? Is it intended to be run and then inspected? If so, no need to create it; just have it print the output rather than assign it to a new tibble.
+
+```{r}
 
 # Check to see if everyone has complete data for the four training blocks - if block_number = 280 then they do. Otherwise they do not. If they do not then remove them 
 
-combined_data <- combined_data %>%
-  group_by(subject) %>% 
-  mutate(complete_data_check = sum(block_number)) %>%
-  filter(complete_data_check == 280) %>%
-  ungroup() 
+# combined_data <- combined_data %>%
+#   group_by(subject) %>% 
+#   mutate(complete_data_check = sum(block_number)) %>%
+#   filter(complete_data_check == 280) %>%
+#   ungroup() 
+
+combined_data_2 <- combined_data %>%
+  group_by(subject) %>%
+  mutate(complete_data = ifelse(sum(block_number) == 280, TRUE, FALSE)) %>%
+  ungroup()
+
+```
+
+- Ian: try to avoid modifying variables in place. i.e., avoid "combined_data <- combined_data" because its contents is then dependant on the order in which I run things. To put this another way, you could skip this chunk and the code below it 'might' still run because combined_data does indeed exist - it's contents is just not correct. so, instead, assign new tibbles as needed. eg. "combined_data_2 <- combined_data"
+- Ian: avoid silently dropping participants as you have here with your filter call. instead, flag them with a new variable (e.g., complete_data) to retain a record of them having been excluded. 
+
+```{r}
 
 # Number of participants post exclusions
 
-Participants_after_exclusions <- combined_data %>% 
-  distinct(subject) %>% 
-  count()
+# Participants_after_exclusions <- combined_data %>% 
+#   distinct(subject) %>% 
+#   count()
+
+combined_data_2 %>%
+  distinct(subject, .keep_all = TRUE) %>%
+  count(complete_data) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 
 ```
+
 
 ## 4. Calculating Mean and SD of Accuracy 
 
@@ -120,9 +143,10 @@ Participants_after_exclusions <- combined_data %>%
 
 # Calculate mean and SD for accuracy (i.e., the correct row) 
 
-summarised_data <- combined_data %>%
+summarised_data <- combined_data_2 %>%
   group_by(subject, block_number) %>% 
-  summarise(mean_correct = mean(correct), sd_correct = sd(correct))%>%
+  summarise(mean_correct = mean(correct), 
+            sd_correct = sd(correct))%>%
   arrange(subject, block_number) %>%
   ungroup()
 
@@ -142,7 +166,6 @@ Fail_Group <- summarised_data %>%
   mutate(block_type = "Training", training_performance = "Fail")
 
 ```
-
 
 ## 6. Identify those who passed the training phase (> 70%)
 
