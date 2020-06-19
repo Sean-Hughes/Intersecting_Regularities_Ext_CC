@@ -37,8 +37,9 @@ data_input <-
     read_xlsx("raw/testing_left_17_03_17.xlsx", col_names = TRUE),
     read_xlsx("raw/testing_left_rev_17_03_17.xlsx", col_names = TRUE),
     read_xlsx("raw/testing_right_17_03_17.xlsx", col_names = TRUE),
-    read_xlsx("raw/testing_right_rev_17_03_17.xlsx", col_names = TRUE)) %>%
-  
+    read_xlsx("raw/testing_right_rev_17_03_17.xlsx", col_names = TRUE)
+  ) %>%
+
   # add in information that indicates the experiment 
   mutate(experiment = 1) %>%
   
