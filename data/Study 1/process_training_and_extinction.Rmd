@@ -1,0 +1,223 @@
+---
+title: "Study 1: Acquisition Phase Data"
+subtitle: "Data processing"
+author: "Sean Hughes & Ian Hussey"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output: 
+  html_document:
+    code_folding: hide
+    highlight: haddock
+    theme: flatly
+    toc: yes 
+    toc_float: yes
+---
+
+# to dos
+
+extinction_condition is being assigned by phase, but should be applied for the whole participant, in the same way as stimulus_identity_condition. this prevents the pivot_wider from working correctly.
+
+```{r include=FALSE}
+knitr::opts_chunk$set(message=FALSE,
+                      warning=FALSE)
+```
+
+
+# Load the necessary packages
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(ggthemes)
+library(knitr)
+library(kableExtra)
+```
+
+## 1. Get data, trim vars
+
+The training conditions are defined by which file the data come from:
+
+intersecting_regularities_left_17_03_17.xlsx & 
+intersecting_regularities_right_17_03_17.xlsx: 
+- Outcome 1 and Target 1 are Good/ Outcome 2 and Target 2 are Bad
+
+intersecting_regularities_left_rev_17_03_17.xlsx & 
+intersecting_regularities_right_rev_17_03_17.xlsx: 
+- Outcome 1 and Target 1 are Bad/ Outcome 2 and Target 2 are Good
+
+```{r}
+
+data_input <- 
+  
+  left_join(
+    
+    # stimulus identity using acquisition training files
+    bind_rows(
+      read_xlsx("raw/intersecting_regularities_left_17_03_17.xlsx") %>%
+        mutate(stimulus_identity_condition = "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad"),
+      read_xlsx("raw/intersecting_regularities_right_17_03_17.xlsx") %>%
+        mutate(stimulus_identity_condition = "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad"),
+      read_xlsx("raw/intersecting_regularities_left_rev_17_03_17.xlsx") %>%
+        mutate(stimulus_identity_condition = "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good"),
+      read_xlsx("raw/intersecting_regularities_right_rev_17_03_17.xlsx") %>%
+        mutate(stimulus_identity_condition = "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good")
+    ) %>%
+      select(subject, stimulus_identity_condition) %>%
+      distinct(subject, .keep_all = TRUE),
+    
+    # join this to all the other data
+    bind_rows(
+      # acquisition training 
+      bind_rows(
+        read_xlsx("raw/intersecting_regularities_left_17_03_17.xlsx"),
+        read_xlsx("raw/intersecting_regularities_right_17_03_17.xlsx"),
+        read_xlsx("raw/intersecting_regularities_left_rev_17_03_17.xlsx"),
+        read_xlsx("raw/intersecting_regularities_right_rev_17_03_17.xlsx")
+      ) %>%
+        mutate(phase = "acquisition training",
+               blocknum = blocknum-1,
+               response = as.character(response)),
+      
+      # acquisition test 
+      bind_rows(
+        read_xlsx("raw/testing_left_17_03_17.xlsx"),
+        read_xlsx("raw/testing_left_rev_17_03_17.xlsx"),
+        read_xlsx("raw/testing_right_17_03_17.xlsx"),
+        read_xlsx("raw/testing_right_rev_17_03_17.xlsx")
+      ) %>%
+        mutate(phase = "acquisition testing",
+               response = as.character(response)),
+      
+      # extinction training
+      bind_rows(
+        read_xlsx("raw/extinction1a_intersecting_regularities_left_17_03_17.xlsx"),
+        read_xlsx("raw/extinction1a_intersecting_regularities_left_rev_17_03_17.xlsx"),
+        read_xlsx("raw/extinction1a_intersecting_regularities_right_17_03_17.xlsx"),
+        read_xlsx("raw/extinction1a_intersecting_regularities_right_rev_17_03_17.xlsx")
+      ) %>%
+        mutate(phase = "extinction training",
+               response = as.character(response),
+               extinction_condition = "extinction"),
+      
+      # extinction test 
+      bind_rows(
+        read_xlsx("raw/testing_left1a_17_03_17.xlsx"),
+        read_xlsx("raw/testing_left1a_rev_17_03_17.xlsx"),
+        read_xlsx("raw/testing_right1a_17_03_17.xlsx"),
+        read_xlsx("raw/testing_right1a_rev_17_03_17.xlsx")
+      ) %>%
+        mutate(phase = "extinction testing",
+               response = as.character(response),
+               extinction_condition = "extinction")
+    ) %>%
+      mutate(experiment = 1,
+             extinction_condition = ifelse(is.na(extinction_condition), "acquisition only", extinction_condition)) %>%
+      filter(blockcode != "Begin") %>% 
+      # select and rename vars
+      select(experiment, subject, extinction_condition, phase, block_number = blocknum, trial_number = trialnum, correct) %>%
+      arrange(subject, phase),
+    
+    by = "subject"
+  )
+
+```
+
+# Completeness
+
+```{r}
+
+# Check to see if everyone has complete data for the four training blocks
+
+data_completeness <- data_input %>%
+  group_by(subject, phase) %>%
+  mutate(complete_training_testing_data = case_when((phase == "acquisition training" & n() == 80) |
+                                     (phase == "acquisition testing" & n() == 8) |
+                                     (phase == "extinction training" & n() == 80) |
+                                     (phase == "extinction testing" & n() == 8) ~ "complete", 
+                                   (phase == "acquisition training" & n() > 80) |
+                                     (phase == "acquisition testing" & n() > 8) |
+                                     (phase == "extinction training" & n() > 80) |
+                                     (phase == "extinction testing" & n() > 8) ~ "excess", 
+                                   
+                                   (phase == "acquisition training" & n() < 80) |
+                                     (phase == "acquisition testing" & n() < 8) |
+                                     (phase == "extinction training" & n() < 80) |
+                                     (phase == "extinction testing" & n() < 8) ~ "partial")) %>%
+  ungroup()
+
+data_completeness %>%
+  distinct(subject, phase, .keep_all = TRUE) %>%
+  count(phase, complete_training_testing_data) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+data_completeness_by_participant <- data_completeness %>%
+  distinct(experiment, subject, extinction_condition, phase, stimulus_identity_condition, complete_training_testing_data) %>%
+  drop_na()
+
+```
+
+# Performance
+
+```{r}
+
+# Calculate mean and SD for accuracy (i.e., the correct row) 
+
+data_performance <- data_completeness %>%
+  # summarize performance by block
+  group_by(subject, phase, block_number) %>% 
+  summarise(mean_correct = mean(correct), 
+            sd_correct = sd(correct)) %>%
+  mutate(passed_performance_criterion_by_block = ifelse(mean_correct < .75, FALSE, TRUE)) %>%
+  ungroup() %>% 
+  # summarize performance by participant (final block only)
+  group_by(subject, phase) %>% 
+  mutate(passed_performance_criterion = ifelse(block_number == max(block_number) & passed_performance_criterion_by_block == TRUE, TRUE, FALSE)) %>%
+  ungroup() %>%
+  mutate(phase = fct_relevel(phase,
+                             "extinction testing",
+                             "extinction training",
+                             "acqusitiion testing",
+                             "acqusitiion training")) %>%
+  drop_na()
+
+# plot
+data_performance %>% 
+  group_by(phase, block_number, passed_performance_criterion_by_block) %>% 
+  summarise(mean_accuracy = mean(mean_correct), sd_accuracy = sd(sd_correct)) %>%
+  ggplot(aes(x=block_number, y=mean_accuracy, fill = passed_performance_criterion_by_block)) +
+  geom_bar(colour="black", stat="identity", position = position_dodge()) + 
+  geom_errorbar(aes(ymin=mean_accuracy-sd_accuracy, ymax=mean_accuracy+sd_accuracy), width=.2,
+                position=position_dodge(.9)) + theme_classic() +
+  facet_wrap(~phase, ncol = 1)
+
+
+data_performance_by_participant <- data_performance %>%
+  group_by(subject, phase) %>% 
+  filter(block_number == max(block_number)) %>%
+  ungroup() %>%
+  select(-block_number, -passed_performance_criterion_by_block)
+
+```
+
+- NB because the last block each participant completes is selected, if participants have partial data, their means refer to their last completed block not the ultimate block. therefore ensure that partial data exclusions are done.
+
+# Combine and write to disk
+
+```{r}
+
+data_training_and_testing <- 
+  full_join(data_completeness_by_participant, 
+            data_performance_by_participant, 
+            by = c("subject", "phase")) %>%
+  select(experiment, subject, extinction_condition, stimulus_identity_condition, 
+         phase, complete_training_testing_data, 
+         mean_correct, passed_performance_criterion) %>%
+  pivot_wider(names_from = phase,
+              values_from = c(mean_correct, passed_performance_criterion))
+
+write_csv2(data_training_and_testing, "processed/data_training_and_testing.csv")
+
+```
+
+
+

@@ -40,6 +40,7 @@ wd$output <- "C:/Users/Sean/Desktop/Study_1/Processed_Data/"
 
 raw_IAT_data_1 <- read_xlsx(paste0(wd$data, "iat_symbols_before_17_03_17.xlsx"), col_names = TRUE)
 raw_IAT_data_2 <- read_xlsx(paste0(wd$data, "iat_symbols_after_17_03_17.xlsx"), col_names = TRUE)
+         block_type = blockcode, block = blocknum, trial_number = trialnum, 
 
 ```
 
