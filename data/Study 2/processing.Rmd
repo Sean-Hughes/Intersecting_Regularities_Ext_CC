@@ -56,7 +56,7 @@ intersecting_regularities_right_rev.xlsx:
 
 ```{r}
 
-current_experiment_number <- 1
+current_experiment_number <- 2
 
 # stimulus identity using acquisition_training file names
 data_stimulus_identity_condition <- 
@@ -77,22 +77,22 @@ data_stimulus_identity_condition <-
 data_extinction_condition <- 
   bind_rows(
     #_training
-    read_xlsx("raw/extinction1a_intersecting_regularities_left.xlsx") %>% 
+    read_xlsx("raw/extinction1b_intersecting_regularities_left.xlsx") %>% 
       mutate(response = as.character(response)),
-    read_xlsx("raw/extinction1a_intersecting_regularities_left_rev.xlsx") %>% 
+    read_xlsx("raw/extinction1b_intersecting_regularities_left_rev.xlsx") %>% 
       mutate(response = as.character(response)),
-    read_xlsx("raw/extinction1a_intersecting_regularities_right.xlsx") %>% 
+    read_xlsx("raw/extinction1b_intersecting_regularities_right.xlsx") %>% 
       mutate(response = as.character(response)),
-    read_xlsx("raw/extinction1a_intersecting_regularities_right_rev.xlsx") %>% 
+    read_xlsx("raw/extinction1b_intersecting_regularities_right_rev.xlsx") %>% 
       mutate(response = as.character(response)),
     #_testing
-    read_xlsx("raw/testing_left1a.xlsx") %>% 
+    read_xlsx("raw/testing_left1b.xlsx") %>% 
       mutate(response = as.character(response)),
-    read_xlsx("raw/testing_left1a_rev.xlsx") %>% 
+    read_xlsx("raw/testing_left1b_rev.xlsx") %>% 
       mutate(response = as.character(response)),
-    read_xlsx("raw/testing_right1a.xlsx") %>% 
+    read_xlsx("raw/testing_right1b.xlsx") %>% 
       mutate(response = as.character(response)),
-    read_xlsx("raw/testing_right1a_rev.xlsx") %>% 
+    read_xlsx("raw/testing_right1b_rev.xlsx") %>% 
       mutate(response = as.character(response))
   ) %>%
   mutate(extinction_condition = "acquisition and extinction") %>%
@@ -166,20 +166,20 @@ data_training_and_testing_input <-
     
     # extinction_training
     bind_rows(
-      read_xlsx("raw/extinction1a_intersecting_regularities_left.xlsx"),
-      read_xlsx("raw/extinction1a_intersecting_regularities_left_rev.xlsx"),
-      read_xlsx("raw/extinction1a_intersecting_regularities_right.xlsx"),
-      read_xlsx("raw/extinction1a_intersecting_regularities_right_rev.xlsx")
+      read_xlsx("raw/extinction1b_intersecting_regularities_left.xlsx"),
+      read_xlsx("raw/extinction1b_intersecting_regularities_left_rev.xlsx"),
+      read_xlsx("raw/extinction1b_intersecting_regularities_right.xlsx"),
+      read_xlsx("raw/extinction1b_intersecting_regularities_right_rev.xlsx")
     ) %>%
       mutate(phase = "extinction_training",
              response = as.character(response)),
     
     # extinction test 
     bind_rows(
-      read_xlsx("raw/testing_left1a.xlsx"),
-      read_xlsx("raw/testing_left1a_rev.xlsx"),
-      read_xlsx("raw/testing_right1a.xlsx"),
-      read_xlsx("raw/testing_right1a_rev.xlsx")
+      read_xlsx("raw/testing_left1b.xlsx"),
+      read_xlsx("raw/testing_left1b_rev.xlsx"),
+      read_xlsx("raw/testing_right1b.xlsx"),
+      read_xlsx("raw/testing_right1b_rev.xlsx")
     ) %>%
       mutate(phase = "extinction_testing",
              response = as.character(response))

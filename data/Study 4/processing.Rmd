@@ -21,6 +21,8 @@ output:
 - do intentions items need sum scoring of some sort? 
 - assess whether all raw data files are used by this processing script or not. if not, why? this may also differ for other studies.
 
+- why is there only one extinction training file? accuracy by block doesn't seem to be working
+
 ```{r include=FALSE}
 knitr::opts_chunk$set(message=FALSE,
                       warning=FALSE)
@@ -56,7 +58,7 @@ intersecting_regularities_right_rev.xlsx:
 
 ```{r}
 
-current_experiment_number <- 1
+current_experiment_number <- 4
 
 # stimulus identity using acquisition_training file names
 data_stimulus_identity_condition <- 
@@ -77,22 +79,16 @@ data_stimulus_identity_condition <-
 data_extinction_condition <- 
   bind_rows(
     #_training
-    read_xlsx("raw/extinction1a_intersecting_regularities_left.xlsx") %>% 
-      mutate(response = as.character(response)),
-    read_xlsx("raw/extinction1a_intersecting_regularities_left_rev.xlsx") %>% 
-      mutate(response = as.character(response)),
-    read_xlsx("raw/extinction1a_intersecting_regularities_right.xlsx") %>% 
-      mutate(response = as.character(response)),
-    read_xlsx("raw/extinction1a_intersecting_regularities_right_rev.xlsx") %>% 
+    read_xlsx("raw/extinction_intersecting_regularities_1d.xlsx") %>% 
       mutate(response = as.character(response)),
     #_testing
-    read_xlsx("raw/testing_left1a.xlsx") %>% 
+    read_xlsx("raw/testing_left.xlsx") %>% 
       mutate(response = as.character(response)),
-    read_xlsx("raw/testing_left1a_rev.xlsx") %>% 
+    read_xlsx("raw/testing_left_rev.xlsx") %>% 
       mutate(response = as.character(response)),
-    read_xlsx("raw/testing_right1a.xlsx") %>% 
+    read_xlsx("raw/testing_right.xlsx") %>% 
       mutate(response = as.character(response)),
-    read_xlsx("raw/testing_right1a_rev.xlsx") %>% 
+    read_xlsx("raw/testing_right_rev.xlsx") %>% 
       mutate(response = as.character(response))
   ) %>%
   mutate(extinction_condition = "acquisition and extinction") %>%
@@ -166,20 +162,18 @@ data_training_and_testing_input <-
     
     # extinction_training
     bind_rows(
-      read_xlsx("raw/extinction1a_intersecting_regularities_left.xlsx"),
-      read_xlsx("raw/extinction1a_intersecting_regularities_left_rev.xlsx"),
-      read_xlsx("raw/extinction1a_intersecting_regularities_right.xlsx"),
-      read_xlsx("raw/extinction1a_intersecting_regularities_right_rev.xlsx")
+      read_xlsx("raw/extinction_intersecting_regularities_1d.xlsx")
     ) %>%
       mutate(phase = "extinction_training",
-             response = as.character(response)),
+             response = as.character(response)) %>%
+      select(-starts_with("stimulus")),
     
     # extinction test 
     bind_rows(
-      read_xlsx("raw/testing_left1a.xlsx"),
-      read_xlsx("raw/testing_left1a_rev.xlsx"),
-      read_xlsx("raw/testing_right1a.xlsx"),
-      read_xlsx("raw/testing_right1a_rev.xlsx")
+      read_xlsx("raw/testing_left.xlsx"),
+      read_xlsx("raw/testing_left_rev.xlsx"),
+      read_xlsx("raw/testing_right.xlsx"),
+      read_xlsx("raw/testing_right_rev.xlsx")
     ) %>%
       mutate(phase = "extinction_testing",
              response = as.character(response))
