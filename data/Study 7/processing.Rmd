@@ -1,0 +1,682 @@
+---
+title: "Data processing"
+author: "Sean Hughes & Ian Hussey"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output: 
+  html_document:
+    code_folding: hide
+    highlight: haddock
+    theme: flatly
+    toc: yes 
+    toc_float: yes
+---
+
+# to dos
+
+- why is task_order discerned from stimulus_ratings_before.xlsx and after? why are there missing values?
+- exploratory_questions.xlsx currently not used
+- reverse scoring done for self reported ratings, but what about other self-reports and iats?
+- ensure reverse scoring is congruent between outcome measures
+- iat processing comment states "# trial_number on blocks 3 and 7 begins on 2: correct to begin at 1" but then the code changes it for blocks other than these two: "mutate(trial_number = ifelse(block %in% c(1, 2, 3, 6, 7), trial_number-1, trial_number))"
+- do intentions items need sum scoring of some sort? 
+- assess whether all raw data files are used by this processing script or not. if not, why? this may also differ for other studies.
+
+- why is there only one extinction training file? 
+
+- completeness acquisition_training	excess is too high
+- training and testing performance needs work 
+- add other conditions to selfreports, iat
+- add equivalence data processing
+
+```{r include=FALSE}
+knitr::opts_chunk$set(message=FALSE,
+                      warning=FALSE)
+```
+
+# Dependencies
+
+```{r}
+
+library(tidyverse)
+library(readxl)
+library(ggthemes)
+library(knitr)
+library(kableExtra)
+library(IATscores)
+
+```
+
+# Conditions
+
+Some experimental conditions are not recorded in the data produced by inquisit but are discerned by the file names they come from, or the presence or absence of one phase of data. Extract this here. 
+
+The_training conditions are defined by which file the data come from:
+
+intersecting_regularities_left.xlsx & 
+intersecting_regularities_right.xlsx: 
+- Outcome 1 and Target 1 are Good/ Outcome 2 and Target 2 are Bad
+
+intersecting_regularities_left_rev.xlsx & 
+intersecting_regularities_right_rev.xlsx: 
+- Outcome 1 and Target 1 are Bad/ Outcome 2 and Target 2 are Good
+
+
+```{r}
+
+current_experiment_number <- 7
+
+# stimulus identity using acquisition_training file names
+data_stimulus_identity_condition <- 
+  bind_rows(
+    # acquisition only
+    read_xlsx("raw/acquisition_only/intersecting_regularities_1_no_location.xlsx") %>%
+      mutate(stimulus_identity_condition = "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad",
+             experimental_condition = "acquisition_only",
+             subject = paste(subject, experimental_condition, sep = "_")),
+    read_xlsx("raw/acquisition_only/intersecting_regularities_2_no_location.xlsx") %>%
+      mutate(stimulus_identity_condition = "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad",
+             experimental_condition = "acquisition_only",
+             subject = paste(subject, experimental_condition, sep = "_")),
+    # counterconditioning 
+    read_xlsx("raw/counterconditioning/intersecting_regularities_1_no_location.xlsx") %>%
+      mutate(stimulus_identity_condition = "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad",
+             experimental_condition = "counterconditioning",
+             subject = paste(subject, experimental_condition, sep = "_")),
+    read_xlsx("raw/counterconditioning/intersecting_regularities_2_no_location.xlsx") %>%
+      mutate(stimulus_identity_condition = "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad",
+             experimental_condition = "counterconditioning",
+             subject = paste(subject, experimental_condition, sep = "_")),
+    # extinction only
+    read_xlsx("raw/extinction/intersecting_regularities_1_no_location.xlsx") %>%
+      mutate(stimulus_identity_condition = "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad",
+             experimental_condition = "extinction",
+             subject = paste(subject, experimental_condition, sep = "_")),
+    read_xlsx("raw/extinction/intersecting_regularities_2_no_location.xlsx") %>%
+      mutate(stimulus_identity_condition = "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad",
+             experimental_condition = "extinction",
+             subject = paste(subject, experimental_condition, sep = "_"))
+  ) %>%
+  select(subject, stimulus_identity_condition, experimental_condition) %>%
+  distinct(subject, .keep_all = TRUE)
+
+# task order
+data_task_order <- 
+  bind_rows(
+    # acquisition only
+    read_xlsx("raw/acquisition_only/stimulus_ratings_before.xlsx") %>% 
+      select(subject) %>% 
+      mutate(task_order = "Explicits First",
+             experimental_condition = "acquisition_only",
+             subject = paste(subject, experimental_condition, sep = "_")),
+    read_xlsx("raw/acquisition_only/stimulus_ratings_after.xlsx") %>% 
+      select(subject) %>% 
+      mutate(task_order = "Implicits First",
+             experimental_condition = "acquisition_only",
+             subject = paste(subject, experimental_condition, sep = "_")),
+    # counterconditioning 
+    read_xlsx("raw/counterconditioning/stimulus_ratings_before.xlsx") %>% 
+      select(subject) %>% 
+      mutate(task_order = "Explicits First",
+             experimental_condition = "counterconditioning",
+             subject = paste(subject, experimental_condition, sep = "_")),
+    read_xlsx("raw/counterconditioning/stimulus_ratings_after.xlsx") %>% 
+      select(subject) %>% 
+      mutate(task_order = "Implicits First",
+             experimental_condition = "counterconditioning",
+             subject = paste(subject, experimental_condition, sep = "_")),
+    # extinction only
+    read_xlsx("raw/extinction/stimulus_ratings_before.xlsx") %>% 
+      select(subject) %>% 
+      mutate(task_order = "Explicits First",
+             experimental_condition = "extinction",
+             subject = paste(subject, experimental_condition, sep = "_")),
+    read_xlsx("raw/extinction/stimulus_ratings_after.xlsx") %>% 
+      select(subject) %>% 
+      mutate(task_order = "Implicits First",
+             experimental_condition = "extinction",
+             subject = paste(subject, experimental_condition, sep = "_"))
+  )
+
+# combine
+data_conditions <- data_stimulus_identity_condition %>%
+  full_join(data_task_order, by = "subject") %>%
+  mutate(experiment = current_experiment_number)
+
+rm(data_stimulus_identity_condition, data_extinction_condition, data_task_order)
+
+```
+
+# Demographics
+
+```{r}
+
+data_demographics <- 
+  bind_rows(
+    read_xlsx("raw/acquisition_only/demographics.xlsx") %>% 
+      mutate(experimental_condition = "acquisition_only",
+             subject = paste(subject, experimental_condition, sep = "_")),
+    read_xlsx("raw/counterconditioning/demographics.xlsx") %>% 
+      mutate(experimental_condition = "counterconditioning",
+             subject = paste(subject, experimental_condition, sep = "_")),
+    read_xlsx("raw/extinction/demographics.xlsx") %>% 
+      mutate(experimental_condition = "extinction",
+             subject = paste(subject, experimental_condition, sep = "_")),
+  ) %>%
+  select(subject, experimental_condition, trialcode, response) %>% 
+  pivot_wider(names_from = trialcode,
+              values_from = response) %>%
+  mutate(gender = case_when(str_detect(tolower(gender), "f") ~ "F",
+                            str_detect(tolower(gender), "female") ~ "F",
+                            str_detect(tolower(gender), "m") ~ "M",
+                            str_detect(tolower(gender), "male") ~ "M",
+                            TRUE ~ gender)) 
+
+```
+
+# Training and testing 
+
+## Get data and tidy
+
+```{r}
+
+data_training_and_testing_input <- 
+  bind_rows(
+    # acquisition _training 
+    bind_rows(
+      # acquisition only
+      read_xlsx("raw/acquisition_only/intersecting_regularities_1_no_location.xlsx") %>%
+        mutate(experimental_condition = "acquisition_only",
+               subject = paste(subject, experimental_condition, sep = "_")),
+      read_xlsx("raw/acquisition_only/intersecting_regularities_2_no_location.xlsx") %>%
+        mutate(experimental_condition = "acquisition_only",
+               subject = paste(subject, experimental_condition, sep = "_")),
+      # counter conditioning
+      read_xlsx("raw/counterconditioning/intersecting_regularities_1_no_location.xlsx") %>%
+        mutate(experimental_condition = "counterconditioning",
+               subject = paste(subject, experimental_condition, sep = "_")),
+      read_xlsx("raw/counterconditioning/intersecting_regularities_2_no_location.xlsx") %>%
+        mutate(experimental_condition = "counterconditioning",
+               subject = paste(subject, experimental_condition, sep = "_")),
+      # extinction
+      read_xlsx("raw/extinction/intersecting_regularities_1_no_location.xlsx") %>%
+        mutate(experimental_condition = "extinction",
+               subject = paste(subject, experimental_condition, sep = "_")),
+      read_xlsx("raw/extinction/intersecting_regularities_2_no_location.xlsx") %>%
+        mutate(experimental_condition = "extinction",
+               subject = paste(subject, experimental_condition, sep = "_"))
+    ) %>%
+      mutate(phase = "acquisition_training",
+             blocknum = blocknum-1,
+             response = as.character(response)),
+    
+    # acquisition test 
+    bind_rows(
+      # acquisition_only 
+      read_xlsx("raw/acquisition_only/testing1_nokeylocation.xlsx") %>%
+        mutate(experimental_condition = "acquisition_only",
+               subject = paste(subject, experimental_condition, sep = "_")),
+      read_xlsx("raw/acquisition_only/testing2_nokeylocation.xlsx") %>%
+        mutate(experimental_condition = "acquisition_only",
+               subject = paste(subject, experimental_condition, sep = "_")),
+      # counterconditioning 
+      read_xlsx("raw/counterconditioning/testing1_nokeylocation.xlsx") %>%
+        mutate(experimental_condition = "counterconditioning",
+               subject = paste(subject, experimental_condition, sep = "_")),
+      read_xlsx("raw/counterconditioning/testing2_nokeylocation.xlsx") %>%
+        mutate(experimental_condition = "counterconditioning",
+               subject = paste(subject, experimental_condition, sep = "_")),
+      # extinction 
+      read_xlsx("raw/extinction/testing1_nokeylocation.xlsx") %>%
+        mutate(experimental_condition = "extinction",
+               subject = paste(subject, experimental_condition, sep = "_")),
+      read_xlsx("raw/extinction/testing2_nokeylocation.xlsx") %>%
+        mutate(experimental_condition = "extinction",
+               subject = paste(subject, experimental_condition, sep = "_"))
+    ) %>%
+      mutate(phase = "acquisition_testing",
+             response = as.character(response)),
+    
+    # counterconditioning_training
+    bind_rows(
+      read_xlsx("raw/counterconditioning/counterconditioning1b_no_location.xlsx") %>%
+        mutate(response = as.character(response),
+               experimental_condition = "counterconditioning",
+               subject = paste(subject, experimental_condition, sep = "_")),
+      read_xlsx("raw/counterconditioning/counterconditioning2b_no_location.xlsx") %>%
+        mutate(response = as.character(response),
+               experimental_condition = "counterconditioning",
+               subject = paste(subject, experimental_condition, sep = "_"))
+    ) %>%
+      mutate(phase = "counterconditioning_training",
+             blocknum = blocknum-1) %>%
+      select(-starts_with("stimulus")),
+    
+    # extinction test 
+    bind_rows(
+      read_xlsx("raw/extinction/extinction_1c_no_location.xlsx") %>%
+        mutate(experimental_condition = "extinction",
+               subject = paste(subject, experimental_condition, sep = "_")),
+      read_xlsx("raw/extinction/extinction_2c_no_location.xlsx") %>%
+        mutate(experimental_condition = "extinction",
+               subject = paste(subject, experimental_condition, sep = "_"))
+    ) %>%
+      mutate(phase = "counterconditioning_testing",
+             response = as.character(response))
+  ) %>%
+  filter(blockcode != "Begin") %>% 
+  select(subject, experimental_condition, phase, block_number = blocknum, trial_number = trialnum, correct) %>%
+  arrange(subject, phase)
+
+```
+
+## Completeness
+
+```{r}
+
+data_training_and_testing_completeness_temp <- data_training_and_testing_input %>%
+  group_by(subject, phase) %>%
+  summarize(n = n()) %>%
+  mutate(complete_training_testing_data = 
+           case_when((phase == "acquisition_training" & n == 80) |
+                       (phase == "acquisition_testing" & n == 8) |
+                       (phase == "counterconditioning_training" & n == 80) |
+                       (phase == "counterconditioning_testing" & n == 8) ~ "complete", 
+                     (phase == "acquisition_training" & n > 80) |
+                       (phase == "acquisition_testing" & n > 8) |
+                       (phase == "counterconditioning_training" & n > 80) |
+                       (phase == "counterconditioning_testing" & n > 8) ~ "excess", 
+                     (phase == "acquisition_training" & n < 80) |
+                       (phase == "acquisition_testing" & n < 8) |
+                       (phase == "counterconditioning_training" & n < 80) |
+                       (phase == "counterconditioning_testing" & n < 8) ~ "partial")) %>%
+  ungroup() %>%
+  select(-n) 
+
+data_training_and_testing_completeness_temp %>%
+  count(phase, complete_training_testing_data) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+data_training_and_testing_completeness <- data_training_and_testing_completeness_temp %>%
+  pivot_wider(names_from = phase, 
+              values_from = complete_training_testing_data,
+              names_prefix = "completeness_")
+
+```
+
+## Performance
+
+```{r}
+
+data_training_and_testing_performance_temp <- data_training_and_testing_input %>%
+  # summarize performance by block
+  group_by(subject, phase, block_number) %>% 
+  summarise(mean_correct = mean(correct), 
+            sd_correct = sd(correct)) %>%
+  mutate(passed_performance_criterion_by_block = ifelse(mean_correct < .75, FALSE, TRUE)) %>%
+  ungroup() %>% 
+  # summarize performance by participant (final block only)
+  group_by(subject, phase) %>% 
+  mutate(passed_performance_criterion = ifelse(block_number == max(block_number) & passed_performance_criterion_by_block == TRUE, TRUE, FALSE)) %>%
+  ungroup() %>%
+  # mutate(phase = fct_relevel(phase,
+  #                            "counterconditioning_testing",
+  #                            "counterconditioning_training",
+  #                            "acqusitiion_testing",
+  #                            "acqusitiion_training")) %>%
+  drop_na()
+
+# plot
+data_training_and_testing_performance_temp %>% 
+  group_by(phase, block_number, passed_performance_criterion_by_block) %>% 
+  summarise(mean_accuracy = mean(mean_correct), sd_accuracy = sd(sd_correct)) %>%
+  ggplot(aes(x=block_number, y=mean_accuracy, fill = passed_performance_criterion_by_block)) +
+  geom_bar(colour="black", stat="identity", position = position_dodge()) + 
+  geom_errorbar(aes(ymin=mean_accuracy-sd_accuracy, ymax=mean_accuracy+sd_accuracy), width=.2,
+                position=position_dodge(.9)) + theme_classic() +
+  facet_wrap(~phase, ncol = 1)
+
+data_training_and_testing_performance <- data_training_and_testing_performance_temp %>%
+  group_by(subject, phase) %>% 
+  filter(block_number == max(block_number)) %>%
+  ungroup() %>%
+  select(-block_number, -passed_performance_criterion_by_block, -sd_correct) %>%
+  pivot_wider(names_from = phase,
+              values_from = c(mean_correct, passed_performance_criterion))
+
+```
+
+- WHERE IS EXTINCTION IN THE PLOT/DATA???
+
+- NB because the last block each participant completes is selected, if participants have partial data, their means refer to their last completed block not the ultimate block. therefore ensure that partial data exclusions are done.
+
+# Self-reports
+
+```{r}
+
+data_demand <- read_xlsx("raw/acquisition_only/demand.xlsx") %>% 
+  mutate(demand_response = case_when(Demand_response == "What I learned during the experiment" ~ "Not Demand Compliant",
+                                     Demand_response == "I don't know why I evaluated the items as I did" ~ "Not Demand Compliant",
+                                     Demand_response == "What I learned during the experiment" ~ "Not Demand Compliant",
+                                     Demand_response == "What I thought the experimenter wanted me to say" ~ "Demand Compliant",
+                                     Demand_response == "I based my ratings on some some factor that was not what I learned or what the experimenter wanted me to do" ~ "Not Demand Compliant")) %>%
+  select(subject, demand_response)
+
+data_reactance <- read_xlsx("raw/acquisition_only/reactance.xlsx") %>% 
+  select(subject, 
+         reactance_response_1 = react1_response, 
+         reactance_response_2 = react2_response) %>%
+  mutate(reactance_response_2 = str_remove_all(reactance_response_2, "[^0-9]"))
+
+# # no believability in this study
+# data_believability <- read_xlsx("raw/acquisition_only/cover_belief.xlsx") %>% 
+#   select(subject, 
+#          believability_response_1 = belief1_response, 
+#          believability_response_2 = belief2_response) %>%
+#   mutate(believability_response_2 = str_remove_all(believability_response_2, "[^0-9]"))
+
+data_confidence_ratings <- read_xlsx("raw/acquisition_only/confidence_ratings.xlsx") %>% 
+  select(subject, 
+         confidence_stim_1 = Stimulus_1_Confidence_Confidence_response, 
+         confidence_stim_2 = Stimulus_2_Confidence_Confidence_response, 
+         confidence_stim_3 = Stimulus_3_Confidence_Confidence_response, 
+         confidence_stim_4 = Stimulus_4_Confidence_Confidence_response)
+
+data_ratings <- read_xlsx("raw/acquisition_only/valence_ratings.xlsx") %>% 
+  select(subject, 
+         Outcome_1_Pos_Neg = Stimulus_1_Positive_Negative_Positive_Negative_response,
+         Outcome_1_Good_Bad = Stimulus_1_Good_Bad_Good_Bad_response,
+         Outcome_1_Pleasant_Unpleasant = Stimulus_1_Pleasant_Unpleasant_Pleasant_Unpleasant_response,
+         Outcome_1_Like_Dislike = Stimulus_1_Like_Dislike_Like_Dislike_response,
+         Outcome_2_Pos_Neg = Stimulus_3_Positive_Negative_Positive_Negative_response,
+         Outcome_2_Good_Bad = Stimulus_3_Good_Bad_Good_Bad_response, 
+         Outcome_2_Pleasant_Unpleasant = Stimulus_3_Pleasant_Unpleasant_Pleasant_Unpleasant_response,
+         Outcome_2_Like_Dislike = Stimulus_3_Like_Dislike_Like_Dislike_response,
+         Target_1_Pos_Neg = Stimulus_2_Positive_Negative_Positive_Negative_response,
+         Target_1_Good_Bad = Stimulus_2_Good_Bad_Good_Bad_response, 
+         Target_1_Pleasant_Unpleasant = Stimulus_2_Pleasant_Unpleasant_Pleasant_Unpleasant_response,
+         Target_1_Like_Dislike = Stimulus_2_Like_Dislike_Like_Dislike_response,
+         Target_2_Pos_Neg = Stimulus_4_Positive_Negative_Positive_Negative_response,
+         Target_2_Good_Bad = Stimulus_4_Good_Bad_Good_Bad_response,
+         Target_2_Pleasant_Unpleasant = Stimulus_4_Pleasant_Unpleasant_Pleasant_Unpleasant_response,
+         Target_2_Like_Dislike = Stimulus_4_Like_Dislike_Like_Dislike_response) %>% 
+  # Create a mean rating score for each stimulus
+  # Create an operant evaluative conditioning (OEC) and intersecting regularites (IR) effect
+  rowwise() %>%
+  mutate(mean_outcome_1 = mean(c(Outcome_1_Pos_Neg, Outcome_1_Good_Bad, Outcome_1_Pleasant_Unpleasant, Outcome_1_Like_Dislike)),
+         mean_outcome_2 = mean(c(Outcome_2_Pos_Neg, Outcome_2_Good_Bad, Outcome_2_Pleasant_Unpleasant, Outcome_2_Like_Dislike)),
+         mean_target_1  = mean(c(Target_1_Pos_Neg, Target_1_Good_Bad, Target_1_Pleasant_Unpleasant, Target_1_Like_Dislike)),
+         mean_target_2  = mean(c(Target_2_Pos_Neg, Target_2_Good_Bad, Target_2_Pleasant_Unpleasant, Target_2_Like_Dislike)),
+         OEC_effect_native     = mean_outcome_1 - mean_outcome_2,
+         IR_effect_native      = mean_target_1 - mean_target_2) %>%
+  ungroup() %>%
+  select(subject, OEC_effect_native, IR_effect_native)
+
+# behavioural intentions
+data_intentions <- 
+  full_join(read_xlsx("raw/acquisition_only/intention_ratings_1_3.xlsx") %>%
+              select(subject, intentions_response_1_3 = Intentions_1_3_response),
+            read_xlsx("raw/acquisition_only/intention_ratings_2_4.xlsx") %>%
+              select(subject, intentions_response_2_4 = Intentions_2_4_response),
+            by = "subject")
+
+```
+
+# IAT
+
+## Tidying
+
+```{r}
+
+data_iat_input <- 
+  bind_rows(
+    read_xlsx("raw/acquisition_only/iat_symbols_before.xlsx") %>%
+      mutate(task_order = "iat before explicits",
+             response = as.character(response)),
+    read_xlsx("raw/acquisition_only/iat_symbols_after.xlsx") %>%
+      mutate(task_order = "iat after explicits",
+             response = as.character(response))
+  ) %>%
+  mutate(experiment = current_experiment_number) %>%
+  select(subject, experiment, 
+         block_type = blockcode, block = blocknum, trial_number = trialnum, 
+         correct, latency) %>%
+  # trial_number on blocks 3 and 7 begins on 2: correct to begin at 1
+  mutate(trial_number = ifelse(block %in% c(1, 2, 3, 6, 7), trial_number-1, trial_number)) %>%
+  # the number of the blocks is incorrect due to the way the task was coded, recode
+  mutate(block = case_when(block == 1 ~ 1,
+                           block == 2 ~ 2,
+                           block == 3 ~ 3,
+                           block == 5 ~ 4,
+                           block == 6 ~ 5,
+                           block == 7 ~ 6,
+                           block == 9 ~ 7))
+
+# block order
+data_iat_block_order <- data_iat_input %>%
+  filter(block == 1 & trial_number == 1) %>%
+  mutate(iat_block_order = case_when(block_type == "targetincompatiblepractice" ~ "learning_inconsistent_first",
+                                     block_type == "targetcompatiblepractice" ~ "learning_consistent_first")) %>%
+  select(subject, iat_block_order)
+
+# only retain the critical practice and test blocks (i.e., block_number = 3, 4, 6, 7)
+data_iat_cleaned <- data_iat_block_order %>%
+  left_join(data_iat_input, by = "subject") %>% 
+  filter(block %in% c(3, 4, 6, 7))
+
+```
+
+## Completeness
+
+```{r}
+
+data_iat_completeness <- data_iat_cleaned %>%
+  group_by(subject) %>%
+  summarize(n = n()) %>%
+  mutate(complete_iat_data = case_when(n == 120 ~ "complete", 
+                                       n > 120 ~ "excess", 
+                                       n < 120 ~"partial")) %>%
+  ungroup() %>%
+  select(-n)
+
+data_iat_completeness %>%
+  distinct(subject, .keep_all = TRUE) %>%
+  count(complete_iat_data) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+```
+
+## Performance
+
+```{r}
+
+# exclude if total error rate > 30% 
+data_iat_accuracy_overall <- data_iat_cleaned %>% 
+  group_by(subject) %>% 
+  summarise(iat_accuracy_overall = sum(correct)/n()) %>%
+  ungroup() %>%
+  mutate(passed_iat_accuracy_overall = ifelse(iat_accuracy_overall >= .70, TRUE, FALSE)) %>%
+  select(subject, passed_iat_accuracy_overall)
+
+# exclude if error rate on any one block > 40% 
+data_iat_accuracy_by_block <- data_iat_cleaned %>% 
+  group_by(subject, block) %>% 
+  summarise(iat_accuracy_by_block = sum(correct)/n()) %>%
+  ungroup() %>%
+  mutate(passed_iat_accuracy_by_block = ifelse(iat_accuracy_by_block >= .60, TRUE, FALSE)) %>%
+  group_by(subject) %>%
+  summarize(passed_iat_accuracy_by_block = as.logical(min(passed_iat_accuracy_by_block))) %>%
+  ungroup()
+
+data_iat_fast_responding <- data_iat_cleaned %>% 
+  mutate(fast_response = ifelse(latency < 300, 1, 0)) %>%
+  group_by(subject) %>% 
+  summarise(iat_percent_fast_responses = sum(fast_response)/n()) %>%
+  ungroup() %>%
+  mutate(passed_iat_percent_fast_responses = ifelse(iat_percent_fast_responses <= .10, TRUE, FALSE)) %>%
+  select(subject, passed_iat_percent_fast_responses)
+
+data_iat_performance <- data_iat_accuracy_overall %>%
+  full_join(data_iat_accuracy_by_block, by = "subject") %>%
+  full_join(data_iat_fast_responding, by = "subject") %>%
+  rowwise() %>%
+  mutate(passed_iat_performance = as.logical(min(c(passed_iat_accuracy_overall, 
+                                                   passed_iat_accuracy_by_block,   
+                                                   passed_iat_percent_fast_responses), na.rm = TRUE))) %>%
+  ungroup() %>%
+  select(subject, passed_iat_performance)
+
+rm(data_iat_accuracy_overall, data_iat_accuracy_by_block, data_iat_fast_responding)
+
+```
+
+## D2 scoring
+
+```{r}
+
+data_iat_D2_scores <- data_iat_cleaned %>%
+  # rename and recode to create the input format that the IATscores package requires
+  mutate(praccrit = ifelse(block_type == "incompatibletest1" | block_type == "compatibletest1", 
+                           "prac", "crit"),
+         blockcode = ifelse(block_type == "incompatibletest1" | block_type == "incompatibletest2",
+                            "incompatible_block", "compatible_block")) %>%
+  select(subject, block, correct, latency, praccrit,  trial_number, block_type) %>%
+  mutate(blockcode = ifelse(block %in% c(3, 4), "pair1", 
+                            ifelse(block %in% c(6, 7), "pair2", NA)),
+         praccrit = ifelse(block %in% c(3, 6), "prac", 
+                           ifelse(block %in% c(4, 7), "crit", NA)))  %>%
+  filter(!is.na(blockcode)) %>%
+  # calculate D2 scores
+  # parameters are identical to those the package lists in the D2 wrapper function
+  IATscores::RobustScores(IATdata = .,
+                          P1 = "fxtrim",  # Trim values < 400ms
+                          P2 = "ignore",  # do not trim errors
+                          P3 = "dscore",  # calculate d2 scores
+                          P4 = "dist",    # distinguish between the prac and test blocks
+                          verbose = FALSE,
+                          autoremove = FALSE) %>%
+  rename(IAT_D2_native = p2112) 
+
+```
+
+# Combine and write to disk
+
+```{r}
+
+data_processed <- data_conditions %>%
+  full_join(data_demographics, by = "subject") %>%
+  full_join(data_training_and_testing_completeness, by = "subject") %>%
+  full_join(data_training_and_testing_performance, by = "subject") %>%
+  full_join(data_ratings, by = "subject") %>%
+  full_join(data_iat_block_order, by = "subject") %>%
+  full_join(data_iat_completeness, by = "subject") %>%
+  full_join(data_iat_performance, by = "subject") %>%
+  full_join(data_iat_D2_scores, by = "subject") %>%
+  full_join(data_intentions, by = "subject") %>%
+  full_join(data_demand, by = "subject") %>%
+  full_join(data_reactance, by = "subject") %>%
+  full_join(data_confidence_ratings, by = "subject") %>%
+  full_join(data_believability, by = "subject") %>%
+  # reverse-score the scores the self-reports based on stimulus_identity_condition
+  mutate(
+    OEC_effect_reverse_scored = case_when(
+      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" ~ OEC_effect_native,
+      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" ~ OEC_effect_native*-1
+    ),
+    IR_effect_reverse_scored = case_when(
+      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" ~ IR_effect_native,
+      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" ~ IR_effect_native*-1
+    )
+  ) %>%
+  # reverse score IAT so that a positive IAT score indicates that people preferred the Target that was related to the Positive Source more than the Target related to the Negative source and vice versa
+  mutate(
+    IAT_D2_reverse_scored = case_when(
+      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" ~ IAT_D2_native*-1, 
+      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" ~ IAT_D2_native
+    )
+  ) %>%
+  select(experiment, 
+         subject, 
+         age, 
+         gender, 
+         stimulus_identity_condition, 
+         extinction_condition, 
+         task_order, 
+         completeness_acquisition_testing, completeness_acquisition_training, 
+         completeness_counterconditioning_testing, completeness_counterconditioning_training, 
+         mean_correct_acquisition_training, mean_correct_acquisition_testing, 
+         mean_correct_counterconditioning_testing, mean_correct_counterconditioning_training, 
+         passed_performance_criterion_acquisition_training, passed_performance_criterion_acquisition_testing, 
+         passed_performance_criterion_counterconditioning_testing, passed_performance_criterion_counterconditioning_training, 
+         OEC_effect_native, OEC_effect_reverse_scored, 
+         IR_effect_native, IR_effect_reverse_scored, 
+         complete_iat_data, 
+         iat_block_order,
+         passed_iat_performance,
+         IAT_D2_native, IAT_D2_reverse_scored, 
+         intentions_response_1_3, intentions_response_2_4,
+         demand_response, 
+         reactance_response_1, reactance_response_2, 
+         confidence_stim_1, confidence_stim_2, confidence_stim_3, confidence_stim_4,
+         believability_response_1, believability_response_2)
+
+# write to disk
+write_csv(data_processed, "processed/data_processed.csv")
+
+```
+
+# testing reverse scoring
+
+should the iat, ir and oec DVs be reverse scored for condition? should the iat also be reverse scored for block order?
+
+```{r fig.height=12, fig.width=8}
+
+temp <- 
+  data_processed %>%
+  filter(completeness_acquisition_testing == "complete" & 
+           completeness_acquisition_training == "complete" & 
+           complete_iat_data == "complete" &
+           passed_performance_criterion_acquisition_training == TRUE &
+           passed_performance_criterion_acquisition_testing == TRUE &
+           passed_iat_performance == TRUE) %>%
+  mutate(IAT_D2_native_blockreversed = ifelse(iat_block_order == "learning_consistent_first", IAT_D2_native,
+                                              ifelse(iat_block_order == "learning_inconsistent_first", IAT_D2_native*-1, NA)),
+         IAT_D2_reverse_scored_blockreversed = ifelse(iat_block_order == "learning_consistent_first", IAT_D2_reverse_scored,
+                                                      ifelse(iat_block_order == "learning_inconsistent_first", IAT_D2_reverse_scored*-1, NA))) %>%
+  select(stimulus_identity_condition, 
+         OEC_effect_native, 
+         #OEC_effect_reverse_scored, 
+         IR_effect_native, 
+         #IR_effect_reverse_scored, 
+         #IAT_D2_native,
+         IAT_D2_reverse_scored)
+         #IAT_D2_native_blockreversed)
+         #IAT_D2_reverse_scored_blockreversed)
+
+temp %>%
+  select(-stimulus_identity_condition) %>%
+  cor(use = "pairwise.complete.obs", method = "spearman") %>%
+  round(2)
+
+temp %>%
+  group_by(stimulus_identity_condition) %>%
+  summarize_all(list(mean = mean), na.rm = TRUE) 
+
+temp %>%
+  gather(key, value, c(OEC_effect_native, 
+                       #OEC_effect_reverse_scored, 
+                       IR_effect_native, 
+                       #IR_effect_reverse_scored, 
+                       #IAT_D2_native,
+                       IAT_D2_reverse_scored)) %>%
+                       #IAT_D2_native_blockreversed)) %>%
+                       #IAT_D2_reverse_scored_blockreversed
+  ggplot(aes(value, fill = stimulus_identity_condition)) +
+  geom_density(alpha = 0.5) +
+  facet_wrap(~key, scales = "free", ncol = 1)
+
+```
+
+
+
