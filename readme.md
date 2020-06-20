@@ -58,8 +58,7 @@ I'll leave it this way for the moment, but just FYI that there are differences i
 - ensure reverse scoring is congruent between outcome measures, remove redundant ones (do intentions items need sum scoring of some sort? iat block order reversals?)
 - iat processing comment states "# trial_number on blocks 3 and 7 begins on 2: correct to begin at 1" but then the code changes it for blocks other than these two: "mutate(trial_number = ifelse(block %in% c(1, 2, 3, 6, 7), trial_number-1, trial_number))"
 - Study 7 
-  - add equivalence data processing
-  - add manipulation check processing
+  - check scoring of equivalence - currently uses correct variable (did this really measure correct responding? check inquisit script) and uses a 75% accuracy criterion. 1/3 of Ss fail. 
 
 
 
