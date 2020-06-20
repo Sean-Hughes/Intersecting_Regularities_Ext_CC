@@ -17,9 +17,9 @@ output:
 - exploratory_questions.xlsx currently not used
 - reverse scoring done for self reported ratings, but what about other self-reports and iats?
 - ensure reverse scoring is congruent between outcome measures
-- iat processing comment states "# trial_number on blocks 3 and 7 begins on 2: correct to begin at 1" but then the code changes it for blocks othe rthan these two: "mutate(trial_number = ifelse(block %in% c(1, 2, 3, 6, 7), trial_number-1, trial_number))"
+- iat processing comment states "# trial_number on blocks 3 and 7 begins on 2: correct to begin at 1" but then the code changes it for blocks other than these two: "mutate(trial_number = ifelse(block %in% c(1, 2, 3, 6, 7), trial_number-1, trial_number))"
 - do intentions items need sum scoring of some sort? 
-- assess whehter all raw data files are used by this processing script or not. if not, why? this may also differ for other studies.
+- assess whether all raw data files are used by this processing script or not. if not, why? this may also differ for other studies.
 
 ```{r include=FALSE}
 knitr::opts_chunk$set(message=FALSE,
@@ -554,8 +554,8 @@ temp <-
   filter(completeness_acquisition_testing == "complete" & 
            completeness_acquisition_training == "complete" & 
            complete_iat_data == "complete" &
-           #passed_performance_criterion_acquisition_training == TRUE &
-           #passed_performance_criterion_acquisition_testing == TRUE &
+           passed_performance_criterion_acquisition_training == TRUE &
+           passed_performance_criterion_acquisition_testing == TRUE &
            passed_iat_performance == TRUE) %>%
   mutate(IAT_D2_native_blockreversed = ifelse(iat_block_order == "learning_consistent_first", IAT_D2_native,
                                               ifelse(iat_block_order == "learning_inconsistent_first", IAT_D2_native*-1, NA)),
