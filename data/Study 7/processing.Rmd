@@ -180,7 +180,7 @@ data_training_and_testing_input <-
                subject = paste(subject, experimental_condition, sep = "_"))
     ) %>%
       mutate(phase = "acquisition_training",
-             blocknum = blocknum-1,
+             blocknum = blocknum-3,
              response = as.character(response)),
     
     # acquisition test 
@@ -221,8 +221,7 @@ data_training_and_testing_input <-
                experimental_condition = "counterconditioning",
                subject = paste(subject, experimental_condition, sep = "_"))
     ) %>%
-      mutate(phase = "counterconditioning_training",
-             blocknum = blocknum-1) %>%
+      mutate(phase = "counterconditioning_training") %>%
       select(-starts_with("stimulus")),
     
     # extinction test 
@@ -234,12 +233,15 @@ data_training_and_testing_input <-
         mutate(experimental_condition = "extinction",
                subject = paste(subject, experimental_condition, sep = "_"))
     ) %>%
-      mutate(phase = "counterconditioning_testing",
+      mutate(phase = "extinction_training",
+             blocknum = blocknum-3,
              response = as.character(response))
   ) %>%
   filter(blockcode != "Begin") %>% 
   select(subject, experimental_condition, phase, block_number = blocknum, trial_number = trialnum, correct) %>%
-  arrange(subject, phase)
+  arrange(subject, phase) %>%
+  # many participants have block numbers 5+ for some reason I don't understand. trim this data.
+  filter(block_number %in% c(1, 2, 3, 4))
 
 ```
 
@@ -247,27 +249,37 @@ data_training_and_testing_input <-
 
 ```{r}
 
+# # check n participants with different n trials per phase and block 
+# temp <- data_training_and_testing_input %>%
+#   group_by(subject, phase, block_number) %>%
+#   summarize(n = n()) %>%
+#   ungroup() %>%
+#   count(phase, block_number, n) %>%
+#   rename(n_trials = n, n_participants = nn) %>%
+#   arrange(phase, block_number, desc(n_participants))
+
 data_training_and_testing_completeness_temp <- data_training_and_testing_input %>%
   group_by(subject, phase) %>%
   summarize(n = n()) %>%
   mutate(complete_training_testing_data = 
-           case_when((phase == "acquisition_training" & n == 80) |
+           case_when((phase == "acquisition_training" & n == 80) |  
                        (phase == "acquisition_testing" & n == 8) |
-                       (phase == "counterconditioning_training" & n == 80) |
-                       (phase == "counterconditioning_testing" & n == 8) ~ "complete", 
+                       (phase == "counterconditioning_training" & n == 80) |  
+                       (phase == "extinction_training" & n == 80) ~ "complete",
                      (phase == "acquisition_training" & n > 80) |
                        (phase == "acquisition_testing" & n > 8) |
                        (phase == "counterconditioning_training" & n > 80) |
-                       (phase == "counterconditioning_testing" & n > 8) ~ "excess", 
+                       (phase == "extinction_training" & n < 80) ~ "excess",
                      (phase == "acquisition_training" & n < 80) |
                        (phase == "acquisition_testing" & n < 8) |
                        (phase == "counterconditioning_training" & n < 80) |
-                       (phase == "counterconditioning_testing" & n < 8) ~ "partial")) %>%
+                       (phase == "extinction_training" & n < 80) ~ "partial")) %>%
   ungroup() %>%
   select(-n) 
 
 data_training_and_testing_completeness_temp %>%
   count(phase, complete_training_testing_data) %>%
+  arrange(phase, complete_training_testing_data) %>%
   kable() %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 
@@ -293,11 +305,11 @@ data_training_and_testing_performance_temp <- data_training_and_testing_input %>
   group_by(subject, phase) %>% 
   mutate(passed_performance_criterion = ifelse(block_number == max(block_number) & passed_performance_criterion_by_block == TRUE, TRUE, FALSE)) %>%
   ungroup() %>%
-  # mutate(phase = fct_relevel(phase,
-  #                            "counterconditioning_testing",
-  #                            "counterconditioning_training",
-  #                            "acqusitiion_testing",
-  #                            "acqusitiion_training")) %>%
+  mutate(phase = fct_relevel(phase,
+                             "extinction_training",
+                             "counterconditioning_training",
+                             "acquisition_testing",
+                             "acquisition_training")) %>%
   drop_na()
 
 # plot
