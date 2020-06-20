@@ -11,22 +11,6 @@ output:
     toc_float: yes
 ---
 
-# to dos
-
-- why is task_order discerned from stimulus_ratings_before.xlsx and after? why are there missing values?
-- exploratory_questions.xlsx currently not used
-- reverse scoring done for self reported ratings, but what about other self-reports and iats?
-- ensure reverse scoring is congruent between outcome measures
-- iat processing comment states "# trial_number on blocks 3 and 7 begins on 2: correct to begin at 1" but then the code changes it for blocks other than these two: "mutate(trial_number = ifelse(block %in% c(1, 2, 3, 6, 7), trial_number-1, trial_number))"
-- do intentions items need sum scoring of some sort? 
-- assess whether all raw data files are used by this processing script or not. if not, why? this may also differ for other studies.
-
-- why is there only one extinction training file? 
-
-- completeness acquisition_training	excess is too high
-- training and testing performance needs work 
-- add equivalence data processing
-
 ```{r include=FALSE}
 knitr::opts_chunk$set(message=FALSE,
                       warning=FALSE)
@@ -48,17 +32,6 @@ library(IATscores)
 # Conditions
 
 Some experimental conditions are not recorded in the data produced by inquisit but are discerned by the file names they come from, or the presence or absence of one phase of data. Extract this here. 
-
-The_training conditions are defined by which file the data come from:
-
-intersecting_regularities_left.xlsx & 
-intersecting_regularities_right.xlsx: 
-- Outcome 1 and Target 1 are Good/ Outcome 2 and Target 2 are Bad
-
-intersecting_regularities_left_rev.xlsx & 
-intersecting_regularities_right_rev.xlsx: 
-- Outcome 1 and Target 1 are Bad/ Outcome 2 and Target 2 are Good
-
 
 ```{r}
 
