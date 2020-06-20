@@ -49,7 +49,7 @@ I'll leave it this way for the moment, but just FYI that there are differences i
 
 ## To do list
 
-processing.rmd scripts
+### processing.rmd scripts
 
 - There are participants in each study with excess data. Figure out what do with this (retain them?). Without further action they will likely be excluded.
 
@@ -62,3 +62,28 @@ processing.rmd scripts
   - training and testing performance needs work 
   - add equivalence data processing
   - add manipulation check processing
+
+
+
+### analyses
+
+currently not present. where is this done? It'll probably need to be redone?
+
+
+
+### meta-analyses
+
+currently work off of manually extracted effect sizes; rework to use actual data
+
+
+
+### plotting
+
+update/add
+
+
+
+### Measures
+
+add video of procedure and ref in manuscript
+
