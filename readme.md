@@ -54,9 +54,12 @@ I'll leave it this way for the moment, but just FYI that there are differences i
 - There are participants in each study with excess data. Figure out what do with this (retain them?). Without further action they will likely be excluded.
 
 - why is task_order discerned from stimulus_ratings_before.xlsx and after? why are there missing values?
+- is there such thing as counterconditioning testing or extinction testing? if so, where do these data come from and how can they be verified as being task specific (e.g., no acquisition)? many "testing_" files are interpreted as containing a given type of task on faith, but need close checking. Some studies dont seem to use every file.
+- Attempts to solve previous quesiton have broken study 4 performance (not pushed)
 - exploratory_questions.xlsx currently not used and seems to be empty?
 - do intentions items need sum scoring of some sort?
 - ensure reverse scoring is congruent between outcome measures, remove redundant ones (iat block order reversals?)
+  - remove "# testing reverse scoring" section from each script when done
 - iat processing comment states "# trial_number on blocks 3 and 7 begins on 2: correct to begin at 1" but then the code changes it for blocks other than these two: "mutate(trial_number = ifelse(block %in% c(1, 2, 3, 6, 7), trial_number-1, trial_number))"
 - deviations from prereg document states that study 7 was created from data taken from previous studies. is this the case? why does it have extra variables then? eg equivalence test and manipulation check. if it new anayses of existing data, we should dump the duplicate data. if its new data, the the document needs changing.
 - Study 7 
