@@ -58,9 +58,9 @@ intersecting_regularities_right_rev.xlsx:
 
 ```{r}
 
-current_experiment_number <- 5
+current_experiment_number <- 6
 
-# stimulus identity using counterconditioning_training file names
+# stimulus identity using acquisition_training file names
 data_stimulus_identity_condition <- 
   bind_rows(
     read_xlsx("raw/intersecting_regularities_left.xlsx") %>%
@@ -79,13 +79,13 @@ data_stimulus_identity_condition <-
 data_extinction_condition <- 
   bind_rows(
     #_training
-    read_xlsx("raw/counterconditioning1a_intersecting_regularities_left.xlsx") %>% 
+    read_xlsx("raw/counterconditioning1b_intersecting_regularities_left.xlsx") %>% 
       mutate(response = as.character(response)),
-    read_xlsx("raw/counterconditioning1a_intersecting_regularities_left_rev.xlsx") %>% 
+    read_xlsx("raw/counterconditioning1b_intersecting_regularities_left_rev.xlsx") %>% 
       mutate(response = as.character(response)),
-    read_xlsx("raw/counterconditioning1a_intersecting_regularities_right.xlsx") %>% 
+    read_xlsx("raw/counterconditioning1b_intersecting_regularities_right.xlsx") %>% 
       mutate(response = as.character(response)),
-    read_xlsx("raw/counterconditioning1a_intersecting_regularities_right_rev.xlsx") %>% 
+    read_xlsx("raw/counterconditioning1b_intersecting_regularities_right_rev.xlsx") %>% 
       mutate(response = as.character(response)),
     #_testing
     read_xlsx("raw/testing_left.xlsx") %>% 
@@ -152,7 +152,7 @@ data_training_and_testing_input <-
       read_xlsx("raw/intersecting_regularities_left_rev.xlsx"),
       read_xlsx("raw/intersecting_regularities_right_rev.xlsx")
     ) %>%
-      mutate(phase = "counterconditioning_training",
+      mutate(phase = "acquisition_training",
              blocknum = blocknum-1,
              response = as.character(response)),
     
@@ -163,21 +163,22 @@ data_training_and_testing_input <-
       read_xlsx("raw/testing_right.xlsx"),
       read_xlsx("raw/testing_right_rev.xlsx")
     ) %>%
-      mutate(phase = "counterconditioning_testing",
+      mutate(phase = "acquisition_testing",
              response = as.character(response)),
     
-    # extinction_training
+    # counterconditioning_training
     bind_rows(
-      read_xlsx("raw/counterconditioning1a_intersecting_regularities_left.xlsx") %>%
+      read_xlsx("raw/counterconditioning1b_intersecting_regularities_left.xlsx") %>%
         mutate(response = as.character(response)),
-      read_xlsx("raw/counterconditioning1a_intersecting_regularities_left_rev.xlsx") %>%
+      read_xlsx("raw/counterconditioning1b_intersecting_regularities_left_rev.xlsx") %>%
         mutate(response = as.character(response)),
-      read_xlsx("raw/counterconditioning1a_intersecting_regularities_right.xlsx") %>%
+      read_xlsx("raw/counterconditioning1b_intersecting_regularities_right.xlsx") %>%
         mutate(response = as.character(response)),
-      read_xlsx("raw/counterconditioning1a_intersecting_regularities_right_rev.xlsx") %>%
+      read_xlsx("raw/counterconditioning1b_intersecting_regularities_right_rev.xlsx") %>%
         mutate(response = as.character(response))
     ) %>%
-      mutate(phase = "extinction_training") %>%
+      mutate(phase = "counterconditioning_training",
+             blocknum = blocknum-1) %>%
       select(-starts_with("stimulus")),
     
     # extinction test 
@@ -187,7 +188,7 @@ data_training_and_testing_input <-
       read_xlsx("raw/testing_right.xlsx"),
       read_xlsx("raw/testing_right_rev.xlsx")
     ) %>%
-      mutate(phase = "extinction_testing",
+      mutate(phase = "counterconditioning_testing",
              response = as.character(response))
   ) %>%
   filter(blockcode != "Begin") %>% 
@@ -247,8 +248,8 @@ data_training_and_testing_performance_temp <- data_training_and_testing_input %>
   mutate(passed_performance_criterion = ifelse(block_number == max(block_number) & passed_performance_criterion_by_block == TRUE, TRUE, FALSE)) %>%
   ungroup() %>%
   mutate(phase = fct_relevel(phase,
-                             "extinction_testing",
-                             "extinction_training",
+                             "counterconditioning_testing",
+                             "counterconditioning_training",
                              "acqusitiion_testing",
                              "acqusitiion_training")) %>%
   drop_na()
@@ -527,12 +528,12 @@ data_processed <- data_conditions %>%
          stimulus_identity_condition, 
          extinction_condition, 
          task_order, 
+         completeness_acquisition_testing, completeness_acquisition_training, 
          completeness_counterconditioning_testing, completeness_counterconditioning_training, 
-         completeness_extinction_testing, completeness_extinction_training, 
-         mean_correct_counterconditioning_training, mean_correct_counterconditioning_testing, 
-         mean_correct_extinction_testing, mean_correct_extinction_training, 
-         passed_performance_criterion_counterconditioning_training, passed_performance_criterion_counterconditioning_testing, 
-         passed_performance_criterion_extinction_testing, passed_performance_criterion_extinction_training, 
+         mean_correct_acquisition_training, mean_correct_acquisition_testing, 
+         mean_correct_counterconditioning_testing, mean_correct_counterconditioning_training, 
+         passed_performance_criterion_acquisition_training, passed_performance_criterion_acquisition_testing, 
+         passed_performance_criterion_counterconditioning_testing, passed_performance_criterion_counterconditioning_training, 
          OEC_effect_native, OEC_effect_reverse_scored, 
          IR_effect_native, IR_effect_reverse_scored, 
          complete_iat_data, 
@@ -558,11 +559,11 @@ should the iat, ir and oec DVs be reverse scored for condition? should the iat a
 
 temp <- 
   data_processed %>%
-  filter(completeness_counterconditioning_testing == "complete" & 
-           completeness_counterconditioning_training == "complete" & 
+  filter(completeness_acquisition_testing == "complete" & 
+           completeness_acquisition_training == "complete" & 
            complete_iat_data == "complete" &
-           passed_performance_criterion_counterconditioning_training == TRUE &
-           passed_performance_criterion_counterconditioning_testing == TRUE &
+           passed_performance_criterion_acquisition_training == TRUE &
+           passed_performance_criterion_acquisition_testing == TRUE &
            passed_iat_performance == TRUE) %>%
   mutate(IAT_D2_native_blockreversed = ifelse(iat_block_order == "learning_consistent_first", IAT_D2_native,
                                               ifelse(iat_block_order == "learning_inconsistent_first", IAT_D2_native*-1, NA)),
