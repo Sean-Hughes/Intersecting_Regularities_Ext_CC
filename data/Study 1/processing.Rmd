@@ -13,8 +13,9 @@ output:
 
 # to dos
 
+- how to ensure monkey/test data is removed? are they all partial?
 - why is task_order discerned from stimulus_ratings_before.xlsx and after? why are there missing values?
-- exploratory_questions.xlsx currently not used
+- exploratory_questions.xlsx currently not used - why?
 - reverse scoring done for self reported ratings, but what about other self-reports and iats?
 - ensure reverse scoring is congruent between outcome measures
 - iat processing comment states "# trial_number on blocks 3 and 7 begins on 2: correct to begin at 1" but then the code changes it for blocks other than these two: "mutate(trial_number = ifelse(block %in% c(1, 2, 3, 6, 7), trial_number-1, trial_number))"
