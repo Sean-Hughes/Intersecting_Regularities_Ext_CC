@@ -53,13 +53,14 @@ data_stimulus_identity_condition <-
   distinct(subject, .keep_all = TRUE)
 
 # stimulus identity using presence of extinction phase files
-data_extinction_condition <- 
+data_experiment_condition <- 
+data_experiment_condition <- 
   bind_rows(
     #_training
     read_xlsx("raw/extinction_intersecting_regularities_1d.xlsx") %>% 
       mutate(response = as.character(response)),
     #_testing
-    read_xlsx("raw/testing_left.xlsx") %>% 
+    read_xlsx("raw/testing_left.xlsx") %>%  # these will be empty apart from participant codes as procedure involved only stimulus presentations
       mutate(response = as.character(response)),
     read_xlsx("raw/testing_left_rev.xlsx") %>% 
       mutate(response = as.character(response)),
@@ -68,8 +69,8 @@ data_extinction_condition <-
     read_xlsx("raw/testing_right_rev.xlsx") %>% 
       mutate(response = as.character(response))
   ) %>%
-  mutate(extinction_condition = "acquisition and extinction") %>%
-  select(subject, extinction_condition) %>%
+  mutate(experiment_condition = "acquisition and extinction") %>%
+  select(subject, experiment_condition) %>%
   distinct(subject, .keep_all = TRUE)
 
 # task order
@@ -83,12 +84,12 @@ data_task_order <-
 
 # combine
 data_conditions <- data_stimulus_identity_condition %>%
-  full_join(data_extinction_condition, by = "subject") %>%
+  full_join(data_experiment_condition, by = "subject") %>%
   full_join(data_task_order, by = "subject") %>%
   mutate(experiment = current_experiment_number,
-         extinction_condition = ifelse(is.na(extinction_condition), "acquisition only", extinction_condition))
+         experiment_condition = ifelse(is.na(experiment_condition), "acquisition only", experiment_condition))
 
-rm(data_stimulus_identity_condition, data_extinction_condition, data_task_order)
+rm(data_stimulus_identity_condition, data_experiment_condition, data_task_order)
 
 ```
 
@@ -490,7 +491,7 @@ data_processed <- data_conditions %>%
          age, 
          gender, 
          stimulus_identity_condition, 
-         extinction_condition, 
+         experiment_condition, 
          task_order, 
          completeness_acquisition_testing, completeness_acquisition_training, 
          completeness_extinction_testing, completeness_extinction_training, 

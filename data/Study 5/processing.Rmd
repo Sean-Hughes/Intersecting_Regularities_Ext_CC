@@ -53,9 +53,8 @@ data_stimulus_identity_condition <-
   distinct(subject, .keep_all = TRUE)
 
 # stimulus identity using presence of extinction phase files
-data_extinction_condition <- 
+data_experimental_condition <- 
   bind_rows(
-    #_training
     read_xlsx("raw/counterconditioning1a_intersecting_regularities_left.xlsx") %>% 
       mutate(response = as.character(response)),
     read_xlsx("raw/counterconditioning1a_intersecting_regularities_left_rev.xlsx") %>% 
@@ -64,18 +63,9 @@ data_extinction_condition <-
       mutate(response = as.character(response)),
     read_xlsx("raw/counterconditioning1a_intersecting_regularities_right_rev.xlsx") %>% 
       mutate(response = as.character(response)),
-    #_testing
-    read_xlsx("raw/testing_left.xlsx") %>% 
-      mutate(response = as.character(response)),
-    read_xlsx("raw/testing_left_rev.xlsx") %>% 
-      mutate(response = as.character(response)),
-    read_xlsx("raw/testing_right.xlsx") %>% 
-      mutate(response = as.character(response)),
-    read_xlsx("raw/testing_right_rev.xlsx") %>% 
-      mutate(response = as.character(response))
   ) %>%
-  mutate(extinction_condition = "acquisition and counterconditioning") %>%
-  select(subject, extinction_condition) %>%
+  mutate(experimental_condition = "acquisition and counterconditioning") %>%
+  select(subject, experimental_condition) %>%
   distinct(subject, .keep_all = TRUE)
 
 # task order
@@ -89,12 +79,12 @@ data_task_order <-
 
 # combine
 data_conditions <- data_stimulus_identity_condition %>%
-  full_join(data_extinction_condition, by = "subject") %>%
+  full_join(data_experimental_condition, by = "subject") %>%
   full_join(data_task_order, by = "subject") %>%
   mutate(experiment = current_experiment_number,
-         extinction_condition = ifelse(is.na(extinction_condition), "acquisition only", extinction_condition))
+         experimental_condition = ifelse(is.na(experimental_condition), "acquisition only", experimental_condition))
 
-rm(data_stimulus_identity_condition, data_extinction_condition, data_task_order)
+rm(data_stimulus_identity_condition, data_experimental_condition, data_task_order)
 
 ```
 
@@ -129,7 +119,7 @@ data_training_and_testing_input <-
       read_xlsx("raw/intersecting_regularities_left_rev.xlsx"),
       read_xlsx("raw/intersecting_regularities_right_rev.xlsx")
     ) %>%
-      mutate(phase = "counterconditioning_training",
+      mutate(phase = "acquisition_training",
              blocknum = blocknum-1,
              response = as.character(response)),
     
@@ -140,10 +130,10 @@ data_training_and_testing_input <-
       read_xlsx("raw/testing_right.xlsx"),
       read_xlsx("raw/testing_right_rev.xlsx")
     ) %>%
-      mutate(phase = "counterconditioning_training",
+      mutate(phase = "acquisition_testing",
              response = as.character(response)),
     
-    # extinction_training
+    # counterconditioning
     bind_rows(
       read_xlsx("raw/counterconditioning1a_intersecting_regularities_left.xlsx") %>%
         mutate(response = as.character(response)),
@@ -152,20 +142,25 @@ data_training_and_testing_input <-
       read_xlsx("raw/counterconditioning1a_intersecting_regularities_right.xlsx") %>%
         mutate(response = as.character(response)),
       read_xlsx("raw/counterconditioning1a_intersecting_regularities_right_rev.xlsx") %>%
-        mutate(response = as.character(response))
+        mutate(response = as.character(response)),
     ) %>%
-      mutate(phase = "extinction_training") %>%
+      mutate(phase = "counterconditioning_training") %>%
       select(-starts_with("stimulus")),
     
-    # extinction test 
+    # counterconditioning testing
     bind_rows(
-      read_xlsx("raw/testing_left.xlsx"),
-      read_xlsx("raw/testing_left_rev.xlsx"),
-      read_xlsx("raw/testing_right.xlsx"),
-      read_xlsx("raw/testing_right_rev.xlsx")
+      read_xlsx("raw/testing_left.xlsx") %>% 
+        mutate(response = as.character(response)),
+      read_xlsx("raw/testing_left_rev.xlsx") %>% 
+        mutate(response = as.character(response)),
+      read_xlsx("raw/testing_right.xlsx") %>% 
+        mutate(response = as.character(response)),
+      read_xlsx("raw/testing_right_rev.xlsx") %>% 
+        mutate(response = as.character(response))
     ) %>%
-      mutate(phase = "extinction_testing",
-             response = as.character(response))
+      mutate(phase = "counterconditioning_testing") %>%
+      select(-starts_with("stimulus"))
+    
   ) %>%
   filter(blockcode != "Begin") %>% 
   select(subject, phase, block_number = blocknum, trial_number = trialnum, correct) %>%
@@ -499,14 +494,11 @@ data_processed <- data_conditions %>%
          age, 
          gender, 
          stimulus_identity_condition, 
-         extinction_condition, 
+         experimental_condition, 
          task_order, 
          completeness_counterconditioning_training, completeness_counterconditioning_training, 
-         completeness_extinction_testing, completeness_extinction_training, 
          mean_correct_counterconditioning_training, mean_correct_counterconditioning_training, 
-         mean_correct_extinction_testing, mean_correct_extinction_training, 
          passed_performance_criterion_counterconditioning_training, passed_performance_criterion_counterconditioning_training, 
-         passed_performance_criterion_extinction_testing, passed_performance_criterion_extinction_training, 
          OEC_effect_native, OEC_effect_reverse_scored, 
          IR_effect_native, IR_effect_reverse_scored, 
          complete_iat_data, 

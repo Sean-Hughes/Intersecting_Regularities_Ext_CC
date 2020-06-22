@@ -224,7 +224,19 @@ data_training_and_testing_input <-
       mutate(phase = "counterconditioning_training") %>%
       select(-starts_with("stimulus")),
     
-    # extinction test 
+    # counterconditioning_testing
+    bind_rows(
+      read_xlsx("raw/counterconditioning/testing_counterconditioning1b_nokeylocation.xlsx") %>%
+        mutate(experimental_condition = "counterconditioning",
+               subject = paste(subject, experimental_condition, sep = "_")),
+      read_xlsx("raw/counterconditioning/testing_counterconditioning2b_nokeylocation.xlsx") %>%
+        mutate(experimental_condition = "counterconditioning",
+               subject = paste(subject, experimental_condition, sep = "_"))
+    ) %>%
+      mutate(phase = "counterconditioning_testing",
+             response = as.character(response)),
+    
+    # extinction training 
     bind_rows(
       read_xlsx("raw/extinction/extinction_1c_no_location.xlsx") %>%
         mutate(experimental_condition = "extinction",
@@ -235,6 +247,18 @@ data_training_and_testing_input <-
     ) %>%
       mutate(phase = "extinction_training",
              blocknum = blocknum-3,
+             response = as.character(response)),
+    
+    # extinction testing
+    bind_rows(
+      read_xlsx("raw/extinction/testing_extinction1c_nokeylocation.xlsx") %>%
+        mutate(experimental_condition = "extinction",
+               subject = paste(subject, experimental_condition, sep = "_")),
+      read_xlsx("raw/extinction/testing_extinction2c_nokeylocation.xlsx") %>%
+        mutate(experimental_condition = "extinction",
+               subject = paste(subject, experimental_condition, sep = "_"))
+    ) %>%
+      mutate(phase = "extinction_testing",
              response = as.character(response))
   ) %>%
   filter(blockcode != "Begin") %>% 
@@ -265,15 +289,21 @@ data_training_and_testing_completeness_temp <- data_training_and_testing_input %
            case_when((phase == "acquisition_training" & n == 80) |  
                        (phase == "acquisition_testing" & n == 8) |
                        (phase == "counterconditioning_training" & n == 80) |  
-                       (phase == "extinction_training" & n == 80) ~ "complete",
-                     (phase == "acquisition_training" & n > 80) |
+                       (phase == "counterconditioning_testing" & n == 8) |  
+                       (phase == "extinction_training" & n == 80) |  
+                       (phase == "extinction_testing" & n == 8) ~ "complete",
+                     (phase == "acquisition_training" & n > 80) |  
                        (phase == "acquisition_testing" & n > 8) |
-                       (phase == "counterconditioning_training" & n > 80) |
-                       (phase == "extinction_training" & n < 80) ~ "excess",
-                     (phase == "acquisition_training" & n < 80) |
+                       (phase == "counterconditioning_training" & n > 80) |  
+                       (phase == "counterconditioning_testing" & n > 8) |  
+                       (phase == "extinction_training" & n > 80) |  
+                       (phase == "extinction_testing" & n > 8) ~ "excess",
+                     (phase == "acquisition_training" & n < 80) |  
                        (phase == "acquisition_testing" & n < 8) |
-                       (phase == "counterconditioning_training" & n < 80) |
-                       (phase == "extinction_training" & n < 80) ~ "partial")) %>%
+                       (phase == "counterconditioning_training" & n < 80) |  
+                       (phase == "counterconditioning_testing" & n < 8) |  
+                       (phase == "extinction_training" & n < 80) |  
+                       (phase == "extinction_testing" & n < 8) ~ "partial")) %>%
   ungroup() %>%
   select(-n) 
 
@@ -306,7 +336,9 @@ data_training_and_testing_performance_temp <- data_training_and_testing_input %>
   mutate(passed_performance_criterion = ifelse(block_number == max(block_number) & passed_performance_criterion_by_block == TRUE, TRUE, FALSE)) %>%
   ungroup() %>%
   mutate(phase = fct_relevel(phase,
+                             "extinction_testing",
                              "extinction_training",
+                             "counterconditioning_testing",
                              "counterconditioning_training",
                              "acquisition_testing",
                              "acquisition_training")) %>%
@@ -766,7 +798,6 @@ data_processed <- data_conditions %>%
          age, 
          gender, 
          stimulus_identity_condition, 
-         #extinction_condition,  # not present in this study
          experimental_condition,
          task_order, 
          passed_manipulation_check,

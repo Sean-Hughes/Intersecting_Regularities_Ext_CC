@@ -54,8 +54,8 @@ I'll leave it this way for the moment, but just FYI that there are differences i
 - There are participants in each study with excess data. Figure out what do with this (retain them?). Without further action they will likely be excluded.
 
 - why is task_order discerned from stimulus_ratings_before.xlsx and after? why are there missing values?
-- is there such thing as counterconditioning testing or extinction testing? if so, where do these data come from and how can they be verified as being task specific (e.g., no acquisition)? many "testing_" files are interpreted as containing a given type of task on faith, but need close checking. Some studies dont seem to use every file.
-- Attempts to solve previous quesiton have broken study 4 performance (not pushed)
+- Some studies dont seem to use every testing_ file.
+- study 4 performance is likely broken, shows all as 0% accuracy
 - exploratory_questions.xlsx currently not used and seems to be empty?
 - do intentions items need sum scoring of some sort?
 - ensure reverse scoring is congruent between outcome measures, remove redundant ones (iat block order reversals?)

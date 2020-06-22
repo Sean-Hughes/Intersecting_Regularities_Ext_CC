@@ -53,9 +53,8 @@ data_stimulus_identity_condition <-
   distinct(subject, .keep_all = TRUE)
 
 # stimulus identity using presence of extinction phase files
-data_extinction_condition <- 
+data_experiment_condition <- 
   bind_rows(
-    #_training
     read_xlsx("raw/counterconditioning1b_intersecting_regularities_left.xlsx") %>% 
       mutate(response = as.character(response)),
     read_xlsx("raw/counterconditioning1b_intersecting_regularities_left_rev.xlsx") %>% 
@@ -63,19 +62,10 @@ data_extinction_condition <-
     read_xlsx("raw/counterconditioning1b_intersecting_regularities_right.xlsx") %>% 
       mutate(response = as.character(response)),
     read_xlsx("raw/counterconditioning1b_intersecting_regularities_right_rev.xlsx") %>% 
-      mutate(response = as.character(response)),
-    #_testing
-    read_xlsx("raw/testing_left.xlsx") %>% 
-      mutate(response = as.character(response)),
-    read_xlsx("raw/testing_left_rev.xlsx") %>% 
-      mutate(response = as.character(response)),
-    read_xlsx("raw/testing_right.xlsx") %>% 
-      mutate(response = as.character(response)),
-    read_xlsx("raw/testing_right_rev.xlsx") %>% 
       mutate(response = as.character(response))
   ) %>%
-  mutate(extinction_condition = "acquisition and counterconditioning") %>%
-  select(subject, extinction_condition) %>%
+  mutate(experiment_condition = "acquisition and counterconditioning") %>%
+  select(subject, experiment_condition) %>%
   distinct(subject, .keep_all = TRUE)
 
 # task order
@@ -89,12 +79,12 @@ data_task_order <-
 
 # combine
 data_conditions <- data_stimulus_identity_condition %>%
-  full_join(data_extinction_condition, by = "subject") %>%
+  full_join(data_experiment_condition, by = "subject") %>%
   full_join(data_task_order, by = "subject") %>%
   mutate(experiment = current_experiment_number,
-         extinction_condition = ifelse(is.na(extinction_condition), "acquisition only", extinction_condition))
+         experiment_condition = ifelse(is.na(experiment_condition), "acquisition only", experiment_condition))
 
-rm(data_stimulus_identity_condition, data_extinction_condition, data_task_order)
+rm(data_stimulus_identity_condition, data_experiment_condition, data_task_order)
 
 ```
 
@@ -165,7 +155,7 @@ data_training_and_testing_input <-
       read_xlsx("raw/testing_right.xlsx"),
       read_xlsx("raw/testing_right_rev.xlsx")
     ) %>%
-      mutate(phase = "counterconditioning_training",
+      mutate(phase = "counterconditioning_testing",
              response = as.character(response))
   ) %>%
   filter(blockcode != "Begin") %>% 
@@ -184,13 +174,16 @@ data_training_and_testing_completeness_temp <- data_training_and_testing_input %
   mutate(complete_training_testing_data = 
            case_when((phase == "acquisition_training" & n == 80) |
                        (phase == "acquisition_testing" & n == 8) |
-                       (phase == "counterconditioning_training" & n == 80) ~ "complete", 
+                       (phase == "counterconditioning_training" & n == 80) | 
+                       (phase == "counterconditioning_testing" & n == 8) ~ "complete", 
                      (phase == "acquisition_training" & n > 80) |
                        (phase == "acquisition_testing" & n > 8) |
-                       (phase == "counterconditioning_training" & n > 80) ~ "excess", 
+                       (phase == "counterconditioning_training" & n > 80) | 
+                       (phase == "counterconditioning_testing" & n > 8) ~ "excess", 
                      (phase == "acquisition_training" & n < 80) |
                        (phase == "acquisition_testing" & n < 8) |
-                       (phase == "counterconditioning_training" & n < 80) ~ "partial")) %>%
+                       (phase == "counterconditioning_training" & n < 80) | 
+                       (phase == "counterconditioning_testing" & n < 8) ~ "partial")) %>%
   ungroup() %>%
   select(-n) 
 
@@ -222,7 +215,7 @@ data_training_and_testing_performance_temp <- data_training_and_testing_input %>
   mutate(passed_performance_criterion = ifelse(block_number == max(block_number) & passed_performance_criterion_by_block == TRUE, TRUE, FALSE)) %>%
   ungroup() %>%
   mutate(phase = fct_relevel(phase,
-                             "counterconditioning_training",
+                             "counterconditioning_testing",
                              "counterconditioning_training",
                              "acqusitiion_testing",
                              "acqusitiion_training")) %>%
@@ -500,7 +493,7 @@ data_processed <- data_conditions %>%
          age, 
          gender, 
          stimulus_identity_condition, 
-         extinction_condition, 
+         experiment_condition, 
          task_order, 
          completeness_acquisition_testing, completeness_acquisition_training, 
          completeness_counterconditioning_training, completeness_counterconditioning_training, 
