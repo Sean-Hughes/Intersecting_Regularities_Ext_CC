@@ -392,50 +392,6 @@ data_manipulation_check %>%
 
 ```
 
-# Equivalence test
-
-```{r}
-
-data_equivalence <- 
-  bind_rows(
-    # acquisition_only
-    read_xlsx("raw/acquisition_only/equivalencetest1_nokeylocation.xlsx") %>%
-        mutate(experiment_condition = "acquisition_only",
-               subject = paste(subject, experiment_condition, sep = "_")),
-    read_xlsx("raw/acquisition_only/equivalencetest2_nokeylocation.xlsx") %>%
-        mutate(experiment_condition = "acquisition_only",
-               subject = paste(subject, experiment_condition, sep = "_")),
-    # counterconditioning
-    read_xlsx("raw/counterconditioning/equivalencetest1_nokeylocation.xlsx") %>%
-        mutate(experiment_condition = "counterconditioning",
-               subject = paste(subject, experiment_condition, sep = "_")),
-    read_xlsx("raw/counterconditioning/equivalencetest2_nokeylocation.xlsx") %>%
-        mutate(experiment_condition = "counterconditioning",
-               subject = paste(subject, experiment_condition, sep = "_")),
-    # extinction
-    read_xlsx("raw/extinction/equivalencetest1_nokeylocation.xlsx") %>%
-        mutate(experiment_condition = "extinction",
-               subject = paste(subject, experiment_condition, sep = "_")),
-    read_xlsx("raw/extinction/equivalencetest2_nokeylocation.xlsx") %>%
-        mutate(experiment_condition = "extinction",
-               subject = paste(subject, experiment_condition, sep = "_"))
-  ) %>%
-  select(subject, correct) %>%
-  
-  group_by(subject) %>%
-  summarize(n = n(), # check completeness
-            passsed_equivalence = ifelse(mean(correct) > .75, TRUE, FALSE)) %>%
-  ungroup() %>%
-  mutate(complete_equivalence_data = ifelse(n == 24, TRUE, FALSE)) %>%
-  select(subject, complete_equivalence_data, passsed_equivalence)
-
-data_equivalence %>%
-  count(complete_equivalence_data, passsed_equivalence) %>%
-  kable() %>%
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
-
-```
-
 # Self-reports
 
 ```{r}
@@ -751,6 +707,52 @@ data_iat_D2_scores <- data_iat_subject_numeric %>%
          subject_numeric = subject) %>%
   full_join(data_iat_subject_numeric, by = "subject_numeric") %>%
   select(-subject_numeric)
+
+```
+
+# Equivalence test
+
+This task was included in the study in an exploratory manner and was not used in the preregistered analyses or reported in the manuscript.
+
+```{r}
+
+data_equivalence <- 
+  bind_rows(
+    # acquisition_only
+    read_xlsx("raw/acquisition_only/equivalencetest1_nokeylocation.xlsx") %>%
+        mutate(experiment_condition = "acquisition_only",
+               subject = paste(subject, experiment_condition, sep = "_")),
+    read_xlsx("raw/acquisition_only/equivalencetest2_nokeylocation.xlsx") %>%
+        mutate(experiment_condition = "acquisition_only",
+               subject = paste(subject, experiment_condition, sep = "_")),
+    # counterconditioning
+    read_xlsx("raw/counterconditioning/equivalencetest1_nokeylocation.xlsx") %>%
+        mutate(experiment_condition = "counterconditioning",
+               subject = paste(subject, experiment_condition, sep = "_")),
+    read_xlsx("raw/counterconditioning/equivalencetest2_nokeylocation.xlsx") %>%
+        mutate(experiment_condition = "counterconditioning",
+               subject = paste(subject, experiment_condition, sep = "_")),
+    # extinction
+    read_xlsx("raw/extinction/equivalencetest1_nokeylocation.xlsx") %>%
+        mutate(experiment_condition = "extinction",
+               subject = paste(subject, experiment_condition, sep = "_")),
+    read_xlsx("raw/extinction/equivalencetest2_nokeylocation.xlsx") %>%
+        mutate(experiment_condition = "extinction",
+               subject = paste(subject, experiment_condition, sep = "_"))
+  ) %>%
+  select(subject, correct) %>%
+  
+  group_by(subject) %>%
+  summarize(n = n(), # check completeness
+            passsed_equivalence = ifelse(mean(correct) > .75, TRUE, FALSE)) %>%
+  ungroup() %>%
+  mutate(complete_equivalence_data = ifelse(n == 24, TRUE, FALSE)) %>%
+  select(subject, complete_equivalence_data, passsed_equivalence)
+
+data_equivalence %>%
+  count(complete_equivalence_data, passsed_equivalence) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 
 ```
 

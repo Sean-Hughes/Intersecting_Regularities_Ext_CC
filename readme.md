@@ -49,18 +49,19 @@ I'll leave it this way for the moment, but just FYI that there are differences i
 
 ## To do list
 
+### documentation
+
+- deviations from prereg document needs updating. for example, it currently states that study 7 was created from data taken from previous studies, which isn't the case.
+
+
+
 ### processing.rmd scripts
 
 - There are participants in each study with excess data. Figure out what do with this (retain them?). Without further action they will likely be excluded.
 
-- why is task_order discerned from stimulus_ratings_before.xlsx and after? why are there missing values?
-- Some studies dont seem to use every testing_ file.
 - iat processing comment states "# trial_number on blocks 3 and 7 begins on 2: correct to begin at 1" but then the code changes it for blocks other than these two: "mutate(trial_number = ifelse(block %in% c(1, 2, 3, 6, 7), trial_number-1, trial_number))"
-- deviations from prereg document states that study 7 was created from data taken from previous studies. is this the case? why does it have extra variables then? eg equivalence test and manipulation check. if it new anayses of existing data, we should dump the duplicate data. if its new data, the the document needs changing.
-- Study 7 
-  - check scoring of equivalence - currently uses correct variable (did this really measure correct responding? check inquisit script) and uses a 75% accuracy criterion. 1/3 of Ss fail. 
 
-
+  
 
 ### analyses
 
