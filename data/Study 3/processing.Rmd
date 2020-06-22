@@ -304,10 +304,10 @@ data_ratings <- read_xlsx("raw/valence_ratings.xlsx") %>%
          mean_outcome_2 = mean(c(Outcome_2_Pos_Neg, Outcome_2_Good_Bad, Outcome_2_Pleasant_Unpleasant, Outcome_2_Like_Dislike)),
          mean_target_1  = mean(c(Target_1_Pos_Neg, Target_1_Good_Bad, Target_1_Pleasant_Unpleasant, Target_1_Like_Dislike)),
          mean_target_2  = mean(c(Target_2_Pos_Neg, Target_2_Good_Bad, Target_2_Pleasant_Unpleasant, Target_2_Like_Dislike)),
-         OEC_effect_native     = mean_outcome_1 - mean_outcome_2,
-         IR_effect_native      = mean_target_1 - mean_target_2) %>%
+         OEC_effect     = mean_outcome_1 - mean_outcome_2,
+         IR_effect      = mean_target_1 - mean_target_2) %>%
   ungroup() %>%
-  select(subject, OEC_effect_native, IR_effect_native)
+  select(subject, OEC_effect, IR_effect)
 
 # behavioural intentions
 data_intentions <- 
@@ -453,7 +453,7 @@ data_iat_D2_scores <- data_iat_cleaned %>%
                           P4 = "dist",    # distinguish between the prac and test blocks
                           verbose = FALSE,
                           autoremove = FALSE) %>%
-  rename(IAT_D2_native = p2112) 
+  rename(IAT_D2_controlling_stimulus_identity = p2112) 
 
 ```
 
@@ -477,20 +477,20 @@ data_processed <- data_conditions %>%
   full_join(data_believability, by = "subject") %>%
   # reverse-score the scores the self-reports based on stimulus_identity_condition
   mutate(
-    OEC_effect_reverse_scored = case_when(
-      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" ~ OEC_effect_native,
-      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" ~ OEC_effect_native*-1
+    OEC_effect_controlling_stimulus_identity = case_when(
+      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" ~ OEC_effect*-1,
+      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" ~ OEC_effect
     ),
-    IR_effect_reverse_scored = case_when(
-      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" ~ IR_effect_native,
-      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" ~ IR_effect_native*-1
+    IR_effect_controlling_stimulus_identity = case_when(
+      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" ~ IR_effect*-1,
+      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" ~ IR_effect
     )
   ) %>%
   # reverse score IAT so that a positive IAT score indicates that people preferred the Target that was related to the Positive Source more than the Target related to the Negative source and vice versa
   mutate(
-    IAT_D2_reverse_scored = case_when(
-      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" ~ IAT_D2_native*-1, 
-      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" ~ IAT_D2_native
+    IAT_D2 = case_when(
+      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" ~ IAT_D2_controlling_stimulus_identity *-1, 
+      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" ~ IAT_D2_controlling_stimulus_identity
     )
   ) %>%
   select(experiment, 
@@ -506,74 +506,26 @@ data_processed <- data_conditions %>%
          mean_correct_extinction_testing, mean_correct_extinction_training, 
          passed_performance_criterion_acquisition_training, passed_performance_criterion_acquisition_testing, 
          passed_performance_criterion_extinction_testing, passed_performance_criterion_extinction_training, 
-         OEC_effect_native, OEC_effect_reverse_scored, 
-         IR_effect_native, IR_effect_reverse_scored, 
+         OEC_effect, OEC_effect_controlling_stimulus_identity, 
+         IR_effect, IR_effect_controlling_stimulus_identity, 
          complete_iat_data, 
          iat_block_order,
          passed_iat_performance,
-         IAT_D2_native, IAT_D2_reverse_scored, 
+         IAT_D2, IAT_D2_controlling_stimulus_identity, 
          intentions_response_1_3, intentions_response_2_4,
          demand_response, 
          reactance_response_1, reactance_response_2, 
          confidence_stim_1, confidence_stim_2, confidence_stim_3, confidence_stim_4,
          believability_response_1, believability_response_2)
 
+# Ensures that the processed data folder exists
+dir.create("processed")
+
 # write to disk
 write_csv(data_processed, "processed/data_processed.csv")
 
 ```
 
-# testing reverse scoring
-
-should the iat, ir and oec DVs be reverse scored for condition? should the iat also be reverse scored for block order?
-
-```{r fig.height=12, fig.width=8}
-
-temp <- 
-  data_processed %>%
-  filter(completeness_acquisition_testing == "complete" & 
-           completeness_acquisition_training == "complete" & 
-           complete_iat_data == "complete" &
-           passed_performance_criterion_acquisition_training == TRUE &
-           passed_performance_criterion_acquisition_testing == TRUE &
-           passed_iat_performance == TRUE) %>%
-  mutate(IAT_D2_native_blockreversed = ifelse(iat_block_order == "learning_consistent_first", IAT_D2_native,
-                                              ifelse(iat_block_order == "learning_inconsistent_first", IAT_D2_native*-1, NA)),
-         IAT_D2_reverse_scored_blockreversed = ifelse(iat_block_order == "learning_consistent_first", IAT_D2_reverse_scored,
-                                                      ifelse(iat_block_order == "learning_inconsistent_first", IAT_D2_reverse_scored*-1, NA))) %>%
-  select(stimulus_identity_condition, 
-         OEC_effect_native, 
-         #OEC_effect_reverse_scored, 
-         IR_effect_native, 
-         #IR_effect_reverse_scored, 
-         #IAT_D2_native,
-         IAT_D2_reverse_scored)
-         #IAT_D2_native_blockreversed)
-         #IAT_D2_reverse_scored_blockreversed)
-
-temp %>%
-  select(-stimulus_identity_condition) %>%
-  cor(use = "pairwise.complete.obs", method = "spearman") %>%
-  round(2)
-
-temp %>%
-  group_by(stimulus_identity_condition) %>%
-  summarize_all(list(mean = mean), na.rm = TRUE) 
-
-temp %>%
-  gather(key, value, c(OEC_effect_native, 
-                       #OEC_effect_reverse_scored, 
-                       IR_effect_native, 
-                       #IR_effect_reverse_scored, 
-                       #IAT_D2_native,
-                       IAT_D2_reverse_scored)) %>%
-                       #IAT_D2_native_blockreversed)) %>%
-                       #IAT_D2_reverse_scored_blockreversed
-  ggplot(aes(value, fill = stimulus_identity_condition)) +
-  geom_density(alpha = 0.5) +
-  facet_wrap(~key, scales = "free", ncol = 1)
-
-```
 
 
 
