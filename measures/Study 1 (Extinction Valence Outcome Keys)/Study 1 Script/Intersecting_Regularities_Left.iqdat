@@ -1,6 +1,0 @@
-date	time	subject	blockcode	blocknum	trialcode	trialnum	latency	correct	pretrialpause	posttrialpause	response	stimulus1	stimulus2	stimulus3	stimulus4	stimulus5	stimulus6	stimulus7	stimulus8	stimulus9	stimulus10	stimulus11	stimulus12	stimulus13	stimulus14	stimulus15	stimulus16
-062220	16:49:41	1	Begin	1	pause	1	1000	0	0	0	0	erasebig.jpg	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-062220	16:49:41	1	Intersecting_Regularities_Training_block1_LR	2	Intersecting_Regularities_Training_Trial_4_right	1	1587	0	750	0	46	The four response options are: D, C, J, or N	Stimulus_4.jpg	Incorrect	0	0	0	0	0	0	0	0	0	0	0	0	0
-062220	16:49:41	1	Intersecting_Regularities_Training_block1_LR	2	Intersecting_Regularities_Training_Trial_1_left	2	914	1	750	0	32	The four response options are: D, C, J, or N	Good_6.jpg	Stimulus_1.jpg	0	0	0	0	0	0	0	0	0	0	0	0	0
-062220	16:49:41	1	Intersecting_Regularities_Training_block1_LR	2	Intersecting_Regularities_Training_Trial_4_right	3	1233	1	750	0	49	The four response options are: D, C, J, or N	Stimulus_4.jpg	Stimulus_3.jpg	0	0	0	0	0	0	0	0	0	0	0	0	0
-062220	16:49:41	1	Intersecting_Regularities_Training_block1_LR	2	Intersecting_Regularities_Training_Trial_1_left	4	3200	1	750	0	Ctrl+'Q'	The four response options are: D, C, J, or N	Good_1.jpg	0	0	0	0	0	0	0	0	0	0	0	0	0	0
