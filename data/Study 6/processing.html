@@ -1996,17 +1996,17 @@ complete
 <span id="cb9-50"><a href="#cb9-50"></a>         <span class="dt">mean_outcome_2 =</span> <span class="kw">mean</span>(<span class="kw">c</span>(Outcome_<span class="dv">2</span>_Pos_Neg, Outcome_<span class="dv">2</span>_Good_Bad, Outcome_<span class="dv">2</span>_Pleasant_Unpleasant, Outcome_<span class="dv">2</span>_Like_Dislike)),</span>
 <span id="cb9-51"><a href="#cb9-51"></a>         <span class="dt">mean_target_1  =</span> <span class="kw">mean</span>(<span class="kw">c</span>(Target_<span class="dv">1</span>_Pos_Neg, Target_<span class="dv">1</span>_Good_Bad, Target_<span class="dv">1</span>_Pleasant_Unpleasant, Target_<span class="dv">1</span>_Like_Dislike)),</span>
 <span id="cb9-52"><a href="#cb9-52"></a>         <span class="dt">mean_target_2  =</span> <span class="kw">mean</span>(<span class="kw">c</span>(Target_<span class="dv">2</span>_Pos_Neg, Target_<span class="dv">2</span>_Good_Bad, Target_<span class="dv">2</span>_Pleasant_Unpleasant, Target_<span class="dv">2</span>_Like_Dislike)),</span>
-<span id="cb9-53"><a href="#cb9-53"></a>         <span class="dt">OEC_effect     =</span> mean_outcome_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>mean_outcome_<span class="dv">2</span>,</span>
-<span id="cb9-54"><a href="#cb9-54"></a>         <span class="dt">IR_effect      =</span> mean_target_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>mean_target_<span class="dv">2</span>) <span class="op">%&gt;%</span></span>
+<span id="cb9-53"><a href="#cb9-53"></a>         <span class="dt">self_reported_OEC_effect     =</span> mean_outcome_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>mean_outcome_<span class="dv">2</span>,</span>
+<span id="cb9-54"><a href="#cb9-54"></a>         <span class="dt">self_reported_IR_effect      =</span> mean_target_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>mean_target_<span class="dv">2</span>) <span class="op">%&gt;%</span></span>
 <span id="cb9-55"><a href="#cb9-55"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></span>
-<span id="cb9-56"><a href="#cb9-56"></a><span class="st">  </span><span class="kw">select</span>(subject, OEC_effect, IR_effect)</span>
+<span id="cb9-56"><a href="#cb9-56"></a><span class="st">  </span><span class="kw">select</span>(subject, self_reported_OEC_effect, self_reported_IR_effect)</span>
 <span id="cb9-57"><a href="#cb9-57"></a></span>
 <span id="cb9-58"><a href="#cb9-58"></a><span class="co"># behavioural intentions</span></span>
 <span id="cb9-59"><a href="#cb9-59"></a>data_intentions &lt;-<span class="st"> </span></span>
 <span id="cb9-60"><a href="#cb9-60"></a><span class="st">  </span><span class="kw">full_join</span>(<span class="kw">read_xlsx</span>(<span class="st">&quot;raw/intention_ratings_1_3.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb9-61"><a href="#cb9-61"></a><span class="st">              </span><span class="kw">select</span>(subject, <span class="dt">intentions_response_1_3 =</span> Intentions_<span class="dv">1</span>_<span class="dv">3</span>_response),</span>
+<span id="cb9-61"><a href="#cb9-61"></a><span class="st">              </span><span class="kw">select</span>(subject, <span class="dt">behavioral_intentions_OEC =</span> Intentions_<span class="dv">1</span>_<span class="dv">3</span>_response),</span>
 <span id="cb9-62"><a href="#cb9-62"></a>            <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/intention_ratings_2_4.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb9-63"><a href="#cb9-63"></a><span class="st">              </span><span class="kw">select</span>(subject, <span class="dt">intentions_response_2_4 =</span> Intentions_<span class="dv">2</span>_<span class="dv">4</span>_response),</span>
+<span id="cb9-63"><a href="#cb9-63"></a><span class="st">              </span><span class="kw">select</span>(subject, <span class="dt">behavioral_intentions_IR =</span> Intentions_<span class="dv">2</span>_<span class="dv">4</span>_response),</span>
 <span id="cb9-64"><a href="#cb9-64"></a>            <span class="dt">by =</span> <span class="st">&quot;subject&quot;</span>)</span></code></pre></div>
 </div>
 <div id="iat" class="section level1">
@@ -2026,28 +2026,27 @@ complete
 <span id="cb10-11"><a href="#cb10-11"></a><span class="st">  </span><span class="kw">select</span>(subject, experiment, </span>
 <span id="cb10-12"><a href="#cb10-12"></a>         <span class="dt">block_type =</span> blockcode, <span class="dt">block =</span> blocknum, <span class="dt">trial_number =</span> trialnum, </span>
 <span id="cb10-13"><a href="#cb10-13"></a>         correct, latency) <span class="op">%&gt;%</span></span>
-<span id="cb10-14"><a href="#cb10-14"></a><span class="st">  </span><span class="co"># trial_number on blocks 3 and 7 begins on 2: correct to begin at 1</span></span>
-<span id="cb10-15"><a href="#cb10-15"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">trial_number =</span> <span class="kw">ifelse</span>(block <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">6</span>, <span class="dv">7</span>), trial_number<span class="dv">-1</span>, trial_number)) <span class="op">%&gt;%</span></span>
-<span id="cb10-16"><a href="#cb10-16"></a><span class="st">  </span><span class="co"># the number of the blocks is incorrect due to the way the task was coded, recode</span></span>
-<span id="cb10-17"><a href="#cb10-17"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">block =</span> <span class="kw">case_when</span>(block <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</span>
-<span id="cb10-18"><a href="#cb10-18"></a>                           block <span class="op">==</span><span class="st"> </span><span class="dv">2</span> <span class="op">~</span><span class="st"> </span><span class="dv">2</span>,</span>
-<span id="cb10-19"><a href="#cb10-19"></a>                           block <span class="op">==</span><span class="st"> </span><span class="dv">3</span> <span class="op">~</span><span class="st"> </span><span class="dv">3</span>,</span>
-<span id="cb10-20"><a href="#cb10-20"></a>                           block <span class="op">==</span><span class="st"> </span><span class="dv">5</span> <span class="op">~</span><span class="st"> </span><span class="dv">4</span>,</span>
-<span id="cb10-21"><a href="#cb10-21"></a>                           block <span class="op">==</span><span class="st"> </span><span class="dv">6</span> <span class="op">~</span><span class="st"> </span><span class="dv">5</span>,</span>
-<span id="cb10-22"><a href="#cb10-22"></a>                           block <span class="op">==</span><span class="st"> </span><span class="dv">7</span> <span class="op">~</span><span class="st"> </span><span class="dv">6</span>,</span>
-<span id="cb10-23"><a href="#cb10-23"></a>                           block <span class="op">==</span><span class="st"> </span><span class="dv">9</span> <span class="op">~</span><span class="st"> </span><span class="dv">7</span>))</span>
-<span id="cb10-24"><a href="#cb10-24"></a></span>
-<span id="cb10-25"><a href="#cb10-25"></a><span class="co"># block order</span></span>
-<span id="cb10-26"><a href="#cb10-26"></a>data_iat_block_order &lt;-<span class="st"> </span>data_iat_input <span class="op">%&gt;%</span></span>
-<span id="cb10-27"><a href="#cb10-27"></a><span class="st">  </span><span class="kw">filter</span>(block <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">&amp;</span><span class="st"> </span>trial_number <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) <span class="op">%&gt;%</span></span>
-<span id="cb10-28"><a href="#cb10-28"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">iat_block_order =</span> <span class="kw">case_when</span>(block_type <span class="op">==</span><span class="st"> &quot;targetincompatiblepractice&quot;</span> <span class="op">~</span><span class="st"> &quot;learning_inconsistent_first&quot;</span>,</span>
-<span id="cb10-29"><a href="#cb10-29"></a>                                     block_type <span class="op">==</span><span class="st"> &quot;targetcompatiblepractice&quot;</span> <span class="op">~</span><span class="st"> &quot;learning_consistent_first&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb10-30"><a href="#cb10-30"></a><span class="st">  </span><span class="kw">select</span>(subject, iat_block_order)</span>
-<span id="cb10-31"><a href="#cb10-31"></a></span>
-<span id="cb10-32"><a href="#cb10-32"></a><span class="co"># only retain the critical practice and test blocks (i.e., block_number = 3, 4, 6, 7)</span></span>
-<span id="cb10-33"><a href="#cb10-33"></a>data_iat_cleaned &lt;-<span class="st"> </span>data_iat_block_order <span class="op">%&gt;%</span></span>
-<span id="cb10-34"><a href="#cb10-34"></a><span class="st">  </span><span class="kw">left_join</span>(data_iat_input, <span class="dt">by =</span> <span class="st">&quot;subject&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb10-35"><a href="#cb10-35"></a><span class="st">  </span><span class="kw">filter</span>(block <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">7</span>))</span></code></pre></div>
+<span id="cb10-14"><a href="#cb10-14"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">trial_number =</span> <span class="kw">ifelse</span>(block <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">6</span>, <span class="dv">7</span>), trial_number<span class="dv">-1</span>, trial_number)) <span class="op">%&gt;%</span></span>
+<span id="cb10-15"><a href="#cb10-15"></a><span class="st">  </span><span class="co"># the number of the blocks is incorrect due to the way the task was coded, recode</span></span>
+<span id="cb10-16"><a href="#cb10-16"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">block =</span> <span class="kw">case_when</span>(block <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</span>
+<span id="cb10-17"><a href="#cb10-17"></a>                           block <span class="op">==</span><span class="st"> </span><span class="dv">2</span> <span class="op">~</span><span class="st"> </span><span class="dv">2</span>,</span>
+<span id="cb10-18"><a href="#cb10-18"></a>                           block <span class="op">==</span><span class="st"> </span><span class="dv">3</span> <span class="op">~</span><span class="st"> </span><span class="dv">3</span>,</span>
+<span id="cb10-19"><a href="#cb10-19"></a>                           block <span class="op">==</span><span class="st"> </span><span class="dv">5</span> <span class="op">~</span><span class="st"> </span><span class="dv">4</span>,</span>
+<span id="cb10-20"><a href="#cb10-20"></a>                           block <span class="op">==</span><span class="st"> </span><span class="dv">6</span> <span class="op">~</span><span class="st"> </span><span class="dv">5</span>,</span>
+<span id="cb10-21"><a href="#cb10-21"></a>                           block <span class="op">==</span><span class="st"> </span><span class="dv">7</span> <span class="op">~</span><span class="st"> </span><span class="dv">6</span>,</span>
+<span id="cb10-22"><a href="#cb10-22"></a>                           block <span class="op">==</span><span class="st"> </span><span class="dv">9</span> <span class="op">~</span><span class="st"> </span><span class="dv">7</span>))</span>
+<span id="cb10-23"><a href="#cb10-23"></a></span>
+<span id="cb10-24"><a href="#cb10-24"></a><span class="co"># block order</span></span>
+<span id="cb10-25"><a href="#cb10-25"></a>data_iat_block_order &lt;-<span class="st"> </span>data_iat_input <span class="op">%&gt;%</span></span>
+<span id="cb10-26"><a href="#cb10-26"></a><span class="st">  </span><span class="kw">filter</span>(block <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">&amp;</span><span class="st"> </span>trial_number <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) <span class="op">%&gt;%</span></span>
+<span id="cb10-27"><a href="#cb10-27"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">iat_block_order =</span> <span class="kw">case_when</span>(block_type <span class="op">==</span><span class="st"> &quot;targetincompatiblepractice&quot;</span> <span class="op">~</span><span class="st"> &quot;learning_inconsistent_first&quot;</span>,</span>
+<span id="cb10-28"><a href="#cb10-28"></a>                                     block_type <span class="op">==</span><span class="st"> &quot;targetcompatiblepractice&quot;</span> <span class="op">~</span><span class="st"> &quot;learning_consistent_first&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb10-29"><a href="#cb10-29"></a><span class="st">  </span><span class="kw">select</span>(subject, iat_block_order)</span>
+<span id="cb10-30"><a href="#cb10-30"></a></span>
+<span id="cb10-31"><a href="#cb10-31"></a><span class="co"># only retain the critical practice and test blocks (i.e., block_number = 3, 4, 6, 7)</span></span>
+<span id="cb10-32"><a href="#cb10-32"></a>data_iat_cleaned &lt;-<span class="st"> </span>data_iat_block_order <span class="op">%&gt;%</span></span>
+<span id="cb10-33"><a href="#cb10-33"></a><span class="st">  </span><span class="kw">left_join</span>(data_iat_input, <span class="dt">by =</span> <span class="st">&quot;subject&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb10-34"><a href="#cb10-34"></a><span class="st">  </span><span class="kw">filter</span>(block <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">7</span>))</span></code></pre></div>
 </div>
 <div id="completeness-1" class="section level2">
 <h2>Completeness</h2>
@@ -2172,13 +2171,13 @@ complete
 <span id="cb14-14"><a href="#cb14-14"></a><span class="st">  </span><span class="kw">full_join</span>(data_believability, <span class="dt">by =</span> <span class="st">&quot;subject&quot;</span>) <span class="op">%&gt;%</span></span>
 <span id="cb14-15"><a href="#cb14-15"></a><span class="st">  </span><span class="co"># reverse-score the scores the self-reports based on stimulus_identity_condition</span></span>
 <span id="cb14-16"><a href="#cb14-16"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
-<span id="cb14-17"><a href="#cb14-17"></a>    <span class="dt">OEC_effect_controlling_stimulus_identity =</span> <span class="kw">case_when</span>(</span>
-<span id="cb14-18"><a href="#cb14-18"></a>      stimulus_identity_condition <span class="op">==</span><span class="st"> &quot;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good&quot;</span> <span class="op">~</span><span class="st"> </span>OEC_effect<span class="op">*-</span><span class="dv">1</span>,</span>
-<span id="cb14-19"><a href="#cb14-19"></a>      stimulus_identity_condition <span class="op">==</span><span class="st"> &quot;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad&quot;</span> <span class="op">~</span><span class="st"> </span>OEC_effect</span>
+<span id="cb14-17"><a href="#cb14-17"></a>    <span class="dt">self_reported_OEC_effect_controlling_stimulus_identity =</span> <span class="kw">case_when</span>(</span>
+<span id="cb14-18"><a href="#cb14-18"></a>      stimulus_identity_condition <span class="op">==</span><span class="st"> &quot;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good&quot;</span> <span class="op">~</span><span class="st"> </span>self_reported_OEC_effect<span class="op">*-</span><span class="dv">1</span>,</span>
+<span id="cb14-19"><a href="#cb14-19"></a>      stimulus_identity_condition <span class="op">==</span><span class="st"> &quot;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad&quot;</span> <span class="op">~</span><span class="st"> </span>self_reported_OEC_effect</span>
 <span id="cb14-20"><a href="#cb14-20"></a>    ),</span>
-<span id="cb14-21"><a href="#cb14-21"></a>    <span class="dt">IR_effect_controlling_stimulus_identity =</span> <span class="kw">case_when</span>(</span>
-<span id="cb14-22"><a href="#cb14-22"></a>      stimulus_identity_condition <span class="op">==</span><span class="st"> &quot;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good&quot;</span> <span class="op">~</span><span class="st"> </span>IR_effect<span class="op">*-</span><span class="dv">1</span>,</span>
-<span id="cb14-23"><a href="#cb14-23"></a>      stimulus_identity_condition <span class="op">==</span><span class="st"> &quot;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad&quot;</span> <span class="op">~</span><span class="st"> </span>IR_effect</span>
+<span id="cb14-21"><a href="#cb14-21"></a>    <span class="dt">self_reported_IR_effect_controlling_stimulus_identity =</span> <span class="kw">case_when</span>(</span>
+<span id="cb14-22"><a href="#cb14-22"></a>      stimulus_identity_condition <span class="op">==</span><span class="st"> &quot;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good&quot;</span> <span class="op">~</span><span class="st"> </span>self_reported_IR_effect<span class="op">*-</span><span class="dv">1</span>,</span>
+<span id="cb14-23"><a href="#cb14-23"></a>      stimulus_identity_condition <span class="op">==</span><span class="st"> &quot;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad&quot;</span> <span class="op">~</span><span class="st"> </span>self_reported_IR_effect</span>
 <span id="cb14-24"><a href="#cb14-24"></a>    )</span>
 <span id="cb14-25"><a href="#cb14-25"></a>  ) <span class="op">%&gt;%</span></span>
 <span id="cb14-26"><a href="#cb14-26"></a><span class="st">  </span><span class="co"># reverse score IAT so that a positive IAT score indicates that people preferred the Target that was related to the Positive Source more than the Target related to the Negative source and vice versa</span></span>
@@ -2201,13 +2200,13 @@ complete
 <span id="cb14-43"><a href="#cb14-43"></a>         mean_correct_counterconditioning_training, mean_correct_counterconditioning_training, </span>
 <span id="cb14-44"><a href="#cb14-44"></a>         passed_performance_criterion_acquisition_training, passed_performance_criterion_acquisition_testing, </span>
 <span id="cb14-45"><a href="#cb14-45"></a>         passed_performance_criterion_counterconditioning_training, passed_performance_criterion_counterconditioning_training, </span>
-<span id="cb14-46"><a href="#cb14-46"></a>         OEC_effect, OEC_effect_controlling_stimulus_identity, </span>
-<span id="cb14-47"><a href="#cb14-47"></a>         IR_effect, IR_effect_controlling_stimulus_identity, </span>
+<span id="cb14-46"><a href="#cb14-46"></a>         self_reported_OEC_effect, self_reported_OEC_effect_controlling_stimulus_identity, </span>
+<span id="cb14-47"><a href="#cb14-47"></a>         self_reported_IR_effect, self_reported_IR_effect_controlling_stimulus_identity, </span>
 <span id="cb14-48"><a href="#cb14-48"></a>         complete_iat_data, </span>
 <span id="cb14-49"><a href="#cb14-49"></a>         iat_block_order,</span>
 <span id="cb14-50"><a href="#cb14-50"></a>         passed_iat_performance,</span>
 <span id="cb14-51"><a href="#cb14-51"></a>         IAT_D2, IAT_D2_controlling_stimulus_identity, </span>
-<span id="cb14-52"><a href="#cb14-52"></a>         intentions_response_<span class="dv">1</span>_<span class="dv">3</span>, intentions_response_<span class="dv">2</span>_<span class="dv">4</span>,</span>
+<span id="cb14-52"><a href="#cb14-52"></a>         behavioral_intentions_OEC, behavioral_intentions_IR,</span>
 <span id="cb14-53"><a href="#cb14-53"></a>         demand_response, </span>
 <span id="cb14-54"><a href="#cb14-54"></a>         reactance_response_<span class="dv">1</span>, reactance_response_<span class="dv">2</span>, </span>
 <span id="cb14-55"><a href="#cb14-55"></a>         confidence_stim_<span class="dv">1</span>, confidence_stim_<span class="dv">2</span>, confidence_stim_<span class="dv">3</span>, confidence_stim_<span class="dv">4</span>,</span>

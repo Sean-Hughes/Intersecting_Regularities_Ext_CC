@@ -2216,45 +2216,374 @@ TRUE
 </tbody>
 </table>
 </div>
+<div id="self-reports" class="section level1">
+<h1>Self-reports</h1>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>data_demand &lt;-<span class="st"> </span></span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="st">  </span><span class="kw">bind_rows</span>(</span>
+<span id="cb10-3"><a href="#cb10-3"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/acquisition_only/demand.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb10-4"><a href="#cb10-4"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_only&quot;</span>,</span>
+<span id="cb10-5"><a href="#cb10-5"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
+<span id="cb10-6"><a href="#cb10-6"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/counterconditioning/demand.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb10-7"><a href="#cb10-7"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;counterconditioning&quot;</span>,</span>
+<span id="cb10-8"><a href="#cb10-8"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
+<span id="cb10-9"><a href="#cb10-9"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/extinction/demand.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb10-10"><a href="#cb10-10"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;extinction&quot;</span>,</span>
+<span id="cb10-11"><a href="#cb10-11"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
+<span id="cb10-12"><a href="#cb10-12"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb10-13"><a href="#cb10-13"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">demand_response =</span> <span class="kw">case_when</span>(Demand_response <span class="op">==</span><span class="st"> &quot;What I learned during the experiment&quot;</span> <span class="op">~</span><span class="st"> &quot;Not Demand Compliant&quot;</span>,</span>
+<span id="cb10-14"><a href="#cb10-14"></a>                                     Demand_response <span class="op">==</span><span class="st"> &quot;I don&#39;t know why I evaluated the items as I did&quot;</span> <span class="op">~</span><span class="st"> &quot;Not Demand Compliant&quot;</span>,</span>
+<span id="cb10-15"><a href="#cb10-15"></a>                                     Demand_response <span class="op">==</span><span class="st"> &quot;What I learned during the experiment&quot;</span> <span class="op">~</span><span class="st"> &quot;Not Demand Compliant&quot;</span>,</span>
+<span id="cb10-16"><a href="#cb10-16"></a>                                     Demand_response <span class="op">==</span><span class="st"> &quot;What I thought the experimenter wanted me to say&quot;</span> <span class="op">~</span><span class="st"> &quot;Demand Compliant&quot;</span>,</span>
+<span id="cb10-17"><a href="#cb10-17"></a>                                     Demand_response <span class="op">==</span><span class="st"> &quot;I based my ratings on some some factor that was not what I learned or what the experimenter wanted me to do&quot;</span> <span class="op">~</span><span class="st"> &quot;Not Demand Compliant&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb10-18"><a href="#cb10-18"></a><span class="st">  </span><span class="kw">select</span>(subject, demand_response)</span>
+<span id="cb10-19"><a href="#cb10-19"></a></span>
+<span id="cb10-20"><a href="#cb10-20"></a>data_reactance &lt;-<span class="st"> </span></span>
+<span id="cb10-21"><a href="#cb10-21"></a><span class="st">  </span><span class="kw">bind_rows</span>(</span>
+<span id="cb10-22"><a href="#cb10-22"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/acquisition_only/reactance.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb10-23"><a href="#cb10-23"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_only&quot;</span>,</span>
+<span id="cb10-24"><a href="#cb10-24"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
+<span id="cb10-25"><a href="#cb10-25"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/counterconditioning/reactance.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb10-26"><a href="#cb10-26"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;counterconditioning&quot;</span>,</span>
+<span id="cb10-27"><a href="#cb10-27"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
+<span id="cb10-28"><a href="#cb10-28"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/extinction/reactance.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb10-29"><a href="#cb10-29"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;extinction&quot;</span>,</span>
+<span id="cb10-30"><a href="#cb10-30"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
+<span id="cb10-31"><a href="#cb10-31"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb10-32"><a href="#cb10-32"></a><span class="st">  </span><span class="kw">select</span>(subject, </span>
+<span id="cb10-33"><a href="#cb10-33"></a>         <span class="dt">reactance_response_1 =</span> react1_response, </span>
+<span id="cb10-34"><a href="#cb10-34"></a>         <span class="dt">reactance_response_2 =</span> react2_response) <span class="op">%&gt;%</span></span>
+<span id="cb10-35"><a href="#cb10-35"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">reactance_response_2 =</span> <span class="kw">str_remove_all</span>(reactance_response_<span class="dv">2</span>, <span class="st">&quot;[^0-9]&quot;</span>))</span>
+<span id="cb10-36"><a href="#cb10-36"></a></span>
+<span id="cb10-37"><a href="#cb10-37"></a><span class="co"># # no believability in this study</span></span>
+<span id="cb10-38"><a href="#cb10-38"></a><span class="co"># data_believability &lt;- read_xlsx(&quot;raw/acquisition_only/cover_belief.xlsx&quot;) %&gt;% </span></span>
+<span id="cb10-39"><a href="#cb10-39"></a><span class="co">#   select(subject, </span></span>
+<span id="cb10-40"><a href="#cb10-40"></a><span class="co">#          believability_response_1 = belief1_response, </span></span>
+<span id="cb10-41"><a href="#cb10-41"></a><span class="co">#          believability_response_2 = belief2_response) %&gt;%</span></span>
+<span id="cb10-42"><a href="#cb10-42"></a><span class="co">#   mutate(believability_response_2 = str_remove_all(believability_response_2, &quot;[^0-9]&quot;))</span></span>
+<span id="cb10-43"><a href="#cb10-43"></a></span>
+<span id="cb10-44"><a href="#cb10-44"></a>data_confidence_ratings &lt;-<span class="st"> </span></span>
+<span id="cb10-45"><a href="#cb10-45"></a><span class="st">  </span><span class="kw">bind_rows</span>(</span>
+<span id="cb10-46"><a href="#cb10-46"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/acquisition_only/confidence_ratings.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb10-47"><a href="#cb10-47"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_only&quot;</span>,</span>
+<span id="cb10-48"><a href="#cb10-48"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
+<span id="cb10-49"><a href="#cb10-49"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/counterconditioning/confidence_ratings.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb10-50"><a href="#cb10-50"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;counterconditioning&quot;</span>,</span>
+<span id="cb10-51"><a href="#cb10-51"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
+<span id="cb10-52"><a href="#cb10-52"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/extinction/confidence_ratings.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb10-53"><a href="#cb10-53"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;extinction&quot;</span>,</span>
+<span id="cb10-54"><a href="#cb10-54"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
+<span id="cb10-55"><a href="#cb10-55"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb10-56"><a href="#cb10-56"></a><span class="st">  </span><span class="kw">select</span>(subject, </span>
+<span id="cb10-57"><a href="#cb10-57"></a>         <span class="dt">confidence_stim_1 =</span> Stimulus_<span class="dv">1</span>_Confidence_Confidence_response, </span>
+<span id="cb10-58"><a href="#cb10-58"></a>         <span class="dt">confidence_stim_2 =</span> Stimulus_<span class="dv">2</span>_Confidence_Confidence_response, </span>
+<span id="cb10-59"><a href="#cb10-59"></a>         <span class="dt">confidence_stim_3 =</span> Stimulus_<span class="dv">3</span>_Confidence_Confidence_response, </span>
+<span id="cb10-60"><a href="#cb10-60"></a>         <span class="dt">confidence_stim_4 =</span> Stimulus_<span class="dv">4</span>_Confidence_Confidence_response)</span>
+<span id="cb10-61"><a href="#cb10-61"></a></span>
+<span id="cb10-62"><a href="#cb10-62"></a>data_ratings &lt;-<span class="st"> </span></span>
+<span id="cb10-63"><a href="#cb10-63"></a><span class="st">  </span><span class="kw">bind_rows</span>(</span>
+<span id="cb10-64"><a href="#cb10-64"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/acquisition_only/valence_ratings.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb10-65"><a href="#cb10-65"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_only&quot;</span>,</span>
+<span id="cb10-66"><a href="#cb10-66"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
+<span id="cb10-67"><a href="#cb10-67"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/counterconditioning/valence_ratings.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb10-68"><a href="#cb10-68"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;counterconditioning&quot;</span>,</span>
+<span id="cb10-69"><a href="#cb10-69"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
+<span id="cb10-70"><a href="#cb10-70"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/extinction/valence_ratings.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb10-71"><a href="#cb10-71"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;extinction&quot;</span>,</span>
+<span id="cb10-72"><a href="#cb10-72"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
+<span id="cb10-73"><a href="#cb10-73"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb10-74"><a href="#cb10-74"></a><span class="st">  </span><span class="kw">select</span>(subject, </span>
+<span id="cb10-75"><a href="#cb10-75"></a>         <span class="dt">Outcome_1_Pos_Neg =</span> Stimulus_<span class="dv">1</span>_Positive_Negative_Positive_Negative_response,</span>
+<span id="cb10-76"><a href="#cb10-76"></a>         <span class="dt">Outcome_1_Good_Bad =</span> Stimulus_<span class="dv">1</span>_Good_Bad_Good_Bad_response,</span>
+<span id="cb10-77"><a href="#cb10-77"></a>         <span class="dt">Outcome_1_Pleasant_Unpleasant =</span> Stimulus_<span class="dv">1</span>_Pleasant_Unpleasant_Pleasant_Unpleasant_response,</span>
+<span id="cb10-78"><a href="#cb10-78"></a>         <span class="dt">Outcome_1_Like_Dislike =</span> Stimulus_<span class="dv">1</span>_Like_Dislike_Like_Dislike_response,</span>
+<span id="cb10-79"><a href="#cb10-79"></a>         <span class="dt">Outcome_2_Pos_Neg =</span> Stimulus_<span class="dv">3</span>_Positive_Negative_Positive_Negative_response,</span>
+<span id="cb10-80"><a href="#cb10-80"></a>         <span class="dt">Outcome_2_Good_Bad =</span> Stimulus_<span class="dv">3</span>_Good_Bad_Good_Bad_response, </span>
+<span id="cb10-81"><a href="#cb10-81"></a>         <span class="dt">Outcome_2_Pleasant_Unpleasant =</span> Stimulus_<span class="dv">3</span>_Pleasant_Unpleasant_Pleasant_Unpleasant_response,</span>
+<span id="cb10-82"><a href="#cb10-82"></a>         <span class="dt">Outcome_2_Like_Dislike =</span> Stimulus_<span class="dv">3</span>_Like_Dislike_Like_Dislike_response,</span>
+<span id="cb10-83"><a href="#cb10-83"></a>         <span class="dt">Target_1_Pos_Neg =</span> Stimulus_<span class="dv">2</span>_Positive_Negative_Positive_Negative_response,</span>
+<span id="cb10-84"><a href="#cb10-84"></a>         <span class="dt">Target_1_Good_Bad =</span> Stimulus_<span class="dv">2</span>_Good_Bad_Good_Bad_response, </span>
+<span id="cb10-85"><a href="#cb10-85"></a>         <span class="dt">Target_1_Pleasant_Unpleasant =</span> Stimulus_<span class="dv">2</span>_Pleasant_Unpleasant_Pleasant_Unpleasant_response,</span>
+<span id="cb10-86"><a href="#cb10-86"></a>         <span class="dt">Target_1_Like_Dislike =</span> Stimulus_<span class="dv">2</span>_Like_Dislike_Like_Dislike_response,</span>
+<span id="cb10-87"><a href="#cb10-87"></a>         <span class="dt">Target_2_Pos_Neg =</span> Stimulus_<span class="dv">4</span>_Positive_Negative_Positive_Negative_response,</span>
+<span id="cb10-88"><a href="#cb10-88"></a>         <span class="dt">Target_2_Good_Bad =</span> Stimulus_<span class="dv">4</span>_Good_Bad_Good_Bad_response,</span>
+<span id="cb10-89"><a href="#cb10-89"></a>         <span class="dt">Target_2_Pleasant_Unpleasant =</span> Stimulus_<span class="dv">4</span>_Pleasant_Unpleasant_Pleasant_Unpleasant_response,</span>
+<span id="cb10-90"><a href="#cb10-90"></a>         <span class="dt">Target_2_Like_Dislike =</span> Stimulus_<span class="dv">4</span>_Like_Dislike_Like_Dislike_response) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb10-91"><a href="#cb10-91"></a><span class="st">  </span><span class="co"># Create a mean rating score for each stimulus</span></span>
+<span id="cb10-92"><a href="#cb10-92"></a><span class="st">  </span><span class="co"># Create an operant evaluative conditioning (OEC) and intersecting regularites (IR) effect</span></span>
+<span id="cb10-93"><a href="#cb10-93"></a><span class="st">  </span><span class="kw">rowwise</span>() <span class="op">%&gt;%</span></span>
+<span id="cb10-94"><a href="#cb10-94"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">mean_outcome_1 =</span> <span class="kw">mean</span>(<span class="kw">c</span>(Outcome_<span class="dv">1</span>_Pos_Neg, Outcome_<span class="dv">1</span>_Good_Bad, Outcome_<span class="dv">1</span>_Pleasant_Unpleasant, Outcome_<span class="dv">1</span>_Like_Dislike)),</span>
+<span id="cb10-95"><a href="#cb10-95"></a>         <span class="dt">mean_outcome_2 =</span> <span class="kw">mean</span>(<span class="kw">c</span>(Outcome_<span class="dv">2</span>_Pos_Neg, Outcome_<span class="dv">2</span>_Good_Bad, Outcome_<span class="dv">2</span>_Pleasant_Unpleasant, Outcome_<span class="dv">2</span>_Like_Dislike)),</span>
+<span id="cb10-96"><a href="#cb10-96"></a>         <span class="dt">mean_target_1  =</span> <span class="kw">mean</span>(<span class="kw">c</span>(Target_<span class="dv">1</span>_Pos_Neg, Target_<span class="dv">1</span>_Good_Bad, Target_<span class="dv">1</span>_Pleasant_Unpleasant, Target_<span class="dv">1</span>_Like_Dislike)),</span>
+<span id="cb10-97"><a href="#cb10-97"></a>         <span class="dt">mean_target_2  =</span> <span class="kw">mean</span>(<span class="kw">c</span>(Target_<span class="dv">2</span>_Pos_Neg, Target_<span class="dv">2</span>_Good_Bad, Target_<span class="dv">2</span>_Pleasant_Unpleasant, Target_<span class="dv">2</span>_Like_Dislike)),</span>
+<span id="cb10-98"><a href="#cb10-98"></a>         <span class="dt">self_reported_OEC_effect     =</span> mean_outcome_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>mean_outcome_<span class="dv">2</span>,</span>
+<span id="cb10-99"><a href="#cb10-99"></a>         <span class="dt">self_reported_IR_effect      =</span> mean_target_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>mean_target_<span class="dv">2</span>) <span class="op">%&gt;%</span></span>
+<span id="cb10-100"><a href="#cb10-100"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></span>
+<span id="cb10-101"><a href="#cb10-101"></a><span class="st">  </span><span class="kw">select</span>(subject, self_reported_OEC_effect, self_reported_IR_effect)</span>
+<span id="cb10-102"><a href="#cb10-102"></a></span>
+<span id="cb10-103"><a href="#cb10-103"></a><span class="co"># behavioural intentions</span></span>
+<span id="cb10-104"><a href="#cb10-104"></a>data_intentions &lt;-<span class="st"> </span></span>
+<span id="cb10-105"><a href="#cb10-105"></a><span class="st">  </span><span class="kw">bind_rows</span>(</span>
+<span id="cb10-106"><a href="#cb10-106"></a>    <span class="kw">full_join</span>(<span class="kw">read_xlsx</span>(<span class="st">&quot;raw/acquisition_only/intention_ratings_1_3.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb10-107"><a href="#cb10-107"></a><span class="st">                </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_only&quot;</span>,</span>
+<span id="cb10-108"><a href="#cb10-108"></a>                       <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb10-109"><a href="#cb10-109"></a><span class="st">                </span><span class="kw">select</span>(subject, <span class="dt">behavioral_intentions_OEC =</span> Intentions_<span class="dv">1</span>_<span class="dv">3</span>_response),</span>
+<span id="cb10-110"><a href="#cb10-110"></a>              <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/acquisition_only/intention_ratings_2_4.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb10-111"><a href="#cb10-111"></a><span class="st">                </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_only&quot;</span>,</span>
+<span id="cb10-112"><a href="#cb10-112"></a>                       <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb10-113"><a href="#cb10-113"></a><span class="st">                </span><span class="kw">select</span>(subject, <span class="dt">behavioral_intentions_IR =</span> Intentions_<span class="dv">2</span>_<span class="dv">4</span>_response),</span>
+<span id="cb10-114"><a href="#cb10-114"></a>              <span class="dt">by =</span> <span class="st">&quot;subject&quot;</span>),</span>
+<span id="cb10-115"><a href="#cb10-115"></a>    <span class="kw">full_join</span>(<span class="kw">read_xlsx</span>(<span class="st">&quot;raw/counterconditioning/intention_ratings_1_3.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb10-116"><a href="#cb10-116"></a><span class="st">                </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;counterconditioning&quot;</span>,</span>
+<span id="cb10-117"><a href="#cb10-117"></a>                       <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb10-118"><a href="#cb10-118"></a><span class="st">                </span><span class="kw">select</span>(subject, <span class="dt">behavioral_intentions_OEC =</span> Intentions_<span class="dv">1</span>_<span class="dv">3</span>_response),</span>
+<span id="cb10-119"><a href="#cb10-119"></a>              <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/counterconditioning/intention_ratings_2_4.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb10-120"><a href="#cb10-120"></a><span class="st">                </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;counterconditioning&quot;</span>,</span>
+<span id="cb10-121"><a href="#cb10-121"></a>                       <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb10-122"><a href="#cb10-122"></a><span class="st">                </span><span class="kw">select</span>(subject, <span class="dt">behavioral_intentions_IR =</span> Intentions_<span class="dv">2</span>_<span class="dv">4</span>_response),</span>
+<span id="cb10-123"><a href="#cb10-123"></a>              <span class="dt">by =</span> <span class="st">&quot;subject&quot;</span>),</span>
+<span id="cb10-124"><a href="#cb10-124"></a>    <span class="kw">full_join</span>(<span class="kw">read_xlsx</span>(<span class="st">&quot;raw/extinction/intention_ratings_1_3.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb10-125"><a href="#cb10-125"></a><span class="st">                </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;extinction&quot;</span>,</span>
+<span id="cb10-126"><a href="#cb10-126"></a>                       <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb10-127"><a href="#cb10-127"></a><span class="st">                </span><span class="kw">select</span>(subject, <span class="dt">behavioral_intentions_OEC =</span> Intentions_<span class="dv">1</span>_<span class="dv">3</span>_response),</span>
+<span id="cb10-128"><a href="#cb10-128"></a>              <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/extinction/intention_ratings_2_4.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb10-129"><a href="#cb10-129"></a><span class="st">                </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;extinction&quot;</span>,</span>
+<span id="cb10-130"><a href="#cb10-130"></a>                       <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb10-131"><a href="#cb10-131"></a><span class="st">                </span><span class="kw">select</span>(subject, <span class="dt">behavioral_intentions_IR =</span> Intentions_<span class="dv">2</span>_<span class="dv">4</span>_response),</span>
+<span id="cb10-132"><a href="#cb10-132"></a>              <span class="dt">by =</span> <span class="st">&quot;subject&quot;</span>)</span>
+<span id="cb10-133"><a href="#cb10-133"></a>  )</span></code></pre></div>
+</div>
+<div id="iat" class="section level1">
+<h1>IAT</h1>
+<div id="tidying" class="section level2">
+<h2>Tidying</h2>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>data_iat_input &lt;-<span class="st"> </span></span>
+<span id="cb11-2"><a href="#cb11-2"></a><span class="st">  </span><span class="kw">bind_rows</span>(</span>
+<span id="cb11-3"><a href="#cb11-3"></a>    <span class="co"># acquisition_phase</span></span>
+<span id="cb11-4"><a href="#cb11-4"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/acquisition_only/iat_symbols_before.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb11-5"><a href="#cb11-5"></a><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_only&quot;</span>,</span>
+<span id="cb11-6"><a href="#cb11-6"></a>             <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>),</span>
+<span id="cb11-7"><a href="#cb11-7"></a>             <span class="dt">task_order =</span> <span class="st">&quot;iat before explicits&quot;</span>,</span>
+<span id="cb11-8"><a href="#cb11-8"></a>             <span class="dt">response =</span> <span class="kw">as.character</span>(response)),</span>
+<span id="cb11-9"><a href="#cb11-9"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/acquisition_only/iat_symbols_after.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb11-10"><a href="#cb11-10"></a><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_only&quot;</span>,</span>
+<span id="cb11-11"><a href="#cb11-11"></a>             <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>),</span>
+<span id="cb11-12"><a href="#cb11-12"></a>             <span class="dt">task_order =</span> <span class="st">&quot;iat after explicits&quot;</span>,</span>
+<span id="cb11-13"><a href="#cb11-13"></a>             <span class="dt">response =</span> <span class="kw">as.character</span>(response)),</span>
+<span id="cb11-14"><a href="#cb11-14"></a>    <span class="co"># counterconditioning</span></span>
+<span id="cb11-15"><a href="#cb11-15"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/counterconditioning/iat_symbols_before.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb11-16"><a href="#cb11-16"></a><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;counterconditioning&quot;</span>,</span>
+<span id="cb11-17"><a href="#cb11-17"></a>             <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>),</span>
+<span id="cb11-18"><a href="#cb11-18"></a>             <span class="dt">task_order =</span> <span class="st">&quot;iat before explicits&quot;</span>,</span>
+<span id="cb11-19"><a href="#cb11-19"></a>             <span class="dt">response =</span> <span class="kw">as.character</span>(response)),</span>
+<span id="cb11-20"><a href="#cb11-20"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/counterconditioning/iat_symbols_after.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb11-21"><a href="#cb11-21"></a><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;counterconditioning&quot;</span>,</span>
+<span id="cb11-22"><a href="#cb11-22"></a>             <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>),</span>
+<span id="cb11-23"><a href="#cb11-23"></a>             <span class="dt">task_order =</span> <span class="st">&quot;iat after explicits&quot;</span>,</span>
+<span id="cb11-24"><a href="#cb11-24"></a>             <span class="dt">response =</span> <span class="kw">as.character</span>(response)),</span>
+<span id="cb11-25"><a href="#cb11-25"></a>    <span class="co"># extinction</span></span>
+<span id="cb11-26"><a href="#cb11-26"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/extinction/iat_symbols_before.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb11-27"><a href="#cb11-27"></a><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;extinction&quot;</span>,</span>
+<span id="cb11-28"><a href="#cb11-28"></a>             <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>),</span>
+<span id="cb11-29"><a href="#cb11-29"></a>             <span class="dt">task_order =</span> <span class="st">&quot;iat before explicits&quot;</span>,</span>
+<span id="cb11-30"><a href="#cb11-30"></a>             <span class="dt">response =</span> <span class="kw">as.character</span>(response)),</span>
+<span id="cb11-31"><a href="#cb11-31"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/extinction/iat_symbols_after.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb11-32"><a href="#cb11-32"></a><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;extinction&quot;</span>,</span>
+<span id="cb11-33"><a href="#cb11-33"></a>             <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>),</span>
+<span id="cb11-34"><a href="#cb11-34"></a>             <span class="dt">task_order =</span> <span class="st">&quot;iat after explicits&quot;</span>,</span>
+<span id="cb11-35"><a href="#cb11-35"></a>             <span class="dt">response =</span> <span class="kw">as.character</span>(response))</span>
+<span id="cb11-36"><a href="#cb11-36"></a>  ) <span class="op">%&gt;%</span></span>
+<span id="cb11-37"><a href="#cb11-37"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">experiment =</span> current_experiment_number) <span class="op">%&gt;%</span></span>
+<span id="cb11-38"><a href="#cb11-38"></a><span class="st">  </span><span class="kw">select</span>(subject, experiment, </span>
+<span id="cb11-39"><a href="#cb11-39"></a>         <span class="dt">block_type =</span> blockcode, <span class="dt">block =</span> blocknum, <span class="dt">trial_number =</span> trialnum, </span>
+<span id="cb11-40"><a href="#cb11-40"></a>         correct, latency) <span class="op">%&gt;%</span></span>
+<span id="cb11-41"><a href="#cb11-41"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">trial_number =</span> <span class="kw">ifelse</span>(block <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">6</span>, <span class="dv">7</span>), trial_number<span class="dv">-1</span>, trial_number)) <span class="op">%&gt;%</span></span>
+<span id="cb11-42"><a href="#cb11-42"></a><span class="st">  </span><span class="co"># the number of the blocks is incorrect due to the way the task was coded, recode</span></span>
+<span id="cb11-43"><a href="#cb11-43"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">block =</span> <span class="kw">case_when</span>(block <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</span>
+<span id="cb11-44"><a href="#cb11-44"></a>                           block <span class="op">==</span><span class="st"> </span><span class="dv">2</span> <span class="op">~</span><span class="st"> </span><span class="dv">2</span>,</span>
+<span id="cb11-45"><a href="#cb11-45"></a>                           block <span class="op">==</span><span class="st"> </span><span class="dv">3</span> <span class="op">~</span><span class="st"> </span><span class="dv">3</span>,</span>
+<span id="cb11-46"><a href="#cb11-46"></a>                           block <span class="op">==</span><span class="st"> </span><span class="dv">5</span> <span class="op">~</span><span class="st"> </span><span class="dv">4</span>,</span>
+<span id="cb11-47"><a href="#cb11-47"></a>                           block <span class="op">==</span><span class="st"> </span><span class="dv">6</span> <span class="op">~</span><span class="st"> </span><span class="dv">5</span>,</span>
+<span id="cb11-48"><a href="#cb11-48"></a>                           block <span class="op">==</span><span class="st"> </span><span class="dv">7</span> <span class="op">~</span><span class="st"> </span><span class="dv">6</span>,</span>
+<span id="cb11-49"><a href="#cb11-49"></a>                           block <span class="op">==</span><span class="st"> </span><span class="dv">9</span> <span class="op">~</span><span class="st"> </span><span class="dv">7</span>))</span>
+<span id="cb11-50"><a href="#cb11-50"></a></span>
+<span id="cb11-51"><a href="#cb11-51"></a><span class="co"># block order</span></span>
+<span id="cb11-52"><a href="#cb11-52"></a>data_iat_block_order &lt;-<span class="st"> </span>data_iat_input <span class="op">%&gt;%</span></span>
+<span id="cb11-53"><a href="#cb11-53"></a><span class="st">  </span><span class="kw">filter</span>(block <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">&amp;</span><span class="st"> </span>trial_number <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) <span class="op">%&gt;%</span></span>
+<span id="cb11-54"><a href="#cb11-54"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">iat_block_order =</span> <span class="kw">case_when</span>(block_type <span class="op">==</span><span class="st"> &quot;targetincompatiblepractice&quot;</span> <span class="op">~</span><span class="st"> &quot;learning_inconsistent_first&quot;</span>,</span>
+<span id="cb11-55"><a href="#cb11-55"></a>                                     block_type <span class="op">==</span><span class="st"> &quot;targetcompatiblepractice&quot;</span> <span class="op">~</span><span class="st"> &quot;learning_consistent_first&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb11-56"><a href="#cb11-56"></a><span class="st">  </span><span class="kw">select</span>(subject, iat_block_order)</span>
+<span id="cb11-57"><a href="#cb11-57"></a></span>
+<span id="cb11-58"><a href="#cb11-58"></a><span class="co"># only retain the critical practice and test blocks (i.e., block_number = 3, 4, 6, 7)</span></span>
+<span id="cb11-59"><a href="#cb11-59"></a>data_iat_cleaned &lt;-<span class="st"> </span>data_iat_block_order <span class="op">%&gt;%</span></span>
+<span id="cb11-60"><a href="#cb11-60"></a><span class="st">  </span><span class="kw">left_join</span>(data_iat_input, <span class="dt">by =</span> <span class="st">&quot;subject&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb11-61"><a href="#cb11-61"></a><span class="st">  </span><span class="kw">filter</span>(block <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">7</span>))</span></code></pre></div>
+</div>
+<div id="completeness-1" class="section level2">
+<h2>Completeness</h2>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>data_iat_completeness &lt;-<span class="st"> </span>data_iat_cleaned <span class="op">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2"></a><span class="st">  </span><span class="kw">group_by</span>(subject) <span class="op">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3"></a><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">n =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span></span>
+<span id="cb12-4"><a href="#cb12-4"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">complete_iat_data =</span> <span class="kw">case_when</span>(n <span class="op">==</span><span class="st"> </span><span class="dv">120</span> <span class="op">~</span><span class="st"> &quot;complete&quot;</span>, </span>
+<span id="cb12-5"><a href="#cb12-5"></a>                                       n <span class="op">&gt;</span><span class="st"> </span><span class="dv">120</span> <span class="op">~</span><span class="st"> &quot;excess&quot;</span>, </span>
+<span id="cb12-6"><a href="#cb12-6"></a>                                       n <span class="op">&lt;</span><span class="st"> </span><span class="dv">120</span> <span class="op">~</span><span class="st">&quot;partial&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb12-7"><a href="#cb12-7"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></span>
+<span id="cb12-8"><a href="#cb12-8"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>n)</span>
+<span id="cb12-9"><a href="#cb12-9"></a></span>
+<span id="cb12-10"><a href="#cb12-10"></a>data_iat_completeness <span class="op">%&gt;%</span></span>
+<span id="cb12-11"><a href="#cb12-11"></a><span class="st">  </span><span class="kw">distinct</span>(subject, <span class="dt">.keep_all =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
+<span id="cb12-12"><a href="#cb12-12"></a><span class="st">  </span><span class="kw">count</span>(complete_iat_data) <span class="op">%&gt;%</span></span>
+<span id="cb12-13"><a href="#cb12-13"></a><span class="st">  </span><span class="kw">kable</span>() <span class="op">%&gt;%</span></span>
+<span id="cb12-14"><a href="#cb12-14"></a><span class="st">  </span><span class="kw">kable_styling</span>(<span class="dt">bootstrap_options =</span> <span class="kw">c</span>(<span class="st">&quot;striped&quot;</span>, <span class="st">&quot;hover&quot;</span>, <span class="st">&quot;condensed&quot;</span>), <span class="dt">full_width =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
+<table class="table table-striped table-hover table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+complete_iat_data
+</th>
+<th style="text-align:right;">
+n
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+complete
+</td>
+<td style="text-align:right;">
+351
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+excess
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="performance-1" class="section level2">
+<h2>Performance</h2>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="co"># exclude if total error rate &gt; 30% </span></span>
+<span id="cb13-2"><a href="#cb13-2"></a>data_iat_accuracy_overall &lt;-<span class="st"> </span>data_iat_cleaned <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb13-3"><a href="#cb13-3"></a><span class="st">  </span><span class="kw">group_by</span>(subject) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb13-4"><a href="#cb13-4"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">iat_accuracy_overall =</span> <span class="kw">sum</span>(correct)<span class="op">/</span><span class="kw">n</span>()) <span class="op">%&gt;%</span></span>
+<span id="cb13-5"><a href="#cb13-5"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></span>
+<span id="cb13-6"><a href="#cb13-6"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">passed_iat_accuracy_overall =</span> <span class="kw">ifelse</span>(iat_accuracy_overall <span class="op">&gt;=</span><span class="st"> </span><span class="fl">.70</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb13-7"><a href="#cb13-7"></a><span class="st">  </span><span class="kw">select</span>(subject, passed_iat_accuracy_overall)</span>
+<span id="cb13-8"><a href="#cb13-8"></a></span>
+<span id="cb13-9"><a href="#cb13-9"></a><span class="co"># exclude if error rate on any one block &gt; 40% </span></span>
+<span id="cb13-10"><a href="#cb13-10"></a>data_iat_accuracy_by_block &lt;-<span class="st"> </span>data_iat_cleaned <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb13-11"><a href="#cb13-11"></a><span class="st">  </span><span class="kw">group_by</span>(subject, block) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb13-12"><a href="#cb13-12"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">iat_accuracy_by_block =</span> <span class="kw">sum</span>(correct)<span class="op">/</span><span class="kw">n</span>()) <span class="op">%&gt;%</span></span>
+<span id="cb13-13"><a href="#cb13-13"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></span>
+<span id="cb13-14"><a href="#cb13-14"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">passed_iat_accuracy_by_block =</span> <span class="kw">ifelse</span>(iat_accuracy_by_block <span class="op">&gt;=</span><span class="st"> </span><span class="fl">.60</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb13-15"><a href="#cb13-15"></a><span class="st">  </span><span class="kw">group_by</span>(subject) <span class="op">%&gt;%</span></span>
+<span id="cb13-16"><a href="#cb13-16"></a><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">passed_iat_accuracy_by_block =</span> <span class="kw">as.logical</span>(<span class="kw">min</span>(passed_iat_accuracy_by_block))) <span class="op">%&gt;%</span></span>
+<span id="cb13-17"><a href="#cb13-17"></a><span class="st">  </span><span class="kw">ungroup</span>()</span>
+<span id="cb13-18"><a href="#cb13-18"></a></span>
+<span id="cb13-19"><a href="#cb13-19"></a>data_iat_fast_responding &lt;-<span class="st"> </span>data_iat_cleaned <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb13-20"><a href="#cb13-20"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">fast_response =</span> <span class="kw">ifelse</span>(latency <span class="op">&lt;</span><span class="st"> </span><span class="dv">300</span>, <span class="dv">1</span>, <span class="dv">0</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb13-21"><a href="#cb13-21"></a><span class="st">  </span><span class="kw">group_by</span>(subject) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb13-22"><a href="#cb13-22"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">iat_percent_fast_responses =</span> <span class="kw">sum</span>(fast_response)<span class="op">/</span><span class="kw">n</span>()) <span class="op">%&gt;%</span></span>
+<span id="cb13-23"><a href="#cb13-23"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></span>
+<span id="cb13-24"><a href="#cb13-24"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">passed_iat_percent_fast_responses =</span> <span class="kw">ifelse</span>(iat_percent_fast_responses <span class="op">&lt;=</span><span class="st"> </span><span class="fl">.10</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb13-25"><a href="#cb13-25"></a><span class="st">  </span><span class="kw">select</span>(subject, passed_iat_percent_fast_responses)</span>
+<span id="cb13-26"><a href="#cb13-26"></a></span>
+<span id="cb13-27"><a href="#cb13-27"></a>data_iat_performance &lt;-<span class="st"> </span>data_iat_accuracy_overall <span class="op">%&gt;%</span></span>
+<span id="cb13-28"><a href="#cb13-28"></a><span class="st">  </span><span class="kw">full_join</span>(data_iat_accuracy_by_block, <span class="dt">by =</span> <span class="st">&quot;subject&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb13-29"><a href="#cb13-29"></a><span class="st">  </span><span class="kw">full_join</span>(data_iat_fast_responding, <span class="dt">by =</span> <span class="st">&quot;subject&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb13-30"><a href="#cb13-30"></a><span class="st">  </span><span class="kw">rowwise</span>() <span class="op">%&gt;%</span></span>
+<span id="cb13-31"><a href="#cb13-31"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">passed_iat_performance =</span> <span class="kw">as.logical</span>(<span class="kw">min</span>(<span class="kw">c</span>(passed_iat_accuracy_overall, </span>
+<span id="cb13-32"><a href="#cb13-32"></a>                                                   passed_iat_accuracy_by_block,   </span>
+<span id="cb13-33"><a href="#cb13-33"></a>                                                   passed_iat_percent_fast_responses), <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))) <span class="op">%&gt;%</span></span>
+<span id="cb13-34"><a href="#cb13-34"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></span>
+<span id="cb13-35"><a href="#cb13-35"></a><span class="st">  </span><span class="kw">select</span>(subject, passed_iat_performance)</span>
+<span id="cb13-36"><a href="#cb13-36"></a></span>
+<span id="cb13-37"><a href="#cb13-37"></a><span class="kw">rm</span>(data_iat_accuracy_overall, data_iat_accuracy_by_block, data_iat_fast_responding)</span></code></pre></div>
+</div>
+<div id="d2-scoring" class="section level2">
+<h2>D2 scoring</h2>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="co">## rename and recode to create the input format that the IATscores package requires</span></span>
+<span id="cb14-2"><a href="#cb14-2"></a></span>
+<span id="cb14-3"><a href="#cb14-3"></a><span class="co"># create a numberic version of subject</span></span>
+<span id="cb14-4"><a href="#cb14-4"></a>data_iat_subject_numeric &lt;-<span class="st"> </span>data_iat_cleaned <span class="op">%&gt;%</span></span>
+<span id="cb14-5"><a href="#cb14-5"></a><span class="st">  </span><span class="kw">distinct</span>(subject) <span class="op">%&gt;%</span></span>
+<span id="cb14-6"><a href="#cb14-6"></a><span class="st">  </span><span class="kw">rownames_to_column</span>(<span class="dt">var =</span> <span class="st">&quot;subject_numeric&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb14-7"><a href="#cb14-7"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">subject_numeric =</span> <span class="kw">as.numeric</span>(subject_numeric))</span>
+<span id="cb14-8"><a href="#cb14-8"></a></span>
+<span id="cb14-9"><a href="#cb14-9"></a>data_iat_D2_scores &lt;-<span class="st"> </span>data_iat_subject_numeric <span class="op">%&gt;%</span></span>
+<span id="cb14-10"><a href="#cb14-10"></a><span class="st">  </span><span class="kw">left_join</span>(data_iat_cleaned, <span class="dt">by =</span> <span class="st">&quot;subject&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb14-11"><a href="#cb14-11"></a><span class="st">  </span><span class="co"># do other wrangling</span></span>
+<span id="cb14-12"><a href="#cb14-12"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">praccrit =</span> <span class="kw">ifelse</span>(block_type <span class="op">==</span><span class="st"> &quot;incompatibletest1&quot;</span> <span class="op">|</span><span class="st"> </span>block_type <span class="op">==</span><span class="st"> &quot;compatibletest1&quot;</span>, </span>
+<span id="cb14-13"><a href="#cb14-13"></a>                           <span class="st">&quot;prac&quot;</span>, <span class="st">&quot;crit&quot;</span>),</span>
+<span id="cb14-14"><a href="#cb14-14"></a>         <span class="dt">blockcode =</span> <span class="kw">ifelse</span>(block_type <span class="op">==</span><span class="st"> &quot;incompatibletest1&quot;</span> <span class="op">|</span><span class="st"> </span>block_type <span class="op">==</span><span class="st"> &quot;incompatibletest2&quot;</span>,</span>
+<span id="cb14-15"><a href="#cb14-15"></a>                            <span class="st">&quot;incompatible_block&quot;</span>, <span class="st">&quot;compatible_block&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb14-16"><a href="#cb14-16"></a><span class="st">  </span><span class="kw">select</span>(<span class="dt">subject_original =</span> subject, <span class="dt">subject =</span> subject_numeric, </span>
+<span id="cb14-17"><a href="#cb14-17"></a>         block, correct, latency, praccrit,  trial_number, block_type) <span class="op">%&gt;%</span></span>
+<span id="cb14-18"><a href="#cb14-18"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">blockcode =</span> <span class="kw">ifelse</span>(block <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">4</span>), <span class="st">&quot;pair1&quot;</span>, </span>
+<span id="cb14-19"><a href="#cb14-19"></a>                            <span class="kw">ifelse</span>(block <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">6</span>, <span class="dv">7</span>), <span class="st">&quot;pair2&quot;</span>, <span class="ot">NA</span>)),</span>
+<span id="cb14-20"><a href="#cb14-20"></a>         <span class="dt">praccrit =</span> <span class="kw">ifelse</span>(block <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">6</span>), <span class="st">&quot;prac&quot;</span>, </span>
+<span id="cb14-21"><a href="#cb14-21"></a>                           <span class="kw">ifelse</span>(block <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">7</span>), <span class="st">&quot;crit&quot;</span>, <span class="ot">NA</span>)))  <span class="op">%&gt;%</span></span>
+<span id="cb14-22"><a href="#cb14-22"></a><span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(blockcode)) <span class="op">%&gt;%</span></span>
+<span id="cb14-23"><a href="#cb14-23"></a><span class="st">  </span><span class="co"># calculate D2 scores</span></span>
+<span id="cb14-24"><a href="#cb14-24"></a><span class="st">  </span><span class="co"># parameters are identical to those the package lists in the D2 wrapper function</span></span>
+<span id="cb14-25"><a href="#cb14-25"></a><span class="st">  </span>IATscores<span class="op">::</span><span class="kw">RobustScores</span>(<span class="dt">IATdata =</span> .,</span>
+<span id="cb14-26"><a href="#cb14-26"></a>                          <span class="dt">P1 =</span> <span class="st">&quot;fxtrim&quot;</span>,  <span class="co"># Trim values &lt; 400ms</span></span>
+<span id="cb14-27"><a href="#cb14-27"></a>                          <span class="dt">P2 =</span> <span class="st">&quot;ignore&quot;</span>,  <span class="co"># do not trim errors</span></span>
+<span id="cb14-28"><a href="#cb14-28"></a>                          <span class="dt">P3 =</span> <span class="st">&quot;dscore&quot;</span>,  <span class="co"># calculate d2 scores</span></span>
+<span id="cb14-29"><a href="#cb14-29"></a>                          <span class="dt">P4 =</span> <span class="st">&quot;dist&quot;</span>,    <span class="co"># distinguish between the prac and test blocks</span></span>
+<span id="cb14-30"><a href="#cb14-30"></a>                          <span class="dt">verbose =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb14-31"><a href="#cb14-31"></a>                          <span class="dt">autoremove =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span></span>
+<span id="cb14-32"><a href="#cb14-32"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">IAT_D2_controlling_stimulus_identity =</span> p2112,</span>
+<span id="cb14-33"><a href="#cb14-33"></a>         <span class="dt">subject_numeric =</span> subject) <span class="op">%&gt;%</span></span>
+<span id="cb14-34"><a href="#cb14-34"></a><span class="st">  </span><span class="kw">full_join</span>(data_iat_subject_numeric, <span class="dt">by =</span> <span class="st">&quot;subject_numeric&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb14-35"><a href="#cb14-35"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>subject_numeric)</span></code></pre></div>
+</div>
+</div>
 <div id="equivalence-test" class="section level1">
 <h1>Equivalence test</h1>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>data_equivalence &lt;-<span class="st"> </span></span>
-<span id="cb10-2"><a href="#cb10-2"></a><span class="st">  </span><span class="kw">bind_rows</span>(</span>
-<span id="cb10-3"><a href="#cb10-3"></a>    <span class="co"># acquisition_only</span></span>
-<span id="cb10-4"><a href="#cb10-4"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/acquisition_only/equivalencetest1_nokeylocation.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb10-5"><a href="#cb10-5"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_only&quot;</span>,</span>
-<span id="cb10-6"><a href="#cb10-6"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
-<span id="cb10-7"><a href="#cb10-7"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/acquisition_only/equivalencetest2_nokeylocation.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb10-8"><a href="#cb10-8"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_only&quot;</span>,</span>
-<span id="cb10-9"><a href="#cb10-9"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
-<span id="cb10-10"><a href="#cb10-10"></a>    <span class="co"># counterconditioning</span></span>
-<span id="cb10-11"><a href="#cb10-11"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/counterconditioning/equivalencetest1_nokeylocation.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb10-12"><a href="#cb10-12"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;counterconditioning&quot;</span>,</span>
-<span id="cb10-13"><a href="#cb10-13"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
-<span id="cb10-14"><a href="#cb10-14"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/counterconditioning/equivalencetest2_nokeylocation.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb10-15"><a href="#cb10-15"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;counterconditioning&quot;</span>,</span>
-<span id="cb10-16"><a href="#cb10-16"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
-<span id="cb10-17"><a href="#cb10-17"></a>    <span class="co"># extinction</span></span>
-<span id="cb10-18"><a href="#cb10-18"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/extinction/equivalencetest1_nokeylocation.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb10-19"><a href="#cb10-19"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;extinction&quot;</span>,</span>
-<span id="cb10-20"><a href="#cb10-20"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
-<span id="cb10-21"><a href="#cb10-21"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/extinction/equivalencetest2_nokeylocation.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb10-22"><a href="#cb10-22"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;extinction&quot;</span>,</span>
-<span id="cb10-23"><a href="#cb10-23"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
-<span id="cb10-24"><a href="#cb10-24"></a>  ) <span class="op">%&gt;%</span></span>
-<span id="cb10-25"><a href="#cb10-25"></a><span class="st">  </span><span class="kw">select</span>(subject, correct) <span class="op">%&gt;%</span></span>
-<span id="cb10-26"><a href="#cb10-26"></a><span class="st">  </span></span>
-<span id="cb10-27"><a href="#cb10-27"></a><span class="st">  </span><span class="kw">group_by</span>(subject) <span class="op">%&gt;%</span></span>
-<span id="cb10-28"><a href="#cb10-28"></a><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">n =</span> <span class="kw">n</span>(), <span class="co"># check completeness</span></span>
-<span id="cb10-29"><a href="#cb10-29"></a>            <span class="dt">passsed_equivalence =</span> <span class="kw">ifelse</span>(<span class="kw">mean</span>(correct) <span class="op">&gt;</span><span class="st"> </span><span class="fl">.75</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb10-30"><a href="#cb10-30"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></span>
-<span id="cb10-31"><a href="#cb10-31"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">complete_equivalence_data =</span> <span class="kw">ifelse</span>(n <span class="op">==</span><span class="st"> </span><span class="dv">24</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb10-32"><a href="#cb10-32"></a><span class="st">  </span><span class="kw">select</span>(subject, complete_equivalence_data, passsed_equivalence)</span>
-<span id="cb10-33"><a href="#cb10-33"></a></span>
-<span id="cb10-34"><a href="#cb10-34"></a>data_equivalence <span class="op">%&gt;%</span></span>
-<span id="cb10-35"><a href="#cb10-35"></a><span class="st">  </span><span class="kw">count</span>(complete_equivalence_data, passsed_equivalence) <span class="op">%&gt;%</span></span>
-<span id="cb10-36"><a href="#cb10-36"></a><span class="st">  </span><span class="kw">kable</span>() <span class="op">%&gt;%</span></span>
-<span id="cb10-37"><a href="#cb10-37"></a><span class="st">  </span><span class="kw">kable_styling</span>(<span class="dt">bootstrap_options =</span> <span class="kw">c</span>(<span class="st">&quot;striped&quot;</span>, <span class="st">&quot;hover&quot;</span>, <span class="st">&quot;condensed&quot;</span>), <span class="dt">full_width =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
+<p>This task was included in the study in an exploratory manner and was not used in the preregistered analyses or reported in the manuscript.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>data_equivalence &lt;-<span class="st"> </span></span>
+<span id="cb15-2"><a href="#cb15-2"></a><span class="st">  </span><span class="kw">bind_rows</span>(</span>
+<span id="cb15-3"><a href="#cb15-3"></a>    <span class="co"># acquisition_only</span></span>
+<span id="cb15-4"><a href="#cb15-4"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/acquisition_only/equivalencetest1_nokeylocation.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb15-5"><a href="#cb15-5"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_only&quot;</span>,</span>
+<span id="cb15-6"><a href="#cb15-6"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
+<span id="cb15-7"><a href="#cb15-7"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/acquisition_only/equivalencetest2_nokeylocation.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb15-8"><a href="#cb15-8"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_only&quot;</span>,</span>
+<span id="cb15-9"><a href="#cb15-9"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
+<span id="cb15-10"><a href="#cb15-10"></a>    <span class="co"># counterconditioning</span></span>
+<span id="cb15-11"><a href="#cb15-11"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/counterconditioning/equivalencetest1_nokeylocation.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb15-12"><a href="#cb15-12"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;counterconditioning&quot;</span>,</span>
+<span id="cb15-13"><a href="#cb15-13"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
+<span id="cb15-14"><a href="#cb15-14"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/counterconditioning/equivalencetest2_nokeylocation.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb15-15"><a href="#cb15-15"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;counterconditioning&quot;</span>,</span>
+<span id="cb15-16"><a href="#cb15-16"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
+<span id="cb15-17"><a href="#cb15-17"></a>    <span class="co"># extinction</span></span>
+<span id="cb15-18"><a href="#cb15-18"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/extinction/equivalencetest1_nokeylocation.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb15-19"><a href="#cb15-19"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;extinction&quot;</span>,</span>
+<span id="cb15-20"><a href="#cb15-20"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
+<span id="cb15-21"><a href="#cb15-21"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/extinction/equivalencetest2_nokeylocation.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb15-22"><a href="#cb15-22"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;extinction&quot;</span>,</span>
+<span id="cb15-23"><a href="#cb15-23"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
+<span id="cb15-24"><a href="#cb15-24"></a>  ) <span class="op">%&gt;%</span></span>
+<span id="cb15-25"><a href="#cb15-25"></a><span class="st">  </span><span class="kw">select</span>(subject, correct) <span class="op">%&gt;%</span></span>
+<span id="cb15-26"><a href="#cb15-26"></a><span class="st">  </span></span>
+<span id="cb15-27"><a href="#cb15-27"></a><span class="st">  </span><span class="kw">group_by</span>(subject) <span class="op">%&gt;%</span></span>
+<span id="cb15-28"><a href="#cb15-28"></a><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">n =</span> <span class="kw">n</span>(), <span class="co"># check completeness</span></span>
+<span id="cb15-29"><a href="#cb15-29"></a>            <span class="dt">passsed_equivalence =</span> <span class="kw">ifelse</span>(<span class="kw">mean</span>(correct) <span class="op">&gt;</span><span class="st"> </span><span class="fl">.75</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb15-30"><a href="#cb15-30"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></span>
+<span id="cb15-31"><a href="#cb15-31"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">complete_equivalence_data =</span> <span class="kw">ifelse</span>(n <span class="op">==</span><span class="st"> </span><span class="dv">24</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb15-32"><a href="#cb15-32"></a><span class="st">  </span><span class="kw">select</span>(subject, complete_equivalence_data, passsed_equivalence)</span>
+<span id="cb15-33"><a href="#cb15-33"></a></span>
+<span id="cb15-34"><a href="#cb15-34"></a>data_equivalence <span class="op">%&gt;%</span></span>
+<span id="cb15-35"><a href="#cb15-35"></a><span class="st">  </span><span class="kw">count</span>(complete_equivalence_data, passsed_equivalence) <span class="op">%&gt;%</span></span>
+<span id="cb15-36"><a href="#cb15-36"></a><span class="st">  </span><span class="kw">kable</span>() <span class="op">%&gt;%</span></span>
+<span id="cb15-37"><a href="#cb15-37"></a><span class="st">  </span><span class="kw">kable_styling</span>(<span class="dt">bootstrap_options =</span> <span class="kw">c</span>(<span class="st">&quot;striped&quot;</span>, <span class="st">&quot;hover&quot;</span>, <span class="st">&quot;condensed&quot;</span>), <span class="dt">full_width =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
 <table class="table table-striped table-hover table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -2295,335 +2624,6 @@ TRUE
 </tbody>
 </table>
 </div>
-<div id="self-reports" class="section level1">
-<h1>Self-reports</h1>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>data_demand &lt;-<span class="st"> </span></span>
-<span id="cb11-2"><a href="#cb11-2"></a><span class="st">  </span><span class="kw">bind_rows</span>(</span>
-<span id="cb11-3"><a href="#cb11-3"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/acquisition_only/demand.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb11-4"><a href="#cb11-4"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_only&quot;</span>,</span>
-<span id="cb11-5"><a href="#cb11-5"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
-<span id="cb11-6"><a href="#cb11-6"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/counterconditioning/demand.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb11-7"><a href="#cb11-7"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;counterconditioning&quot;</span>,</span>
-<span id="cb11-8"><a href="#cb11-8"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
-<span id="cb11-9"><a href="#cb11-9"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/extinction/demand.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb11-10"><a href="#cb11-10"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;extinction&quot;</span>,</span>
-<span id="cb11-11"><a href="#cb11-11"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
-<span id="cb11-12"><a href="#cb11-12"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb11-13"><a href="#cb11-13"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">demand_response =</span> <span class="kw">case_when</span>(Demand_response <span class="op">==</span><span class="st"> &quot;What I learned during the experiment&quot;</span> <span class="op">~</span><span class="st"> &quot;Not Demand Compliant&quot;</span>,</span>
-<span id="cb11-14"><a href="#cb11-14"></a>                                     Demand_response <span class="op">==</span><span class="st"> &quot;I don&#39;t know why I evaluated the items as I did&quot;</span> <span class="op">~</span><span class="st"> &quot;Not Demand Compliant&quot;</span>,</span>
-<span id="cb11-15"><a href="#cb11-15"></a>                                     Demand_response <span class="op">==</span><span class="st"> &quot;What I learned during the experiment&quot;</span> <span class="op">~</span><span class="st"> &quot;Not Demand Compliant&quot;</span>,</span>
-<span id="cb11-16"><a href="#cb11-16"></a>                                     Demand_response <span class="op">==</span><span class="st"> &quot;What I thought the experimenter wanted me to say&quot;</span> <span class="op">~</span><span class="st"> &quot;Demand Compliant&quot;</span>,</span>
-<span id="cb11-17"><a href="#cb11-17"></a>                                     Demand_response <span class="op">==</span><span class="st"> &quot;I based my ratings on some some factor that was not what I learned or what the experimenter wanted me to do&quot;</span> <span class="op">~</span><span class="st"> &quot;Not Demand Compliant&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb11-18"><a href="#cb11-18"></a><span class="st">  </span><span class="kw">select</span>(subject, demand_response)</span>
-<span id="cb11-19"><a href="#cb11-19"></a></span>
-<span id="cb11-20"><a href="#cb11-20"></a>data_reactance &lt;-<span class="st"> </span></span>
-<span id="cb11-21"><a href="#cb11-21"></a><span class="st">  </span><span class="kw">bind_rows</span>(</span>
-<span id="cb11-22"><a href="#cb11-22"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/acquisition_only/reactance.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb11-23"><a href="#cb11-23"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_only&quot;</span>,</span>
-<span id="cb11-24"><a href="#cb11-24"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
-<span id="cb11-25"><a href="#cb11-25"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/counterconditioning/reactance.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb11-26"><a href="#cb11-26"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;counterconditioning&quot;</span>,</span>
-<span id="cb11-27"><a href="#cb11-27"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
-<span id="cb11-28"><a href="#cb11-28"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/extinction/reactance.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb11-29"><a href="#cb11-29"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;extinction&quot;</span>,</span>
-<span id="cb11-30"><a href="#cb11-30"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
-<span id="cb11-31"><a href="#cb11-31"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb11-32"><a href="#cb11-32"></a><span class="st">  </span><span class="kw">select</span>(subject, </span>
-<span id="cb11-33"><a href="#cb11-33"></a>         <span class="dt">reactance_response_1 =</span> react1_response, </span>
-<span id="cb11-34"><a href="#cb11-34"></a>         <span class="dt">reactance_response_2 =</span> react2_response) <span class="op">%&gt;%</span></span>
-<span id="cb11-35"><a href="#cb11-35"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">reactance_response_2 =</span> <span class="kw">str_remove_all</span>(reactance_response_<span class="dv">2</span>, <span class="st">&quot;[^0-9]&quot;</span>))</span>
-<span id="cb11-36"><a href="#cb11-36"></a></span>
-<span id="cb11-37"><a href="#cb11-37"></a><span class="co"># # no believability in this study</span></span>
-<span id="cb11-38"><a href="#cb11-38"></a><span class="co"># data_believability &lt;- read_xlsx(&quot;raw/acquisition_only/cover_belief.xlsx&quot;) %&gt;% </span></span>
-<span id="cb11-39"><a href="#cb11-39"></a><span class="co">#   select(subject, </span></span>
-<span id="cb11-40"><a href="#cb11-40"></a><span class="co">#          believability_response_1 = belief1_response, </span></span>
-<span id="cb11-41"><a href="#cb11-41"></a><span class="co">#          believability_response_2 = belief2_response) %&gt;%</span></span>
-<span id="cb11-42"><a href="#cb11-42"></a><span class="co">#   mutate(believability_response_2 = str_remove_all(believability_response_2, &quot;[^0-9]&quot;))</span></span>
-<span id="cb11-43"><a href="#cb11-43"></a></span>
-<span id="cb11-44"><a href="#cb11-44"></a>data_confidence_ratings &lt;-<span class="st"> </span></span>
-<span id="cb11-45"><a href="#cb11-45"></a><span class="st">  </span><span class="kw">bind_rows</span>(</span>
-<span id="cb11-46"><a href="#cb11-46"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/acquisition_only/confidence_ratings.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb11-47"><a href="#cb11-47"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_only&quot;</span>,</span>
-<span id="cb11-48"><a href="#cb11-48"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
-<span id="cb11-49"><a href="#cb11-49"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/counterconditioning/confidence_ratings.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb11-50"><a href="#cb11-50"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;counterconditioning&quot;</span>,</span>
-<span id="cb11-51"><a href="#cb11-51"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
-<span id="cb11-52"><a href="#cb11-52"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/extinction/confidence_ratings.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb11-53"><a href="#cb11-53"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;extinction&quot;</span>,</span>
-<span id="cb11-54"><a href="#cb11-54"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
-<span id="cb11-55"><a href="#cb11-55"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb11-56"><a href="#cb11-56"></a><span class="st">  </span><span class="kw">select</span>(subject, </span>
-<span id="cb11-57"><a href="#cb11-57"></a>         <span class="dt">confidence_stim_1 =</span> Stimulus_<span class="dv">1</span>_Confidence_Confidence_response, </span>
-<span id="cb11-58"><a href="#cb11-58"></a>         <span class="dt">confidence_stim_2 =</span> Stimulus_<span class="dv">2</span>_Confidence_Confidence_response, </span>
-<span id="cb11-59"><a href="#cb11-59"></a>         <span class="dt">confidence_stim_3 =</span> Stimulus_<span class="dv">3</span>_Confidence_Confidence_response, </span>
-<span id="cb11-60"><a href="#cb11-60"></a>         <span class="dt">confidence_stim_4 =</span> Stimulus_<span class="dv">4</span>_Confidence_Confidence_response)</span>
-<span id="cb11-61"><a href="#cb11-61"></a></span>
-<span id="cb11-62"><a href="#cb11-62"></a>data_ratings &lt;-<span class="st"> </span></span>
-<span id="cb11-63"><a href="#cb11-63"></a><span class="st">  </span><span class="kw">bind_rows</span>(</span>
-<span id="cb11-64"><a href="#cb11-64"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/acquisition_only/valence_ratings.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb11-65"><a href="#cb11-65"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_only&quot;</span>,</span>
-<span id="cb11-66"><a href="#cb11-66"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
-<span id="cb11-67"><a href="#cb11-67"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/counterconditioning/valence_ratings.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb11-68"><a href="#cb11-68"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;counterconditioning&quot;</span>,</span>
-<span id="cb11-69"><a href="#cb11-69"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
-<span id="cb11-70"><a href="#cb11-70"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/extinction/valence_ratings.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb11-71"><a href="#cb11-71"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;extinction&quot;</span>,</span>
-<span id="cb11-72"><a href="#cb11-72"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
-<span id="cb11-73"><a href="#cb11-73"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb11-74"><a href="#cb11-74"></a><span class="st">  </span><span class="kw">select</span>(subject, </span>
-<span id="cb11-75"><a href="#cb11-75"></a>         <span class="dt">Outcome_1_Pos_Neg =</span> Stimulus_<span class="dv">1</span>_Positive_Negative_Positive_Negative_response,</span>
-<span id="cb11-76"><a href="#cb11-76"></a>         <span class="dt">Outcome_1_Good_Bad =</span> Stimulus_<span class="dv">1</span>_Good_Bad_Good_Bad_response,</span>
-<span id="cb11-77"><a href="#cb11-77"></a>         <span class="dt">Outcome_1_Pleasant_Unpleasant =</span> Stimulus_<span class="dv">1</span>_Pleasant_Unpleasant_Pleasant_Unpleasant_response,</span>
-<span id="cb11-78"><a href="#cb11-78"></a>         <span class="dt">Outcome_1_Like_Dislike =</span> Stimulus_<span class="dv">1</span>_Like_Dislike_Like_Dislike_response,</span>
-<span id="cb11-79"><a href="#cb11-79"></a>         <span class="dt">Outcome_2_Pos_Neg =</span> Stimulus_<span class="dv">3</span>_Positive_Negative_Positive_Negative_response,</span>
-<span id="cb11-80"><a href="#cb11-80"></a>         <span class="dt">Outcome_2_Good_Bad =</span> Stimulus_<span class="dv">3</span>_Good_Bad_Good_Bad_response, </span>
-<span id="cb11-81"><a href="#cb11-81"></a>         <span class="dt">Outcome_2_Pleasant_Unpleasant =</span> Stimulus_<span class="dv">3</span>_Pleasant_Unpleasant_Pleasant_Unpleasant_response,</span>
-<span id="cb11-82"><a href="#cb11-82"></a>         <span class="dt">Outcome_2_Like_Dislike =</span> Stimulus_<span class="dv">3</span>_Like_Dislike_Like_Dislike_response,</span>
-<span id="cb11-83"><a href="#cb11-83"></a>         <span class="dt">Target_1_Pos_Neg =</span> Stimulus_<span class="dv">2</span>_Positive_Negative_Positive_Negative_response,</span>
-<span id="cb11-84"><a href="#cb11-84"></a>         <span class="dt">Target_1_Good_Bad =</span> Stimulus_<span class="dv">2</span>_Good_Bad_Good_Bad_response, </span>
-<span id="cb11-85"><a href="#cb11-85"></a>         <span class="dt">Target_1_Pleasant_Unpleasant =</span> Stimulus_<span class="dv">2</span>_Pleasant_Unpleasant_Pleasant_Unpleasant_response,</span>
-<span id="cb11-86"><a href="#cb11-86"></a>         <span class="dt">Target_1_Like_Dislike =</span> Stimulus_<span class="dv">2</span>_Like_Dislike_Like_Dislike_response,</span>
-<span id="cb11-87"><a href="#cb11-87"></a>         <span class="dt">Target_2_Pos_Neg =</span> Stimulus_<span class="dv">4</span>_Positive_Negative_Positive_Negative_response,</span>
-<span id="cb11-88"><a href="#cb11-88"></a>         <span class="dt">Target_2_Good_Bad =</span> Stimulus_<span class="dv">4</span>_Good_Bad_Good_Bad_response,</span>
-<span id="cb11-89"><a href="#cb11-89"></a>         <span class="dt">Target_2_Pleasant_Unpleasant =</span> Stimulus_<span class="dv">4</span>_Pleasant_Unpleasant_Pleasant_Unpleasant_response,</span>
-<span id="cb11-90"><a href="#cb11-90"></a>         <span class="dt">Target_2_Like_Dislike =</span> Stimulus_<span class="dv">4</span>_Like_Dislike_Like_Dislike_response) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb11-91"><a href="#cb11-91"></a><span class="st">  </span><span class="co"># Create a mean rating score for each stimulus</span></span>
-<span id="cb11-92"><a href="#cb11-92"></a><span class="st">  </span><span class="co"># Create an operant evaluative conditioning (OEC) and intersecting regularites (IR) effect</span></span>
-<span id="cb11-93"><a href="#cb11-93"></a><span class="st">  </span><span class="kw">rowwise</span>() <span class="op">%&gt;%</span></span>
-<span id="cb11-94"><a href="#cb11-94"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">mean_outcome_1 =</span> <span class="kw">mean</span>(<span class="kw">c</span>(Outcome_<span class="dv">1</span>_Pos_Neg, Outcome_<span class="dv">1</span>_Good_Bad, Outcome_<span class="dv">1</span>_Pleasant_Unpleasant, Outcome_<span class="dv">1</span>_Like_Dislike)),</span>
-<span id="cb11-95"><a href="#cb11-95"></a>         <span class="dt">mean_outcome_2 =</span> <span class="kw">mean</span>(<span class="kw">c</span>(Outcome_<span class="dv">2</span>_Pos_Neg, Outcome_<span class="dv">2</span>_Good_Bad, Outcome_<span class="dv">2</span>_Pleasant_Unpleasant, Outcome_<span class="dv">2</span>_Like_Dislike)),</span>
-<span id="cb11-96"><a href="#cb11-96"></a>         <span class="dt">mean_target_1  =</span> <span class="kw">mean</span>(<span class="kw">c</span>(Target_<span class="dv">1</span>_Pos_Neg, Target_<span class="dv">1</span>_Good_Bad, Target_<span class="dv">1</span>_Pleasant_Unpleasant, Target_<span class="dv">1</span>_Like_Dislike)),</span>
-<span id="cb11-97"><a href="#cb11-97"></a>         <span class="dt">mean_target_2  =</span> <span class="kw">mean</span>(<span class="kw">c</span>(Target_<span class="dv">2</span>_Pos_Neg, Target_<span class="dv">2</span>_Good_Bad, Target_<span class="dv">2</span>_Pleasant_Unpleasant, Target_<span class="dv">2</span>_Like_Dislike)),</span>
-<span id="cb11-98"><a href="#cb11-98"></a>         <span class="dt">OEC_effect     =</span> mean_outcome_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>mean_outcome_<span class="dv">2</span>,</span>
-<span id="cb11-99"><a href="#cb11-99"></a>         <span class="dt">IR_effect      =</span> mean_target_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>mean_target_<span class="dv">2</span>) <span class="op">%&gt;%</span></span>
-<span id="cb11-100"><a href="#cb11-100"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></span>
-<span id="cb11-101"><a href="#cb11-101"></a><span class="st">  </span><span class="kw">select</span>(subject, OEC_effect, IR_effect)</span>
-<span id="cb11-102"><a href="#cb11-102"></a></span>
-<span id="cb11-103"><a href="#cb11-103"></a><span class="co"># behavioural intentions</span></span>
-<span id="cb11-104"><a href="#cb11-104"></a>data_intentions &lt;-<span class="st"> </span></span>
-<span id="cb11-105"><a href="#cb11-105"></a><span class="st">  </span><span class="kw">bind_rows</span>(</span>
-<span id="cb11-106"><a href="#cb11-106"></a>    <span class="kw">full_join</span>(<span class="kw">read_xlsx</span>(<span class="st">&quot;raw/acquisition_only/intention_ratings_1_3.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb11-107"><a href="#cb11-107"></a><span class="st">                </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_only&quot;</span>,</span>
-<span id="cb11-108"><a href="#cb11-108"></a>                       <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb11-109"><a href="#cb11-109"></a><span class="st">                </span><span class="kw">select</span>(subject, <span class="dt">intentions_response_1_3 =</span> Intentions_<span class="dv">1</span>_<span class="dv">3</span>_response),</span>
-<span id="cb11-110"><a href="#cb11-110"></a>              <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/acquisition_only/intention_ratings_2_4.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb11-111"><a href="#cb11-111"></a><span class="st">                </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_only&quot;</span>,</span>
-<span id="cb11-112"><a href="#cb11-112"></a>                       <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb11-113"><a href="#cb11-113"></a><span class="st">                </span><span class="kw">select</span>(subject, <span class="dt">intentions_response_2_4 =</span> Intentions_<span class="dv">2</span>_<span class="dv">4</span>_response),</span>
-<span id="cb11-114"><a href="#cb11-114"></a>              <span class="dt">by =</span> <span class="st">&quot;subject&quot;</span>),</span>
-<span id="cb11-115"><a href="#cb11-115"></a>    <span class="kw">full_join</span>(<span class="kw">read_xlsx</span>(<span class="st">&quot;raw/counterconditioning/intention_ratings_1_3.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb11-116"><a href="#cb11-116"></a><span class="st">                </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;counterconditioning&quot;</span>,</span>
-<span id="cb11-117"><a href="#cb11-117"></a>                       <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb11-118"><a href="#cb11-118"></a><span class="st">                </span><span class="kw">select</span>(subject, <span class="dt">intentions_response_1_3 =</span> Intentions_<span class="dv">1</span>_<span class="dv">3</span>_response),</span>
-<span id="cb11-119"><a href="#cb11-119"></a>              <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/counterconditioning/intention_ratings_2_4.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb11-120"><a href="#cb11-120"></a><span class="st">                </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;counterconditioning&quot;</span>,</span>
-<span id="cb11-121"><a href="#cb11-121"></a>                       <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb11-122"><a href="#cb11-122"></a><span class="st">                </span><span class="kw">select</span>(subject, <span class="dt">intentions_response_2_4 =</span> Intentions_<span class="dv">2</span>_<span class="dv">4</span>_response),</span>
-<span id="cb11-123"><a href="#cb11-123"></a>              <span class="dt">by =</span> <span class="st">&quot;subject&quot;</span>),</span>
-<span id="cb11-124"><a href="#cb11-124"></a>    <span class="kw">full_join</span>(<span class="kw">read_xlsx</span>(<span class="st">&quot;raw/extinction/intention_ratings_1_3.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb11-125"><a href="#cb11-125"></a><span class="st">                </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;extinction&quot;</span>,</span>
-<span id="cb11-126"><a href="#cb11-126"></a>                       <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb11-127"><a href="#cb11-127"></a><span class="st">                </span><span class="kw">select</span>(subject, <span class="dt">intentions_response_1_3 =</span> Intentions_<span class="dv">1</span>_<span class="dv">3</span>_response),</span>
-<span id="cb11-128"><a href="#cb11-128"></a>              <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/extinction/intention_ratings_2_4.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb11-129"><a href="#cb11-129"></a><span class="st">                </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;extinction&quot;</span>,</span>
-<span id="cb11-130"><a href="#cb11-130"></a>                       <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb11-131"><a href="#cb11-131"></a><span class="st">                </span><span class="kw">select</span>(subject, <span class="dt">intentions_response_2_4 =</span> Intentions_<span class="dv">2</span>_<span class="dv">4</span>_response),</span>
-<span id="cb11-132"><a href="#cb11-132"></a>              <span class="dt">by =</span> <span class="st">&quot;subject&quot;</span>)</span>
-<span id="cb11-133"><a href="#cb11-133"></a>  )</span></code></pre></div>
-</div>
-<div id="iat" class="section level1">
-<h1>IAT</h1>
-<div id="tidying" class="section level2">
-<h2>Tidying</h2>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>data_iat_input &lt;-<span class="st"> </span></span>
-<span id="cb12-2"><a href="#cb12-2"></a><span class="st">  </span><span class="kw">bind_rows</span>(</span>
-<span id="cb12-3"><a href="#cb12-3"></a>    <span class="co"># acquisition_phase</span></span>
-<span id="cb12-4"><a href="#cb12-4"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/acquisition_only/iat_symbols_before.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb12-5"><a href="#cb12-5"></a><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_only&quot;</span>,</span>
-<span id="cb12-6"><a href="#cb12-6"></a>             <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>),</span>
-<span id="cb12-7"><a href="#cb12-7"></a>             <span class="dt">task_order =</span> <span class="st">&quot;iat before explicits&quot;</span>,</span>
-<span id="cb12-8"><a href="#cb12-8"></a>             <span class="dt">response =</span> <span class="kw">as.character</span>(response)),</span>
-<span id="cb12-9"><a href="#cb12-9"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/acquisition_only/iat_symbols_after.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb12-10"><a href="#cb12-10"></a><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_only&quot;</span>,</span>
-<span id="cb12-11"><a href="#cb12-11"></a>             <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>),</span>
-<span id="cb12-12"><a href="#cb12-12"></a>             <span class="dt">task_order =</span> <span class="st">&quot;iat after explicits&quot;</span>,</span>
-<span id="cb12-13"><a href="#cb12-13"></a>             <span class="dt">response =</span> <span class="kw">as.character</span>(response)),</span>
-<span id="cb12-14"><a href="#cb12-14"></a>    <span class="co"># counterconditioning</span></span>
-<span id="cb12-15"><a href="#cb12-15"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/counterconditioning/iat_symbols_before.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb12-16"><a href="#cb12-16"></a><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;counterconditioning&quot;</span>,</span>
-<span id="cb12-17"><a href="#cb12-17"></a>             <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>),</span>
-<span id="cb12-18"><a href="#cb12-18"></a>             <span class="dt">task_order =</span> <span class="st">&quot;iat before explicits&quot;</span>,</span>
-<span id="cb12-19"><a href="#cb12-19"></a>             <span class="dt">response =</span> <span class="kw">as.character</span>(response)),</span>
-<span id="cb12-20"><a href="#cb12-20"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/counterconditioning/iat_symbols_after.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb12-21"><a href="#cb12-21"></a><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;counterconditioning&quot;</span>,</span>
-<span id="cb12-22"><a href="#cb12-22"></a>             <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>),</span>
-<span id="cb12-23"><a href="#cb12-23"></a>             <span class="dt">task_order =</span> <span class="st">&quot;iat after explicits&quot;</span>,</span>
-<span id="cb12-24"><a href="#cb12-24"></a>             <span class="dt">response =</span> <span class="kw">as.character</span>(response)),</span>
-<span id="cb12-25"><a href="#cb12-25"></a>    <span class="co"># extinction</span></span>
-<span id="cb12-26"><a href="#cb12-26"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/extinction/iat_symbols_before.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb12-27"><a href="#cb12-27"></a><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;extinction&quot;</span>,</span>
-<span id="cb12-28"><a href="#cb12-28"></a>             <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>),</span>
-<span id="cb12-29"><a href="#cb12-29"></a>             <span class="dt">task_order =</span> <span class="st">&quot;iat before explicits&quot;</span>,</span>
-<span id="cb12-30"><a href="#cb12-30"></a>             <span class="dt">response =</span> <span class="kw">as.character</span>(response)),</span>
-<span id="cb12-31"><a href="#cb12-31"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/extinction/iat_symbols_after.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb12-32"><a href="#cb12-32"></a><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;extinction&quot;</span>,</span>
-<span id="cb12-33"><a href="#cb12-33"></a>             <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>),</span>
-<span id="cb12-34"><a href="#cb12-34"></a>             <span class="dt">task_order =</span> <span class="st">&quot;iat after explicits&quot;</span>,</span>
-<span id="cb12-35"><a href="#cb12-35"></a>             <span class="dt">response =</span> <span class="kw">as.character</span>(response))</span>
-<span id="cb12-36"><a href="#cb12-36"></a>  ) <span class="op">%&gt;%</span></span>
-<span id="cb12-37"><a href="#cb12-37"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">experiment =</span> current_experiment_number) <span class="op">%&gt;%</span></span>
-<span id="cb12-38"><a href="#cb12-38"></a><span class="st">  </span><span class="kw">select</span>(subject, experiment, </span>
-<span id="cb12-39"><a href="#cb12-39"></a>         <span class="dt">block_type =</span> blockcode, <span class="dt">block =</span> blocknum, <span class="dt">trial_number =</span> trialnum, </span>
-<span id="cb12-40"><a href="#cb12-40"></a>         correct, latency) <span class="op">%&gt;%</span></span>
-<span id="cb12-41"><a href="#cb12-41"></a><span class="st">  </span><span class="co"># trial_number on blocks 3 and 7 begins on 2: correct to begin at 1</span></span>
-<span id="cb12-42"><a href="#cb12-42"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">trial_number =</span> <span class="kw">ifelse</span>(block <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">6</span>, <span class="dv">7</span>), trial_number<span class="dv">-1</span>, trial_number)) <span class="op">%&gt;%</span></span>
-<span id="cb12-43"><a href="#cb12-43"></a><span class="st">  </span><span class="co"># the number of the blocks is incorrect due to the way the task was coded, recode</span></span>
-<span id="cb12-44"><a href="#cb12-44"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">block =</span> <span class="kw">case_when</span>(block <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">~</span><span class="st"> </span><span class="dv">1</span>,</span>
-<span id="cb12-45"><a href="#cb12-45"></a>                           block <span class="op">==</span><span class="st"> </span><span class="dv">2</span> <span class="op">~</span><span class="st"> </span><span class="dv">2</span>,</span>
-<span id="cb12-46"><a href="#cb12-46"></a>                           block <span class="op">==</span><span class="st"> </span><span class="dv">3</span> <span class="op">~</span><span class="st"> </span><span class="dv">3</span>,</span>
-<span id="cb12-47"><a href="#cb12-47"></a>                           block <span class="op">==</span><span class="st"> </span><span class="dv">5</span> <span class="op">~</span><span class="st"> </span><span class="dv">4</span>,</span>
-<span id="cb12-48"><a href="#cb12-48"></a>                           block <span class="op">==</span><span class="st"> </span><span class="dv">6</span> <span class="op">~</span><span class="st"> </span><span class="dv">5</span>,</span>
-<span id="cb12-49"><a href="#cb12-49"></a>                           block <span class="op">==</span><span class="st"> </span><span class="dv">7</span> <span class="op">~</span><span class="st"> </span><span class="dv">6</span>,</span>
-<span id="cb12-50"><a href="#cb12-50"></a>                           block <span class="op">==</span><span class="st"> </span><span class="dv">9</span> <span class="op">~</span><span class="st"> </span><span class="dv">7</span>))</span>
-<span id="cb12-51"><a href="#cb12-51"></a></span>
-<span id="cb12-52"><a href="#cb12-52"></a><span class="co"># block order</span></span>
-<span id="cb12-53"><a href="#cb12-53"></a>data_iat_block_order &lt;-<span class="st"> </span>data_iat_input <span class="op">%&gt;%</span></span>
-<span id="cb12-54"><a href="#cb12-54"></a><span class="st">  </span><span class="kw">filter</span>(block <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">&amp;</span><span class="st"> </span>trial_number <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) <span class="op">%&gt;%</span></span>
-<span id="cb12-55"><a href="#cb12-55"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">iat_block_order =</span> <span class="kw">case_when</span>(block_type <span class="op">==</span><span class="st"> &quot;targetincompatiblepractice&quot;</span> <span class="op">~</span><span class="st"> &quot;learning_inconsistent_first&quot;</span>,</span>
-<span id="cb12-56"><a href="#cb12-56"></a>                                     block_type <span class="op">==</span><span class="st"> &quot;targetcompatiblepractice&quot;</span> <span class="op">~</span><span class="st"> &quot;learning_consistent_first&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb12-57"><a href="#cb12-57"></a><span class="st">  </span><span class="kw">select</span>(subject, iat_block_order)</span>
-<span id="cb12-58"><a href="#cb12-58"></a></span>
-<span id="cb12-59"><a href="#cb12-59"></a><span class="co"># only retain the critical practice and test blocks (i.e., block_number = 3, 4, 6, 7)</span></span>
-<span id="cb12-60"><a href="#cb12-60"></a>data_iat_cleaned &lt;-<span class="st"> </span>data_iat_block_order <span class="op">%&gt;%</span></span>
-<span id="cb12-61"><a href="#cb12-61"></a><span class="st">  </span><span class="kw">left_join</span>(data_iat_input, <span class="dt">by =</span> <span class="st">&quot;subject&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb12-62"><a href="#cb12-62"></a><span class="st">  </span><span class="kw">filter</span>(block <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">7</span>))</span></code></pre></div>
-</div>
-<div id="completeness-1" class="section level2">
-<h2>Completeness</h2>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>data_iat_completeness &lt;-<span class="st"> </span>data_iat_cleaned <span class="op">%&gt;%</span></span>
-<span id="cb13-2"><a href="#cb13-2"></a><span class="st">  </span><span class="kw">group_by</span>(subject) <span class="op">%&gt;%</span></span>
-<span id="cb13-3"><a href="#cb13-3"></a><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">n =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span></span>
-<span id="cb13-4"><a href="#cb13-4"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">complete_iat_data =</span> <span class="kw">case_when</span>(n <span class="op">==</span><span class="st"> </span><span class="dv">120</span> <span class="op">~</span><span class="st"> &quot;complete&quot;</span>, </span>
-<span id="cb13-5"><a href="#cb13-5"></a>                                       n <span class="op">&gt;</span><span class="st"> </span><span class="dv">120</span> <span class="op">~</span><span class="st"> &quot;excess&quot;</span>, </span>
-<span id="cb13-6"><a href="#cb13-6"></a>                                       n <span class="op">&lt;</span><span class="st"> </span><span class="dv">120</span> <span class="op">~</span><span class="st">&quot;partial&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb13-7"><a href="#cb13-7"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></span>
-<span id="cb13-8"><a href="#cb13-8"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>n)</span>
-<span id="cb13-9"><a href="#cb13-9"></a></span>
-<span id="cb13-10"><a href="#cb13-10"></a>data_iat_completeness <span class="op">%&gt;%</span></span>
-<span id="cb13-11"><a href="#cb13-11"></a><span class="st">  </span><span class="kw">distinct</span>(subject, <span class="dt">.keep_all =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
-<span id="cb13-12"><a href="#cb13-12"></a><span class="st">  </span><span class="kw">count</span>(complete_iat_data) <span class="op">%&gt;%</span></span>
-<span id="cb13-13"><a href="#cb13-13"></a><span class="st">  </span><span class="kw">kable</span>() <span class="op">%&gt;%</span></span>
-<span id="cb13-14"><a href="#cb13-14"></a><span class="st">  </span><span class="kw">kable_styling</span>(<span class="dt">bootstrap_options =</span> <span class="kw">c</span>(<span class="st">&quot;striped&quot;</span>, <span class="st">&quot;hover&quot;</span>, <span class="st">&quot;condensed&quot;</span>), <span class="dt">full_width =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
-<table class="table table-striped table-hover table-condensed" style="width: auto !important; margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;">
-complete_iat_data
-</th>
-<th style="text-align:right;">
-n
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-complete
-</td>
-<td style="text-align:right;">
-351
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-excess
-</td>
-<td style="text-align:right;">
-1
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div id="performance-1" class="section level2">
-<h2>Performance</h2>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="co"># exclude if total error rate &gt; 30% </span></span>
-<span id="cb14-2"><a href="#cb14-2"></a>data_iat_accuracy_overall &lt;-<span class="st"> </span>data_iat_cleaned <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb14-3"><a href="#cb14-3"></a><span class="st">  </span><span class="kw">group_by</span>(subject) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb14-4"><a href="#cb14-4"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">iat_accuracy_overall =</span> <span class="kw">sum</span>(correct)<span class="op">/</span><span class="kw">n</span>()) <span class="op">%&gt;%</span></span>
-<span id="cb14-5"><a href="#cb14-5"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></span>
-<span id="cb14-6"><a href="#cb14-6"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">passed_iat_accuracy_overall =</span> <span class="kw">ifelse</span>(iat_accuracy_overall <span class="op">&gt;=</span><span class="st"> </span><span class="fl">.70</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb14-7"><a href="#cb14-7"></a><span class="st">  </span><span class="kw">select</span>(subject, passed_iat_accuracy_overall)</span>
-<span id="cb14-8"><a href="#cb14-8"></a></span>
-<span id="cb14-9"><a href="#cb14-9"></a><span class="co"># exclude if error rate on any one block &gt; 40% </span></span>
-<span id="cb14-10"><a href="#cb14-10"></a>data_iat_accuracy_by_block &lt;-<span class="st"> </span>data_iat_cleaned <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb14-11"><a href="#cb14-11"></a><span class="st">  </span><span class="kw">group_by</span>(subject, block) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb14-12"><a href="#cb14-12"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">iat_accuracy_by_block =</span> <span class="kw">sum</span>(correct)<span class="op">/</span><span class="kw">n</span>()) <span class="op">%&gt;%</span></span>
-<span id="cb14-13"><a href="#cb14-13"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></span>
-<span id="cb14-14"><a href="#cb14-14"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">passed_iat_accuracy_by_block =</span> <span class="kw">ifelse</span>(iat_accuracy_by_block <span class="op">&gt;=</span><span class="st"> </span><span class="fl">.60</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb14-15"><a href="#cb14-15"></a><span class="st">  </span><span class="kw">group_by</span>(subject) <span class="op">%&gt;%</span></span>
-<span id="cb14-16"><a href="#cb14-16"></a><span class="st">  </span><span class="kw">summarize</span>(<span class="dt">passed_iat_accuracy_by_block =</span> <span class="kw">as.logical</span>(<span class="kw">min</span>(passed_iat_accuracy_by_block))) <span class="op">%&gt;%</span></span>
-<span id="cb14-17"><a href="#cb14-17"></a><span class="st">  </span><span class="kw">ungroup</span>()</span>
-<span id="cb14-18"><a href="#cb14-18"></a></span>
-<span id="cb14-19"><a href="#cb14-19"></a>data_iat_fast_responding &lt;-<span class="st"> </span>data_iat_cleaned <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb14-20"><a href="#cb14-20"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">fast_response =</span> <span class="kw">ifelse</span>(latency <span class="op">&lt;</span><span class="st"> </span><span class="dv">300</span>, <span class="dv">1</span>, <span class="dv">0</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb14-21"><a href="#cb14-21"></a><span class="st">  </span><span class="kw">group_by</span>(subject) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb14-22"><a href="#cb14-22"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">iat_percent_fast_responses =</span> <span class="kw">sum</span>(fast_response)<span class="op">/</span><span class="kw">n</span>()) <span class="op">%&gt;%</span></span>
-<span id="cb14-23"><a href="#cb14-23"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></span>
-<span id="cb14-24"><a href="#cb14-24"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">passed_iat_percent_fast_responses =</span> <span class="kw">ifelse</span>(iat_percent_fast_responses <span class="op">&lt;=</span><span class="st"> </span><span class="fl">.10</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb14-25"><a href="#cb14-25"></a><span class="st">  </span><span class="kw">select</span>(subject, passed_iat_percent_fast_responses)</span>
-<span id="cb14-26"><a href="#cb14-26"></a></span>
-<span id="cb14-27"><a href="#cb14-27"></a>data_iat_performance &lt;-<span class="st"> </span>data_iat_accuracy_overall <span class="op">%&gt;%</span></span>
-<span id="cb14-28"><a href="#cb14-28"></a><span class="st">  </span><span class="kw">full_join</span>(data_iat_accuracy_by_block, <span class="dt">by =</span> <span class="st">&quot;subject&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb14-29"><a href="#cb14-29"></a><span class="st">  </span><span class="kw">full_join</span>(data_iat_fast_responding, <span class="dt">by =</span> <span class="st">&quot;subject&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb14-30"><a href="#cb14-30"></a><span class="st">  </span><span class="kw">rowwise</span>() <span class="op">%&gt;%</span></span>
-<span id="cb14-31"><a href="#cb14-31"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">passed_iat_performance =</span> <span class="kw">as.logical</span>(<span class="kw">min</span>(<span class="kw">c</span>(passed_iat_accuracy_overall, </span>
-<span id="cb14-32"><a href="#cb14-32"></a>                                                   passed_iat_accuracy_by_block,   </span>
-<span id="cb14-33"><a href="#cb14-33"></a>                                                   passed_iat_percent_fast_responses), <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))) <span class="op">%&gt;%</span></span>
-<span id="cb14-34"><a href="#cb14-34"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></span>
-<span id="cb14-35"><a href="#cb14-35"></a><span class="st">  </span><span class="kw">select</span>(subject, passed_iat_performance)</span>
-<span id="cb14-36"><a href="#cb14-36"></a></span>
-<span id="cb14-37"><a href="#cb14-37"></a><span class="kw">rm</span>(data_iat_accuracy_overall, data_iat_accuracy_by_block, data_iat_fast_responding)</span></code></pre></div>
-</div>
-<div id="d2-scoring" class="section level2">
-<h2>D2 scoring</h2>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="co">## rename and recode to create the input format that the IATscores package requires</span></span>
-<span id="cb15-2"><a href="#cb15-2"></a></span>
-<span id="cb15-3"><a href="#cb15-3"></a><span class="co"># create a numberic version of subject</span></span>
-<span id="cb15-4"><a href="#cb15-4"></a>data_iat_subject_numeric &lt;-<span class="st"> </span>data_iat_cleaned <span class="op">%&gt;%</span></span>
-<span id="cb15-5"><a href="#cb15-5"></a><span class="st">  </span><span class="kw">distinct</span>(subject) <span class="op">%&gt;%</span></span>
-<span id="cb15-6"><a href="#cb15-6"></a><span class="st">  </span><span class="kw">rownames_to_column</span>(<span class="dt">var =</span> <span class="st">&quot;subject_numeric&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb15-7"><a href="#cb15-7"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">subject_numeric =</span> <span class="kw">as.numeric</span>(subject_numeric))</span>
-<span id="cb15-8"><a href="#cb15-8"></a></span>
-<span id="cb15-9"><a href="#cb15-9"></a>data_iat_D2_scores &lt;-<span class="st"> </span>data_iat_subject_numeric <span class="op">%&gt;%</span></span>
-<span id="cb15-10"><a href="#cb15-10"></a><span class="st">  </span><span class="kw">left_join</span>(data_iat_cleaned, <span class="dt">by =</span> <span class="st">&quot;subject&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb15-11"><a href="#cb15-11"></a><span class="st">  </span><span class="co"># do other wrangling</span></span>
-<span id="cb15-12"><a href="#cb15-12"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">praccrit =</span> <span class="kw">ifelse</span>(block_type <span class="op">==</span><span class="st"> &quot;incompatibletest1&quot;</span> <span class="op">|</span><span class="st"> </span>block_type <span class="op">==</span><span class="st"> &quot;compatibletest1&quot;</span>, </span>
-<span id="cb15-13"><a href="#cb15-13"></a>                           <span class="st">&quot;prac&quot;</span>, <span class="st">&quot;crit&quot;</span>),</span>
-<span id="cb15-14"><a href="#cb15-14"></a>         <span class="dt">blockcode =</span> <span class="kw">ifelse</span>(block_type <span class="op">==</span><span class="st"> &quot;incompatibletest1&quot;</span> <span class="op">|</span><span class="st"> </span>block_type <span class="op">==</span><span class="st"> &quot;incompatibletest2&quot;</span>,</span>
-<span id="cb15-15"><a href="#cb15-15"></a>                            <span class="st">&quot;incompatible_block&quot;</span>, <span class="st">&quot;compatible_block&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb15-16"><a href="#cb15-16"></a><span class="st">  </span><span class="kw">select</span>(<span class="dt">subject_original =</span> subject, <span class="dt">subject =</span> subject_numeric, </span>
-<span id="cb15-17"><a href="#cb15-17"></a>         block, correct, latency, praccrit,  trial_number, block_type) <span class="op">%&gt;%</span></span>
-<span id="cb15-18"><a href="#cb15-18"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">blockcode =</span> <span class="kw">ifelse</span>(block <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">4</span>), <span class="st">&quot;pair1&quot;</span>, </span>
-<span id="cb15-19"><a href="#cb15-19"></a>                            <span class="kw">ifelse</span>(block <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">6</span>, <span class="dv">7</span>), <span class="st">&quot;pair2&quot;</span>, <span class="ot">NA</span>)),</span>
-<span id="cb15-20"><a href="#cb15-20"></a>         <span class="dt">praccrit =</span> <span class="kw">ifelse</span>(block <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">3</span>, <span class="dv">6</span>), <span class="st">&quot;prac&quot;</span>, </span>
-<span id="cb15-21"><a href="#cb15-21"></a>                           <span class="kw">ifelse</span>(block <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">4</span>, <span class="dv">7</span>), <span class="st">&quot;crit&quot;</span>, <span class="ot">NA</span>)))  <span class="op">%&gt;%</span></span>
-<span id="cb15-22"><a href="#cb15-22"></a><span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(blockcode)) <span class="op">%&gt;%</span></span>
-<span id="cb15-23"><a href="#cb15-23"></a><span class="st">  </span><span class="co"># calculate D2 scores</span></span>
-<span id="cb15-24"><a href="#cb15-24"></a><span class="st">  </span><span class="co"># parameters are identical to those the package lists in the D2 wrapper function</span></span>
-<span id="cb15-25"><a href="#cb15-25"></a><span class="st">  </span>IATscores<span class="op">::</span><span class="kw">RobustScores</span>(<span class="dt">IATdata =</span> .,</span>
-<span id="cb15-26"><a href="#cb15-26"></a>                          <span class="dt">P1 =</span> <span class="st">&quot;fxtrim&quot;</span>,  <span class="co"># Trim values &lt; 400ms</span></span>
-<span id="cb15-27"><a href="#cb15-27"></a>                          <span class="dt">P2 =</span> <span class="st">&quot;ignore&quot;</span>,  <span class="co"># do not trim errors</span></span>
-<span id="cb15-28"><a href="#cb15-28"></a>                          <span class="dt">P3 =</span> <span class="st">&quot;dscore&quot;</span>,  <span class="co"># calculate d2 scores</span></span>
-<span id="cb15-29"><a href="#cb15-29"></a>                          <span class="dt">P4 =</span> <span class="st">&quot;dist&quot;</span>,    <span class="co"># distinguish between the prac and test blocks</span></span>
-<span id="cb15-30"><a href="#cb15-30"></a>                          <span class="dt">verbose =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb15-31"><a href="#cb15-31"></a>                          <span class="dt">autoremove =</span> <span class="ot">FALSE</span>) <span class="op">%&gt;%</span></span>
-<span id="cb15-32"><a href="#cb15-32"></a><span class="st">  </span><span class="kw">rename</span>(<span class="dt">IAT_D2_controlling_stimulus_identity =</span> p2112,</span>
-<span id="cb15-33"><a href="#cb15-33"></a>         <span class="dt">subject_numeric =</span> subject) <span class="op">%&gt;%</span></span>
-<span id="cb15-34"><a href="#cb15-34"></a><span class="st">  </span><span class="kw">full_join</span>(data_iat_subject_numeric, <span class="dt">by =</span> <span class="st">&quot;subject_numeric&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb15-35"><a href="#cb15-35"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>subject_numeric)</span></code></pre></div>
-</div>
-</div>
 <div id="combine-and-write-to-disk" class="section level1">
 <h1>Combine and write to disk</h1>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>data_processed &lt;-<span class="st"> </span>data_conditions <span class="op">%&gt;%</span></span>
@@ -2644,13 +2644,13 @@ excess
 <span id="cb16-16"><a href="#cb16-16"></a><span class="st">  </span><span class="co">#full_join(data_believability, by = &quot;subject&quot;) %&gt;%  # not present in this study</span></span>
 <span id="cb16-17"><a href="#cb16-17"></a><span class="st">  </span><span class="co"># reverse-score the scores the self-reports based on stimulus_identity_condition</span></span>
 <span id="cb16-18"><a href="#cb16-18"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
-<span id="cb16-19"><a href="#cb16-19"></a>    <span class="dt">OEC_effect_controlling_stimulus_identity =</span> <span class="kw">case_when</span>(</span>
-<span id="cb16-20"><a href="#cb16-20"></a>      stimulus_identity_condition <span class="op">==</span><span class="st"> &quot;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good&quot;</span> <span class="op">~</span><span class="st"> </span>OEC_effect<span class="op">*-</span><span class="dv">1</span>,</span>
-<span id="cb16-21"><a href="#cb16-21"></a>      stimulus_identity_condition <span class="op">==</span><span class="st"> &quot;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad&quot;</span> <span class="op">~</span><span class="st"> </span>OEC_effect</span>
+<span id="cb16-19"><a href="#cb16-19"></a>    <span class="dt">self_reported_OEC_effect_controlling_stimulus_identity =</span> <span class="kw">case_when</span>(</span>
+<span id="cb16-20"><a href="#cb16-20"></a>      stimulus_identity_condition <span class="op">==</span><span class="st"> &quot;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good&quot;</span> <span class="op">~</span><span class="st"> </span>self_reported_OEC_effect<span class="op">*-</span><span class="dv">1</span>,</span>
+<span id="cb16-21"><a href="#cb16-21"></a>      stimulus_identity_condition <span class="op">==</span><span class="st"> &quot;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad&quot;</span> <span class="op">~</span><span class="st"> </span>self_reported_OEC_effect</span>
 <span id="cb16-22"><a href="#cb16-22"></a>    ),</span>
-<span id="cb16-23"><a href="#cb16-23"></a>    <span class="dt">IR_effect_controlling_stimulus_identity =</span> <span class="kw">case_when</span>(</span>
-<span id="cb16-24"><a href="#cb16-24"></a>      stimulus_identity_condition <span class="op">==</span><span class="st"> &quot;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good&quot;</span> <span class="op">~</span><span class="st"> </span>IR_effect<span class="op">*-</span><span class="dv">1</span>,</span>
-<span id="cb16-25"><a href="#cb16-25"></a>      stimulus_identity_condition <span class="op">==</span><span class="st"> &quot;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad&quot;</span> <span class="op">~</span><span class="st"> </span>IR_effect</span>
+<span id="cb16-23"><a href="#cb16-23"></a>    <span class="dt">self_reported_IR_effect_controlling_stimulus_identity =</span> <span class="kw">case_when</span>(</span>
+<span id="cb16-24"><a href="#cb16-24"></a>      stimulus_identity_condition <span class="op">==</span><span class="st"> &quot;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good&quot;</span> <span class="op">~</span><span class="st"> </span>self_reported_IR_effect<span class="op">*-</span><span class="dv">1</span>,</span>
+<span id="cb16-25"><a href="#cb16-25"></a>      stimulus_identity_condition <span class="op">==</span><span class="st"> &quot;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad&quot;</span> <span class="op">~</span><span class="st"> </span>self_reported_IR_effect</span>
 <span id="cb16-26"><a href="#cb16-26"></a>    )</span>
 <span id="cb16-27"><a href="#cb16-27"></a>  ) <span class="op">%&gt;%</span></span>
 <span id="cb16-28"><a href="#cb16-28"></a><span class="st">  </span><span class="co"># reverse score IAT so that a positive IAT score indicates that people preferred the Target that was related to the Positive Source more than the Target related to the Negative source and vice versa</span></span>
@@ -2674,13 +2674,13 @@ excess
 <span id="cb16-46"><a href="#cb16-46"></a>         mean_correct_counterconditioning_training, </span>
 <span id="cb16-47"><a href="#cb16-47"></a>         passed_performance_criterion_acquisition_training, passed_performance_criterion_acquisition_testing, </span>
 <span id="cb16-48"><a href="#cb16-48"></a>         passed_performance_criterion_counterconditioning_training, </span>
-<span id="cb16-49"><a href="#cb16-49"></a>         OEC_effect, OEC_effect_controlling_stimulus_identity, </span>
-<span id="cb16-50"><a href="#cb16-50"></a>         IR_effect, IR_effect_controlling_stimulus_identity, </span>
+<span id="cb16-49"><a href="#cb16-49"></a>         self_reported_OEC_effect, self_reported_OEC_effect_controlling_stimulus_identity, </span>
+<span id="cb16-50"><a href="#cb16-50"></a>         self_reported_IR_effect, self_reported_IR_effect_controlling_stimulus_identity, </span>
 <span id="cb16-51"><a href="#cb16-51"></a>         complete_iat_data, </span>
 <span id="cb16-52"><a href="#cb16-52"></a>         iat_block_order,</span>
 <span id="cb16-53"><a href="#cb16-53"></a>         passed_iat_performance,</span>
 <span id="cb16-54"><a href="#cb16-54"></a>         IAT_D2, IAT_D2_controlling_stimulus_identity, </span>
-<span id="cb16-55"><a href="#cb16-55"></a>         intentions_response_<span class="dv">1</span>_<span class="dv">3</span>, intentions_response_<span class="dv">2</span>_<span class="dv">4</span>,</span>
+<span id="cb16-55"><a href="#cb16-55"></a>         behavioral_intentions_OEC, behavioral_intentions_IR,</span>
 <span id="cb16-56"><a href="#cb16-56"></a>         complete_equivalence_data, passsed_equivalence,</span>
 <span id="cb16-57"><a href="#cb16-57"></a>         demand_response, </span>
 <span id="cb16-58"><a href="#cb16-58"></a>         reactance_response_<span class="dv">1</span>, reactance_response_<span class="dv">2</span>, </span>

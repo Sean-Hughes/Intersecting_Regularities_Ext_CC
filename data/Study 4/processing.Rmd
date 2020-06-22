@@ -321,7 +321,6 @@ data_iat_input <-
   select(subject, experiment, 
          block_type = blockcode, block = blocknum, trial_number = trialnum, 
          correct, latency) %>%
-  # trial_number on blocks 3 and 7 begins on 2: correct to begin at 1
   mutate(trial_number = ifelse(block %in% c(1, 2, 3, 6, 7), trial_number-1, trial_number)) %>%
   # the number of the blocks is incorrect due to the way the task was coded, recode
   mutate(block = case_when(block == 1 ~ 1,
@@ -485,11 +484,14 @@ data_processed <- data_conditions %>%
          task_order, 
          completeness_acquisition_testing, completeness_acquisition_training, 
          completeness_extinction_testing, completeness_extinction_training, 
-         mean_correct_acquisition_training, mean_correct_acquisition_testing, 
+         #mean_correct_acquisition_training, 
+         mean_correct_acquisition_testing, 
          mean_correct_extinction_testing, 
          # mean_correct_extinction_training, 
-         passed_performance_criterion_acquisition_training, passed_performance_criterion_acquisition_testing, 
-         passed_performance_criterion_extinction_testing, passed_performance_criterion_extinction_training, 
+         # passed_performance_criterion_acquisition_training, 
+         passed_performance_criterion_acquisition_testing, 
+         #passed_performance_criterion_extinction_training, 
+         passed_performance_criterion_extinction_testing, 
          self_reported_OEC_effect, self_reported_OEC_effect_controlling_stimulus_identity, 
          self_reported_IR_effect, self_reported_IR_effect_controlling_stimulus_identity, 
          complete_iat_data, 
