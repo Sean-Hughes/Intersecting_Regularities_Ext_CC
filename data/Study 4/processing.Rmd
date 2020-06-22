@@ -190,6 +190,8 @@ data_training_and_testing_completeness <- data_training_and_testing_completeness
 ```{r}
 
 data_training_and_testing_performance_temp <- data_training_and_testing_input %>%
+  # in this study, extinction was merely the presentation of stimuli on screen with no responses, so no performance metrics needed
+  filter(phase != "extinction_training") %>%
   # summarize performance by block
   group_by(subject, phase, block_number) %>% 
   summarise(mean_correct = mean(correct), 
@@ -484,7 +486,8 @@ data_processed <- data_conditions %>%
          completeness_acquisition_testing, completeness_acquisition_training, 
          completeness_extinction_testing, completeness_extinction_training, 
          mean_correct_acquisition_training, mean_correct_acquisition_testing, 
-         mean_correct_extinction_testing, mean_correct_extinction_training, 
+         mean_correct_extinction_testing, 
+         # mean_correct_extinction_training, 
          passed_performance_criterion_acquisition_training, passed_performance_criterion_acquisition_testing, 
          passed_performance_criterion_extinction_testing, passed_performance_criterion_extinction_training, 
          OEC_effect, OEC_effect_controlling_stimulus_identity, 
