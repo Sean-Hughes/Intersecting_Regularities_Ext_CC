@@ -1,0 +1,1 @@
+exploratory_questions.xlsx is produced by the inquisit script but data from these questions are saved elsewhere, to files demand.xlsx, cover_belief.xlsx, reactance.xlsx, and confidence_ratings.xlsx. therefore exploratory_questions is not read into data processing.

@@ -43,32 +43,32 @@ data_stimulus_identity_condition <-
     # acquisition only
     read_xlsx("raw/acquisition_only/intersecting_regularities_1_no_location.xlsx") %>%
       mutate(stimulus_identity_condition = "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad",
-             experimental_condition = "acquisition_only",
-             subject = paste(subject, experimental_condition, sep = "_")),
+             experiment_condition = "acquisition_only",
+             subject = paste(subject, experiment_condition, sep = "_")),
     read_xlsx("raw/acquisition_only/intersecting_regularities_2_no_location.xlsx") %>%
       mutate(stimulus_identity_condition = "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad",
-             experimental_condition = "acquisition_only",
-             subject = paste(subject, experimental_condition, sep = "_")),
+             experiment_condition = "acquisition_only",
+             subject = paste(subject, experiment_condition, sep = "_")),
     # counterconditioning 
     read_xlsx("raw/counterconditioning/intersecting_regularities_1_no_location.xlsx") %>%
       mutate(stimulus_identity_condition = "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad",
-             experimental_condition = "counterconditioning",
-             subject = paste(subject, experimental_condition, sep = "_")),
+             experiment_condition = "counterconditioning",
+             subject = paste(subject, experiment_condition, sep = "_")),
     read_xlsx("raw/counterconditioning/intersecting_regularities_2_no_location.xlsx") %>%
       mutate(stimulus_identity_condition = "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad",
-             experimental_condition = "counterconditioning",
-             subject = paste(subject, experimental_condition, sep = "_")),
+             experiment_condition = "counterconditioning",
+             subject = paste(subject, experiment_condition, sep = "_")),
     # extinction only
     read_xlsx("raw/extinction/intersecting_regularities_1_no_location.xlsx") %>%
       mutate(stimulus_identity_condition = "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad",
-             experimental_condition = "extinction",
-             subject = paste(subject, experimental_condition, sep = "_")),
+             experiment_condition = "extinction",
+             subject = paste(subject, experiment_condition, sep = "_")),
     read_xlsx("raw/extinction/intersecting_regularities_2_no_location.xlsx") %>%
       mutate(stimulus_identity_condition = "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad",
-             experimental_condition = "extinction",
-             subject = paste(subject, experimental_condition, sep = "_"))
+             experiment_condition = "extinction",
+             subject = paste(subject, experiment_condition, sep = "_"))
   ) %>%
-  select(subject, stimulus_identity_condition, experimental_condition) %>%
+  select(subject, stimulus_identity_condition, experiment_condition) %>%
   distinct(subject, .keep_all = TRUE)
 
 # task order
@@ -78,37 +78,37 @@ data_task_order <-
     read_xlsx("raw/acquisition_only/stimulus_ratings_before.xlsx") %>% 
       select(subject) %>% 
       mutate(task_order = "Explicits First",
-             experimental_condition = "acquisition_only",
-             subject = paste(subject, experimental_condition, sep = "_")),
+             experiment_condition = "acquisition_only",
+             subject = paste(subject, experiment_condition, sep = "_")),
     read_xlsx("raw/acquisition_only/stimulus_ratings_after.xlsx") %>% 
       select(subject) %>% 
       mutate(task_order = "Implicits First",
-             experimental_condition = "acquisition_only",
-             subject = paste(subject, experimental_condition, sep = "_")),
+             experiment_condition = "acquisition_only",
+             subject = paste(subject, experiment_condition, sep = "_")),
     # counterconditioning 
     read_xlsx("raw/counterconditioning/stimulus_ratings_before.xlsx") %>% 
       select(subject) %>% 
       mutate(task_order = "Explicits First",
-             experimental_condition = "counterconditioning",
-             subject = paste(subject, experimental_condition, sep = "_")),
+             experiment_condition = "counterconditioning",
+             subject = paste(subject, experiment_condition, sep = "_")),
     read_xlsx("raw/counterconditioning/stimulus_ratings_after.xlsx") %>% 
       select(subject) %>% 
       mutate(task_order = "Implicits First",
-             experimental_condition = "counterconditioning",
-             subject = paste(subject, experimental_condition, sep = "_")),
+             experiment_condition = "counterconditioning",
+             subject = paste(subject, experiment_condition, sep = "_")),
     # extinction only
     read_xlsx("raw/extinction/stimulus_ratings_before.xlsx") %>% 
       select(subject) %>% 
       mutate(task_order = "Explicits First",
-             experimental_condition = "extinction",
-             subject = paste(subject, experimental_condition, sep = "_")),
+             experiment_condition = "extinction",
+             subject = paste(subject, experiment_condition, sep = "_")),
     read_xlsx("raw/extinction/stimulus_ratings_after.xlsx") %>% 
       select(subject) %>% 
       mutate(task_order = "Implicits First",
-             experimental_condition = "extinction",
-             subject = paste(subject, experimental_condition, sep = "_"))
+             experiment_condition = "extinction",
+             subject = paste(subject, experiment_condition, sep = "_"))
   ) %>%
-  select(-experimental_condition)
+  select(-experiment_condition)
 
 # combine
 data_conditions <- data_stimulus_identity_condition %>%
@@ -126,16 +126,16 @@ rm(data_stimulus_identity_condition, data_task_order)
 data_demographics <- 
   bind_rows(
     read_xlsx("raw/acquisition_only/demographics.xlsx") %>% 
-      mutate(experimental_condition = "acquisition_only",
-             subject = paste(subject, experimental_condition, sep = "_")),
+      mutate(experiment_condition = "acquisition_only",
+             subject = paste(subject, experiment_condition, sep = "_")),
     read_xlsx("raw/counterconditioning/demographics.xlsx") %>% 
-      mutate(experimental_condition = "counterconditioning",
-             subject = paste(subject, experimental_condition, sep = "_")),
+      mutate(experiment_condition = "counterconditioning",
+             subject = paste(subject, experiment_condition, sep = "_")),
     read_xlsx("raw/extinction/demographics.xlsx") %>% 
-      mutate(experimental_condition = "extinction",
-             subject = paste(subject, experimental_condition, sep = "_")),
+      mutate(experiment_condition = "extinction",
+             subject = paste(subject, experiment_condition, sep = "_")),
   ) %>%
-  select(subject, experimental_condition, trialcode, response) %>% 
+  select(subject, experiment_condition, trialcode, response) %>% 
   pivot_wider(names_from = trialcode,
               values_from = response) %>%
   mutate(gender = case_when(str_detect(tolower(gender), "f") ~ "F",
@@ -143,7 +143,7 @@ data_demographics <-
                             str_detect(tolower(gender), "m") ~ "M",
                             str_detect(tolower(gender), "male") ~ "M",
                             TRUE ~ gender)) %>%
-  select(-experimental_condition)
+  select(-experiment_condition)
 
 ```
 
@@ -159,25 +159,25 @@ data_training_and_testing_input <-
     bind_rows(
       # acquisition only
       read_xlsx("raw/acquisition_only/intersecting_regularities_1_no_location.xlsx") %>%
-        mutate(experimental_condition = "acquisition_only",
-               subject = paste(subject, experimental_condition, sep = "_")),
+        mutate(experiment_condition = "acquisition_only",
+               subject = paste(subject, experiment_condition, sep = "_")),
       read_xlsx("raw/acquisition_only/intersecting_regularities_2_no_location.xlsx") %>%
-        mutate(experimental_condition = "acquisition_only",
-               subject = paste(subject, experimental_condition, sep = "_")),
+        mutate(experiment_condition = "acquisition_only",
+               subject = paste(subject, experiment_condition, sep = "_")),
       # counter conditioning
       read_xlsx("raw/counterconditioning/intersecting_regularities_1_no_location.xlsx") %>%
-        mutate(experimental_condition = "counterconditioning",
-               subject = paste(subject, experimental_condition, sep = "_")),
+        mutate(experiment_condition = "counterconditioning",
+               subject = paste(subject, experiment_condition, sep = "_")),
       read_xlsx("raw/counterconditioning/intersecting_regularities_2_no_location.xlsx") %>%
-        mutate(experimental_condition = "counterconditioning",
-               subject = paste(subject, experimental_condition, sep = "_")),
+        mutate(experiment_condition = "counterconditioning",
+               subject = paste(subject, experiment_condition, sep = "_")),
       # extinction
       read_xlsx("raw/extinction/intersecting_regularities_1_no_location.xlsx") %>%
-        mutate(experimental_condition = "extinction",
-               subject = paste(subject, experimental_condition, sep = "_")),
+        mutate(experiment_condition = "extinction",
+               subject = paste(subject, experiment_condition, sep = "_")),
       read_xlsx("raw/extinction/intersecting_regularities_2_no_location.xlsx") %>%
-        mutate(experimental_condition = "extinction",
-               subject = paste(subject, experimental_condition, sep = "_"))
+        mutate(experiment_condition = "extinction",
+               subject = paste(subject, experiment_condition, sep = "_"))
     ) %>%
       mutate(phase = "acquisition_training",
              blocknum = blocknum-3,
@@ -187,25 +187,25 @@ data_training_and_testing_input <-
     bind_rows(
       # acquisition_only 
       read_xlsx("raw/acquisition_only/testing1_nokeylocation.xlsx") %>%
-        mutate(experimental_condition = "acquisition_only",
-               subject = paste(subject, experimental_condition, sep = "_")),
+        mutate(experiment_condition = "acquisition_only",
+               subject = paste(subject, experiment_condition, sep = "_")),
       read_xlsx("raw/acquisition_only/testing2_nokeylocation.xlsx") %>%
-        mutate(experimental_condition = "acquisition_only",
-               subject = paste(subject, experimental_condition, sep = "_")),
+        mutate(experiment_condition = "acquisition_only",
+               subject = paste(subject, experiment_condition, sep = "_")),
       # counterconditioning 
       read_xlsx("raw/counterconditioning/testing1_nokeylocation.xlsx") %>%
-        mutate(experimental_condition = "counterconditioning",
-               subject = paste(subject, experimental_condition, sep = "_")),
+        mutate(experiment_condition = "counterconditioning",
+               subject = paste(subject, experiment_condition, sep = "_")),
       read_xlsx("raw/counterconditioning/testing2_nokeylocation.xlsx") %>%
-        mutate(experimental_condition = "counterconditioning",
-               subject = paste(subject, experimental_condition, sep = "_")),
+        mutate(experiment_condition = "counterconditioning",
+               subject = paste(subject, experiment_condition, sep = "_")),
       # extinction 
       read_xlsx("raw/extinction/testing1_nokeylocation.xlsx") %>%
-        mutate(experimental_condition = "extinction",
-               subject = paste(subject, experimental_condition, sep = "_")),
+        mutate(experiment_condition = "extinction",
+               subject = paste(subject, experiment_condition, sep = "_")),
       read_xlsx("raw/extinction/testing2_nokeylocation.xlsx") %>%
-        mutate(experimental_condition = "extinction",
-               subject = paste(subject, experimental_condition, sep = "_"))
+        mutate(experiment_condition = "extinction",
+               subject = paste(subject, experiment_condition, sep = "_"))
     ) %>%
       mutate(phase = "acquisition_testing",
              response = as.character(response)),
@@ -214,12 +214,12 @@ data_training_and_testing_input <-
     bind_rows(
       read_xlsx("raw/counterconditioning/counterconditioning1b_no_location.xlsx") %>%
         mutate(response = as.character(response),
-               experimental_condition = "counterconditioning",
-               subject = paste(subject, experimental_condition, sep = "_")),
+               experiment_condition = "counterconditioning",
+               subject = paste(subject, experiment_condition, sep = "_")),
       read_xlsx("raw/counterconditioning/counterconditioning2b_no_location.xlsx") %>%
         mutate(response = as.character(response),
-               experimental_condition = "counterconditioning",
-               subject = paste(subject, experimental_condition, sep = "_"))
+               experiment_condition = "counterconditioning",
+               subject = paste(subject, experiment_condition, sep = "_"))
     ) %>%
       mutate(phase = "counterconditioning_training") %>%
       select(-starts_with("stimulus")),
@@ -227,11 +227,11 @@ data_training_and_testing_input <-
     # counterconditioning_testing
     bind_rows(
       read_xlsx("raw/counterconditioning/testing_counterconditioning1b_nokeylocation.xlsx") %>%
-        mutate(experimental_condition = "counterconditioning",
-               subject = paste(subject, experimental_condition, sep = "_")),
+        mutate(experiment_condition = "counterconditioning",
+               subject = paste(subject, experiment_condition, sep = "_")),
       read_xlsx("raw/counterconditioning/testing_counterconditioning2b_nokeylocation.xlsx") %>%
-        mutate(experimental_condition = "counterconditioning",
-               subject = paste(subject, experimental_condition, sep = "_"))
+        mutate(experiment_condition = "counterconditioning",
+               subject = paste(subject, experiment_condition, sep = "_"))
     ) %>%
       mutate(phase = "counterconditioning_testing",
              response = as.character(response)),
@@ -239,11 +239,11 @@ data_training_and_testing_input <-
     # extinction training 
     bind_rows(
       read_xlsx("raw/extinction/extinction_1c_no_location.xlsx") %>%
-        mutate(experimental_condition = "extinction",
-               subject = paste(subject, experimental_condition, sep = "_")),
+        mutate(experiment_condition = "extinction",
+               subject = paste(subject, experiment_condition, sep = "_")),
       read_xlsx("raw/extinction/extinction_2c_no_location.xlsx") %>%
-        mutate(experimental_condition = "extinction",
-               subject = paste(subject, experimental_condition, sep = "_"))
+        mutate(experiment_condition = "extinction",
+               subject = paste(subject, experiment_condition, sep = "_"))
     ) %>%
       mutate(phase = "extinction_training",
              blocknum = blocknum-3,
@@ -252,17 +252,17 @@ data_training_and_testing_input <-
     # extinction testing
     bind_rows(
       read_xlsx("raw/extinction/testing_extinction1c_nokeylocation.xlsx") %>%
-        mutate(experimental_condition = "extinction",
-               subject = paste(subject, experimental_condition, sep = "_")),
+        mutate(experiment_condition = "extinction",
+               subject = paste(subject, experiment_condition, sep = "_")),
       read_xlsx("raw/extinction/testing_extinction2c_nokeylocation.xlsx") %>%
-        mutate(experimental_condition = "extinction",
-               subject = paste(subject, experimental_condition, sep = "_"))
+        mutate(experiment_condition = "extinction",
+               subject = paste(subject, experiment_condition, sep = "_"))
     ) %>%
       mutate(phase = "extinction_testing",
              response = as.character(response))
   ) %>%
   filter(blockcode != "Begin") %>% 
-  select(subject, experimental_condition, phase, block_number = blocknum, trial_number = trialnum, correct) %>%
+  select(subject, experiment_condition, phase, block_number = blocknum, trial_number = trialnum, correct) %>%
   arrange(subject, phase) %>%
   # many participants have block numbers 5+ for some reason I don't understand. trim this data.
   filter(block_number %in% c(1, 2, 3, 4))
@@ -309,7 +309,6 @@ data_training_and_testing_completeness_temp <- data_training_and_testing_input %
 
 data_training_and_testing_completeness_temp %>%
   count(phase, complete_training_testing_data) %>%
-  arrange(phase, complete_training_testing_data) %>%
   kable() %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 
@@ -373,14 +372,14 @@ data_training_and_testing_performance <- data_training_and_testing_performance_t
 data_manipulation_check <- 
   bind_rows(
     read_xlsx("raw/acquisition_only/manipulation_check_instructions.xlsx") %>%
-        mutate(experimental_condition = "acquisition_only",
-               subject = paste(subject, experimental_condition, sep = "_")),
+        mutate(experiment_condition = "acquisition_only",
+               subject = paste(subject, experiment_condition, sep = "_")),
     read_xlsx("raw/counterconditioning/manipulation_check_instructions.xlsx") %>%
-        mutate(experimental_condition = "counterconditioning",
-               subject = paste(subject, experimental_condition, sep = "_")),
+        mutate(experiment_condition = "counterconditioning",
+               subject = paste(subject, experiment_condition, sep = "_")),
     read_xlsx("raw/extinction/manipulation_check_instructions.xlsx") %>%
-        mutate(experimental_condition = "extinction",
-               subject = paste(subject, experimental_condition, sep = "_"))
+        mutate(experiment_condition = "extinction",
+               subject = paste(subject, experiment_condition, sep = "_"))
   ) %>%
   select(subject, manipulation_check_response = testquestion_Instruction_response) %>%
   mutate(passed_manipulation_check = ifelse(manipulation_check_response == "I have to click on the specific letter that goes with the image I see", TRUE, FALSE)) %>%
@@ -401,25 +400,25 @@ data_equivalence <-
   bind_rows(
     # acquisition_only
     read_xlsx("raw/acquisition_only/equivalencetest1_nokeylocation.xlsx") %>%
-        mutate(experimental_condition = "acquisition_only",
-               subject = paste(subject, experimental_condition, sep = "_")),
+        mutate(experiment_condition = "acquisition_only",
+               subject = paste(subject, experiment_condition, sep = "_")),
     read_xlsx("raw/acquisition_only/equivalencetest2_nokeylocation.xlsx") %>%
-        mutate(experimental_condition = "acquisition_only",
-               subject = paste(subject, experimental_condition, sep = "_")),
+        mutate(experiment_condition = "acquisition_only",
+               subject = paste(subject, experiment_condition, sep = "_")),
     # counterconditioning
     read_xlsx("raw/counterconditioning/equivalencetest1_nokeylocation.xlsx") %>%
-        mutate(experimental_condition = "counterconditioning",
-               subject = paste(subject, experimental_condition, sep = "_")),
+        mutate(experiment_condition = "counterconditioning",
+               subject = paste(subject, experiment_condition, sep = "_")),
     read_xlsx("raw/counterconditioning/equivalencetest2_nokeylocation.xlsx") %>%
-        mutate(experimental_condition = "counterconditioning",
-               subject = paste(subject, experimental_condition, sep = "_")),
+        mutate(experiment_condition = "counterconditioning",
+               subject = paste(subject, experiment_condition, sep = "_")),
     # extinction
     read_xlsx("raw/extinction/equivalencetest1_nokeylocation.xlsx") %>%
-        mutate(experimental_condition = "extinction",
-               subject = paste(subject, experimental_condition, sep = "_")),
+        mutate(experiment_condition = "extinction",
+               subject = paste(subject, experiment_condition, sep = "_")),
     read_xlsx("raw/extinction/equivalencetest2_nokeylocation.xlsx") %>%
-        mutate(experimental_condition = "extinction",
-               subject = paste(subject, experimental_condition, sep = "_"))
+        mutate(experiment_condition = "extinction",
+               subject = paste(subject, experiment_condition, sep = "_"))
   ) %>%
   select(subject, correct) %>%
   
@@ -444,14 +443,14 @@ data_equivalence %>%
 data_demand <- 
   bind_rows(
     read_xlsx("raw/acquisition_only/demand.xlsx") %>%
-        mutate(experimental_condition = "acquisition_only",
-               subject = paste(subject, experimental_condition, sep = "_")),
+        mutate(experiment_condition = "acquisition_only",
+               subject = paste(subject, experiment_condition, sep = "_")),
     read_xlsx("raw/counterconditioning/demand.xlsx") %>%
-        mutate(experimental_condition = "counterconditioning",
-               subject = paste(subject, experimental_condition, sep = "_")),
+        mutate(experiment_condition = "counterconditioning",
+               subject = paste(subject, experiment_condition, sep = "_")),
     read_xlsx("raw/extinction/demand.xlsx") %>%
-        mutate(experimental_condition = "extinction",
-               subject = paste(subject, experimental_condition, sep = "_"))
+        mutate(experiment_condition = "extinction",
+               subject = paste(subject, experiment_condition, sep = "_"))
   ) %>% 
   mutate(demand_response = case_when(Demand_response == "What I learned during the experiment" ~ "Not Demand Compliant",
                                      Demand_response == "I don't know why I evaluated the items as I did" ~ "Not Demand Compliant",
@@ -463,14 +462,14 @@ data_demand <-
 data_reactance <- 
   bind_rows(
     read_xlsx("raw/acquisition_only/reactance.xlsx") %>%
-        mutate(experimental_condition = "acquisition_only",
-               subject = paste(subject, experimental_condition, sep = "_")),
+        mutate(experiment_condition = "acquisition_only",
+               subject = paste(subject, experiment_condition, sep = "_")),
     read_xlsx("raw/counterconditioning/reactance.xlsx") %>%
-        mutate(experimental_condition = "counterconditioning",
-               subject = paste(subject, experimental_condition, sep = "_")),
+        mutate(experiment_condition = "counterconditioning",
+               subject = paste(subject, experiment_condition, sep = "_")),
     read_xlsx("raw/extinction/reactance.xlsx") %>%
-        mutate(experimental_condition = "extinction",
-               subject = paste(subject, experimental_condition, sep = "_"))
+        mutate(experiment_condition = "extinction",
+               subject = paste(subject, experiment_condition, sep = "_"))
   ) %>% 
   select(subject, 
          reactance_response_1 = react1_response, 
@@ -487,14 +486,14 @@ data_reactance <-
 data_confidence_ratings <- 
   bind_rows(
     read_xlsx("raw/acquisition_only/confidence_ratings.xlsx") %>%
-        mutate(experimental_condition = "acquisition_only",
-               subject = paste(subject, experimental_condition, sep = "_")),
+        mutate(experiment_condition = "acquisition_only",
+               subject = paste(subject, experiment_condition, sep = "_")),
     read_xlsx("raw/counterconditioning/confidence_ratings.xlsx") %>%
-        mutate(experimental_condition = "counterconditioning",
-               subject = paste(subject, experimental_condition, sep = "_")),
+        mutate(experiment_condition = "counterconditioning",
+               subject = paste(subject, experiment_condition, sep = "_")),
     read_xlsx("raw/extinction/confidence_ratings.xlsx") %>%
-        mutate(experimental_condition = "extinction",
-               subject = paste(subject, experimental_condition, sep = "_"))
+        mutate(experiment_condition = "extinction",
+               subject = paste(subject, experiment_condition, sep = "_"))
   ) %>% 
   select(subject, 
          confidence_stim_1 = Stimulus_1_Confidence_Confidence_response, 
@@ -505,14 +504,14 @@ data_confidence_ratings <-
 data_ratings <- 
   bind_rows(
     read_xlsx("raw/acquisition_only/valence_ratings.xlsx") %>%
-        mutate(experimental_condition = "acquisition_only",
-               subject = paste(subject, experimental_condition, sep = "_")),
+        mutate(experiment_condition = "acquisition_only",
+               subject = paste(subject, experiment_condition, sep = "_")),
     read_xlsx("raw/counterconditioning/valence_ratings.xlsx") %>%
-        mutate(experimental_condition = "counterconditioning",
-               subject = paste(subject, experimental_condition, sep = "_")),
+        mutate(experiment_condition = "counterconditioning",
+               subject = paste(subject, experiment_condition, sep = "_")),
     read_xlsx("raw/extinction/valence_ratings.xlsx") %>%
-        mutate(experimental_condition = "extinction",
-               subject = paste(subject, experimental_condition, sep = "_"))
+        mutate(experiment_condition = "extinction",
+               subject = paste(subject, experiment_condition, sep = "_"))
   ) %>% 
   select(subject, 
          Outcome_1_Pos_Neg = Stimulus_1_Positive_Negative_Positive_Negative_response,
@@ -538,39 +537,39 @@ data_ratings <-
          mean_outcome_2 = mean(c(Outcome_2_Pos_Neg, Outcome_2_Good_Bad, Outcome_2_Pleasant_Unpleasant, Outcome_2_Like_Dislike)),
          mean_target_1  = mean(c(Target_1_Pos_Neg, Target_1_Good_Bad, Target_1_Pleasant_Unpleasant, Target_1_Like_Dislike)),
          mean_target_2  = mean(c(Target_2_Pos_Neg, Target_2_Good_Bad, Target_2_Pleasant_Unpleasant, Target_2_Like_Dislike)),
-         OEC_effect_native     = mean_outcome_1 - mean_outcome_2,
-         IR_effect_native      = mean_target_1 - mean_target_2) %>%
+         OEC_effect     = mean_outcome_1 - mean_outcome_2,
+         IR_effect      = mean_target_1 - mean_target_2) %>%
   ungroup() %>%
-  select(subject, OEC_effect_native, IR_effect_native)
+  select(subject, OEC_effect, IR_effect)
 
 # behavioural intentions
 data_intentions <- 
   bind_rows(
     full_join(read_xlsx("raw/acquisition_only/intention_ratings_1_3.xlsx") %>%
-                mutate(experimental_condition = "acquisition_only",
-                       subject = paste(subject, experimental_condition, sep = "_")) %>%
+                mutate(experiment_condition = "acquisition_only",
+                       subject = paste(subject, experiment_condition, sep = "_")) %>%
                 select(subject, intentions_response_1_3 = Intentions_1_3_response),
               read_xlsx("raw/acquisition_only/intention_ratings_2_4.xlsx") %>%
-                mutate(experimental_condition = "acquisition_only",
-                       subject = paste(subject, experimental_condition, sep = "_")) %>%
+                mutate(experiment_condition = "acquisition_only",
+                       subject = paste(subject, experiment_condition, sep = "_")) %>%
                 select(subject, intentions_response_2_4 = Intentions_2_4_response),
               by = "subject"),
     full_join(read_xlsx("raw/counterconditioning/intention_ratings_1_3.xlsx") %>%
-                mutate(experimental_condition = "counterconditioning",
-                       subject = paste(subject, experimental_condition, sep = "_")) %>%
+                mutate(experiment_condition = "counterconditioning",
+                       subject = paste(subject, experiment_condition, sep = "_")) %>%
                 select(subject, intentions_response_1_3 = Intentions_1_3_response),
               read_xlsx("raw/counterconditioning/intention_ratings_2_4.xlsx") %>%
-                mutate(experimental_condition = "counterconditioning",
-                       subject = paste(subject, experimental_condition, sep = "_")) %>%
+                mutate(experiment_condition = "counterconditioning",
+                       subject = paste(subject, experiment_condition, sep = "_")) %>%
                 select(subject, intentions_response_2_4 = Intentions_2_4_response),
               by = "subject"),
     full_join(read_xlsx("raw/extinction/intention_ratings_1_3.xlsx") %>%
-                mutate(experimental_condition = "extinction",
-                       subject = paste(subject, experimental_condition, sep = "_")) %>%
+                mutate(experiment_condition = "extinction",
+                       subject = paste(subject, experiment_condition, sep = "_")) %>%
                 select(subject, intentions_response_1_3 = Intentions_1_3_response),
               read_xlsx("raw/extinction/intention_ratings_2_4.xlsx") %>%
-                mutate(experimental_condition = "extinction",
-                       subject = paste(subject, experimental_condition, sep = "_")) %>%
+                mutate(experiment_condition = "extinction",
+                       subject = paste(subject, experiment_condition, sep = "_")) %>%
                 select(subject, intentions_response_2_4 = Intentions_2_4_response),
               by = "subject")
   )
@@ -587,35 +586,35 @@ data_iat_input <-
   bind_rows(
     # acquisition_phase
     read_xlsx("raw/acquisition_only/iat_symbols_before.xlsx") %>%
-      mutate(experimental_condition = "acquisition_only",
-             subject = paste(subject, experimental_condition, sep = "_"),
+      mutate(experiment_condition = "acquisition_only",
+             subject = paste(subject, experiment_condition, sep = "_"),
              task_order = "iat before explicits",
              response = as.character(response)),
     read_xlsx("raw/acquisition_only/iat_symbols_after.xlsx") %>%
-      mutate(experimental_condition = "acquisition_only",
-             subject = paste(subject, experimental_condition, sep = "_"),
+      mutate(experiment_condition = "acquisition_only",
+             subject = paste(subject, experiment_condition, sep = "_"),
              task_order = "iat after explicits",
              response = as.character(response)),
     # counterconditioning
     read_xlsx("raw/counterconditioning/iat_symbols_before.xlsx") %>%
-      mutate(experimental_condition = "counterconditioning",
-             subject = paste(subject, experimental_condition, sep = "_"),
+      mutate(experiment_condition = "counterconditioning",
+             subject = paste(subject, experiment_condition, sep = "_"),
              task_order = "iat before explicits",
              response = as.character(response)),
     read_xlsx("raw/counterconditioning/iat_symbols_after.xlsx") %>%
-      mutate(experimental_condition = "counterconditioning",
-             subject = paste(subject, experimental_condition, sep = "_"),
+      mutate(experiment_condition = "counterconditioning",
+             subject = paste(subject, experiment_condition, sep = "_"),
              task_order = "iat after explicits",
              response = as.character(response)),
     # extinction
     read_xlsx("raw/extinction/iat_symbols_before.xlsx") %>%
-      mutate(experimental_condition = "extinction",
-             subject = paste(subject, experimental_condition, sep = "_"),
+      mutate(experiment_condition = "extinction",
+             subject = paste(subject, experiment_condition, sep = "_"),
              task_order = "iat before explicits",
              response = as.character(response)),
     read_xlsx("raw/extinction/iat_symbols_after.xlsx") %>%
-      mutate(experimental_condition = "extinction",
-             subject = paste(subject, experimental_condition, sep = "_"),
+      mutate(experiment_condition = "extinction",
+             subject = paste(subject, experiment_condition, sep = "_"),
              task_order = "iat after explicits",
              response = as.character(response))
   ) %>%
@@ -748,7 +747,7 @@ data_iat_D2_scores <- data_iat_subject_numeric %>%
                           P4 = "dist",    # distinguish between the prac and test blocks
                           verbose = FALSE,
                           autoremove = FALSE) %>%
-  rename(IAT_D2_native = p2112,
+  rename(IAT_D2_controlling_stimulus_identity = p2112,
          subject_numeric = subject) %>%
   full_join(data_iat_subject_numeric, by = "subject_numeric") %>%
   select(-subject_numeric)
@@ -777,20 +776,20 @@ data_processed <- data_conditions %>%
   #full_join(data_believability, by = "subject") %>%  # not present in this study
   # reverse-score the scores the self-reports based on stimulus_identity_condition
   mutate(
-    OEC_effect_reverse_scored = case_when(
-      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" ~ OEC_effect_native,
-      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" ~ OEC_effect_native*-1
+    OEC_effect_controlling_stimulus_identity = case_when(
+      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" ~ OEC_effect*-1,
+      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" ~ OEC_effect
     ),
-    IR_effect_reverse_scored = case_when(
-      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" ~ IR_effect_native,
-      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" ~ IR_effect_native*-1
+    IR_effect_controlling_stimulus_identity = case_when(
+      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" ~ IR_effect*-1,
+      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" ~ IR_effect
     )
   ) %>%
   # reverse score IAT so that a positive IAT score indicates that people preferred the Target that was related to the Positive Source more than the Target related to the Negative source and vice versa
   mutate(
-    IAT_D2_reverse_scored = case_when(
-      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" ~ IAT_D2_native*-1, 
-      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" ~ IAT_D2_native
+    IAT_D2 = case_when(
+      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" ~ IAT_D2_controlling_stimulus_identity*-1, 
+      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" ~ IAT_D2_controlling_stimulus_identity
     )
   ) %>%
   select(experiment, 
@@ -798,21 +797,21 @@ data_processed <- data_conditions %>%
          age, 
          gender, 
          stimulus_identity_condition, 
-         experimental_condition,
+         experiment_condition,
          task_order, 
          passed_manipulation_check,
          completeness_acquisition_testing, completeness_acquisition_training, 
-         completeness_counterconditioning_training, 
          mean_correct_acquisition_training, mean_correct_acquisition_testing, 
+         completeness_counterconditioning_training, 
          mean_correct_counterconditioning_training, 
          passed_performance_criterion_acquisition_training, passed_performance_criterion_acquisition_testing, 
          passed_performance_criterion_counterconditioning_training, 
-         OEC_effect_native, OEC_effect_reverse_scored, 
-         IR_effect_native, IR_effect_reverse_scored, 
+         OEC_effect, OEC_effect_controlling_stimulus_identity, 
+         IR_effect, IR_effect_controlling_stimulus_identity, 
          complete_iat_data, 
          iat_block_order,
          passed_iat_performance,
-         IAT_D2_native, IAT_D2_reverse_scored, 
+         IAT_D2, IAT_D2_controlling_stimulus_identity, 
          intentions_response_1_3, intentions_response_2_4,
          complete_equivalence_data, passsed_equivalence,
          demand_response, 
@@ -820,58 +819,12 @@ data_processed <- data_conditions %>%
          confidence_stim_1, confidence_stim_2, confidence_stim_3, confidence_stim_4)
          #believability_response_1, believability_response_2)  # not present in this study
 
+# Ensures that the processed data folder exists
+dir.create("processed")
+
 # write to disk
 write_csv(data_processed, "processed/data_processed.csv")
 
 ```
-
-# testing reverse scoring
-
-should the iat, ir and oec DVs be reverse scored for condition? should the iat also be reverse scored for block order?
-
-```{r fig.height=12, fig.width=8}
-
-temp <- 
-  data_processed %>%
-  filter(completeness_acquisition_testing == "complete" & 
-           completeness_acquisition_training == "complete" & 
-           complete_iat_data == "complete" &
-           passed_manipulation_check == TRUE & 
-           passed_performance_criterion_acquisition_training == TRUE &
-           passed_performance_criterion_acquisition_testing == TRUE &
-           passed_iat_performance == TRUE) %>%
-  mutate(IAT_D2_native_blockreversed = ifelse(iat_block_order == "learning_consistent_first", IAT_D2_native,
-                                              ifelse(iat_block_order == "learning_inconsistent_first", IAT_D2_native*-1, NA)),
-         IAT_D2_reverse_scored_blockreversed = ifelse(iat_block_order == "learning_consistent_first", IAT_D2_reverse_scored,
-                                                      ifelse(iat_block_order == "learning_inconsistent_first", IAT_D2_reverse_scored*-1, NA))) %>%
-  select(experimental_condition,
-         OEC_effect_native, 
-         #OEC_effect_reverse_scored, 
-         IR_effect_native, 
-         #IR_effect_reverse_scored, 
-         #IAT_D2_native,
-         IAT_D2_reverse_scored)
-         #IAT_D2_native_blockreversed)
-         #IAT_D2_reverse_scored_blockreversed)
-
-temp %>%
-  group_by(experimental_condition) %>%
-  summarize_all(list(mean = mean), na.rm = TRUE) 
-
-temp %>%
-  gather(key, value, c(OEC_effect_native, 
-                       #OEC_effect_reverse_scored, 
-                       IR_effect_native, 
-                       #IR_effect_reverse_scored, 
-                       #IAT_D2_native,
-                       IAT_D2_reverse_scored)) %>%
-                       #IAT_D2_native_blockreversed)) %>%
-                       #IAT_D2_reverse_scored_blockreversed
-  ggplot(aes(value, fill = experimental_condition)) +
-  geom_density(alpha = 0.5) +
-  facet_wrap(~key, scales = "free", ncol = 1)
-
-```
-
 
 
