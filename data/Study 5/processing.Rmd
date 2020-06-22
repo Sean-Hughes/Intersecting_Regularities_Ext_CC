@@ -337,7 +337,6 @@ data_iat_input <-
   select(subject, experiment, 
          block_type = blockcode, block = blocknum, trial_number = trialnum, 
          correct, latency) %>%
-  # trial_number on blocks 3 and 7 begins on 2: correct to begin at 1
   mutate(trial_number = ifelse(block %in% c(1, 2, 3, 6, 7), trial_number-1, trial_number)) %>%
   # the number of the blocks is incorrect due to the way the task was coded, recode
   mutate(block = case_when(block == 1 ~ 1,
