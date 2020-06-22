@@ -537,10 +537,10 @@ data_ratings <-
          mean_outcome_2 = mean(c(Outcome_2_Pos_Neg, Outcome_2_Good_Bad, Outcome_2_Pleasant_Unpleasant, Outcome_2_Like_Dislike)),
          mean_target_1  = mean(c(Target_1_Pos_Neg, Target_1_Good_Bad, Target_1_Pleasant_Unpleasant, Target_1_Like_Dislike)),
          mean_target_2  = mean(c(Target_2_Pos_Neg, Target_2_Good_Bad, Target_2_Pleasant_Unpleasant, Target_2_Like_Dislike)),
-         OEC_effect     = mean_outcome_1 - mean_outcome_2,
-         IR_effect      = mean_target_1 - mean_target_2) %>%
+         self_reported_OEC_effect     = mean_outcome_1 - mean_outcome_2,
+         self_reported_IR_effect      = mean_target_1 - mean_target_2) %>%
   ungroup() %>%
-  select(subject, OEC_effect, IR_effect)
+  select(subject, self_reported_OEC_effect, self_reported_IR_effect)
 
 # behavioural intentions
 data_intentions <- 
@@ -548,29 +548,29 @@ data_intentions <-
     full_join(read_xlsx("raw/acquisition_only/intention_ratings_1_3.xlsx") %>%
                 mutate(experiment_condition = "acquisition_only",
                        subject = paste(subject, experiment_condition, sep = "_")) %>%
-                select(subject, intentions_response_1_3 = Intentions_1_3_response),
+                select(subject, behavioral_intentions_OEC = Intentions_1_3_response),
               read_xlsx("raw/acquisition_only/intention_ratings_2_4.xlsx") %>%
                 mutate(experiment_condition = "acquisition_only",
                        subject = paste(subject, experiment_condition, sep = "_")) %>%
-                select(subject, intentions_response_2_4 = Intentions_2_4_response),
+                select(subject, behavioral_intentions_IR = Intentions_2_4_response),
               by = "subject"),
     full_join(read_xlsx("raw/counterconditioning/intention_ratings_1_3.xlsx") %>%
                 mutate(experiment_condition = "counterconditioning",
                        subject = paste(subject, experiment_condition, sep = "_")) %>%
-                select(subject, intentions_response_1_3 = Intentions_1_3_response),
+                select(subject, behavioral_intentions_OEC = Intentions_1_3_response),
               read_xlsx("raw/counterconditioning/intention_ratings_2_4.xlsx") %>%
                 mutate(experiment_condition = "counterconditioning",
                        subject = paste(subject, experiment_condition, sep = "_")) %>%
-                select(subject, intentions_response_2_4 = Intentions_2_4_response),
+                select(subject, behavioral_intentions_IR = Intentions_2_4_response),
               by = "subject"),
     full_join(read_xlsx("raw/extinction/intention_ratings_1_3.xlsx") %>%
                 mutate(experiment_condition = "extinction",
                        subject = paste(subject, experiment_condition, sep = "_")) %>%
-                select(subject, intentions_response_1_3 = Intentions_1_3_response),
+                select(subject, behavioral_intentions_OEC = Intentions_1_3_response),
               read_xlsx("raw/extinction/intention_ratings_2_4.xlsx") %>%
                 mutate(experiment_condition = "extinction",
                        subject = paste(subject, experiment_condition, sep = "_")) %>%
-                select(subject, intentions_response_2_4 = Intentions_2_4_response),
+                select(subject, behavioral_intentions_IR = Intentions_2_4_response),
               by = "subject")
   )
     
@@ -776,13 +776,13 @@ data_processed <- data_conditions %>%
   #full_join(data_believability, by = "subject") %>%  # not present in this study
   # reverse-score the scores the self-reports based on stimulus_identity_condition
   mutate(
-    OEC_effect_controlling_stimulus_identity = case_when(
-      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" ~ OEC_effect*-1,
-      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" ~ OEC_effect
+    self_reported_OEC_effect_controlling_stimulus_identity = case_when(
+      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" ~ self_reported_OEC_effect*-1,
+      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" ~ self_reported_OEC_effect
     ),
-    IR_effect_controlling_stimulus_identity = case_when(
-      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" ~ IR_effect*-1,
-      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" ~ IR_effect
+    self_reported_IR_effect_controlling_stimulus_identity = case_when(
+      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" ~ self_reported_IR_effect*-1,
+      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" ~ self_reported_IR_effect
     )
   ) %>%
   # reverse score IAT so that a positive IAT score indicates that people preferred the Target that was related to the Positive Source more than the Target related to the Negative source and vice versa
@@ -806,13 +806,13 @@ data_processed <- data_conditions %>%
          mean_correct_counterconditioning_training, 
          passed_performance_criterion_acquisition_training, passed_performance_criterion_acquisition_testing, 
          passed_performance_criterion_counterconditioning_training, 
-         OEC_effect, OEC_effect_controlling_stimulus_identity, 
-         IR_effect, IR_effect_controlling_stimulus_identity, 
+         self_reported_OEC_effect, self_reported_OEC_effect_controlling_stimulus_identity, 
+         self_reported_IR_effect, self_reported_IR_effect_controlling_stimulus_identity, 
          complete_iat_data, 
          iat_block_order,
          passed_iat_performance,
          IAT_D2, IAT_D2_controlling_stimulus_identity, 
-         intentions_response_1_3, intentions_response_2_4,
+         behavioral_intentions_OEC, behavioral_intentions_IR,
          complete_equivalence_data, passsed_equivalence,
          demand_response, 
          reactance_response_1, reactance_response_2, 
