@@ -31,7 +31,7 @@ library(IATscores)
 
 # Conditions
 
-Some experimental conditions are not recorded in the data produced by inquisit but are discerned by the file names they come from, or the presence or absence of one phase of data. Extract this here. 
+Some experimental conditions are not recorded in the data produced by Inquisit but are discerned by the file names they come from, or the presence or absence of one phase of data. Extract this here. 
 
 ```{r}
 
@@ -309,7 +309,7 @@ data_ratings <- read_xlsx("raw/valence_ratings.xlsx") %>%
   ungroup() %>%
   select(subject, OEC_effect_native, IR_effect_native)
 
-# behavioural intentions
+# behavioral intentions
 data_intentions <- 
   full_join(read_xlsx("raw/intention_ratings_1_3.xlsx") %>%
               select(subject, intentions_response_1_3 = Intentions_1_3_response),
@@ -489,7 +489,7 @@ data_processed <- data_conditions %>%
   # reverse score IAT so that a positive IAT score indicates that people preferred the Target that was related to the Positive Source more than the Target related to the Negative source and vice versa
   mutate(
     IAT_D2_reverse_scored = case_when(
-      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" ~ IAT_D2_native*-1, 
+      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" ~ IAT_D2_native * -1, 
       stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" ~ IAT_D2_native
     )
   ) %>%
@@ -518,6 +518,9 @@ data_processed <- data_conditions %>%
          confidence_stim_1, confidence_stim_2, confidence_stim_3, confidence_stim_4,
          believability_response_1, believability_response_2)
 
+# Ensures that the processed data folder exists
+dir.create("processed")
+
 # write to disk
 write_csv(data_processed, "processed/data_processed.csv")
 
@@ -541,15 +544,16 @@ temp <-
                                               ifelse(iat_block_order == "learning_inconsistent_first", IAT_D2_native*-1, NA)),
          IAT_D2_reverse_scored_blockreversed = ifelse(iat_block_order == "learning_consistent_first", IAT_D2_reverse_scored,
                                                       ifelse(iat_block_order == "learning_inconsistent_first", IAT_D2_reverse_scored*-1, NA))) %>%
-  select(stimulus_identity_condition, 
+  select(extinction_condition,
+         stimulus_identity_condition, 
          OEC_effect_native, 
-         #OEC_effect_reverse_scored, 
+         OEC_effect_reverse_scored, 
          IR_effect_native, 
-         #IR_effect_reverse_scored, 
-         #IAT_D2_native,
+         IR_effect_reverse_scored, 
+         IAT_D2_native,
          IAT_D2_reverse_scored)
-         #IAT_D2_native_blockreversed)
-         #IAT_D2_reverse_scored_blockreversed)
+         #IAT_D2_native_blockreversed,
+         #IAT_D2_reverse_scored_blockreversed
 
 temp %>%
   select(-stimulus_identity_condition) %>%
@@ -558,6 +562,10 @@ temp %>%
 
 temp %>%
   group_by(stimulus_identity_condition) %>%
+  summarize_all(list(mean = mean), na.rm = TRUE) 
+
+temp %>%
+  group_by(extinction_condition) %>%
   summarize_all(list(mean = mean), na.rm = TRUE) 
 
 temp %>%
