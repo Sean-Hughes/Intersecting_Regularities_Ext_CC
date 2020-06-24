@@ -1,0 +1,166 @@
+---
+title: "IR, extinction, & counter conditioning"
+subtitle: "Analyses & meta-analyses"
+author: "Ian Hussey & Sean Hughes"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output: 
+  html_document:
+    code_folding: hide
+    highlight: haddock
+    theme: flatly
+    toc: yes 
+    toc_float: yes
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(message=FALSE,
+                      warning=FALSE)
+```
+
+# Dependencies
+
+```{r}
+
+library(tidyverse)
+library(ggthemes)
+library(knitr)
+library(kableExtra)
+library(broom)
+library(effsize)
+
+# round p value using apa format
+apa_p_value <- function(p){
+  p_formatted <- ifelse(p >= 0.0001, paste("=", round(p, 4)),
+                        ifelse(p < 0.0001, "< .0001", NA))
+  p_formatted <- gsub(pattern = "0.", replacement = ".", x = p_formatted, fixed = TRUE)
+  p_formatted
+}
+
+```
+
+# Data and exclusions
+
+ for sensitivity analyses later:
+passed_performance_criterion_acquisition_training == TRUE &
+passed_performance_criterion_acquisition_testing == TRUE &
+
+```{r}
+
+data_processed <-
+  bind_rows(
+    read_csv("../data/Study 1/processed/data_processed.csv"),
+    read_csv("../data/Study 2/processed/data_processed.csv"),
+    read_csv("../data/Study 3/processed/data_processed.csv"),
+    read_csv("../data/Study 4/processed/data_processed.csv"),
+    read_csv("../data/Study 5/processed/data_processed.csv"),
+    read_csv("../data/Study 6/processed/data_processed.csv"),
+    read_csv("../data/Study 7/processed/data_processed.csv")
+  ) %>%
+  # exclusions
+  filter(completeness_acquisition_training == "complete" &
+           completeness_acquisition_testing == "complete" &
+           (completeness_extinction_training == "complete" | is.na(completeness_extinction_training)) &
+           (completeness_extinction_testing == "complete" | is.na(completeness_extinction_testing)) &
+           (completeness_counterconditioning_training == "complete" | is.na(completeness_counterconditioning_training)) &
+           (completeness_counterconditioning_testing == "complete" | is.na(completeness_counterconditioning_testing)) &
+           complete_iat_data == "complete" &
+           passed_iat_performance == TRUE) %>%
+  # set factor levels for t test comparisons
+  mutate(experiment_condition = fct_relevel(experiment_condition,
+                                            "acquisition_only", 
+                                            "acquisition_and_extinction",
+                                            "acquisition_and_counterconditioning"),
+         stimulus_identity_condition = fct_relevel(experiment_condition,
+                                            "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad",
+                                            "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good")) %>%
+  
+  # for testing
+  filter(experiment_condition %in% c("acquisition_only", "acquisition_and_extinction") & 
+           experiment %in% c(1,2,3,4,7))
+
+```
+
+# Analysis by study
+
+workflow returns mean_reference and mean_comparison, where reference is the first factor level and comparison is the next highest level.
+
+```{r}
+
+# calculate cohens d and return its output in tidy format - a helper function for analysis_workflow
+tidy_cohens_d <- function(data, DV, IV){
+  require(effsize)
+  
+  fit <- effsize::cohen.d(DV ~ IV, data = data)
+  
+  results <- tibble(cohens_d = fit$estimate,
+                    cohens_d_ci_lower = fit$conf.int["lower"],
+                    cohens_d_ci_upper = fit$conf.int["upper"])
+  
+  return(results)
+}
+
+
+
+
+# full analysis workflow
+analysis_workflow <- function(data, DV, IV){
+  
+  # t test
+  results_t_test <- data %>%
+    group_by(experiment) %>%
+    do(broom::tidy(t.test(DV ~ IV, data = .))) %>%
+    ungroup() %>%
+    rename(t = statistic,
+           df = parameter,
+           p = p.value,
+           mean_reference = estimate1,
+           mean_comaprison = estimate2)
+  
+  # cohens d
+  results_cohens_d <- data %>%
+    group_by(experiment) %>%
+    do(tidy_cohens_d(data = .))
+  
+  # combine
+  results <- 
+    full_join(results_t_test,
+              results_cohens_d,
+              by = "experiment") %>%
+    select(experiment, mean_reference, mean_comaprison, t, df, p, cohens_d, cohens_d_ci_lower, cohens_d_ci_upper) %>%
+    mutate(reportable_result = paste0("Reference group M = ", round(mean_reference, 2), ", comparison group M = ", round(mean_comaprison, 2), ", t(", round(df, 2), ") = ", round(t, 2), ", p ", apa_p_value(p), ", d = ", round(cohens_d, 2), ", 95% CI [", round(cohens_d_ci_lower, 2), ", ", round(cohens_d_ci_upper, 2), "]"))
+  
+  return(results)
+}
+
+
+# examples
+temp <- data_processed %>%
+  rename(DV = IAT_D2_controlling_stimulus_identity, 
+         IV = experiment_condition) %>%
+  analysis_workflow()
+
+
+data_processed %>%
+  rename(DV = IAT_D2, 
+         IV = stimulus_identity_condition) %>%
+  analysis_workflow()
+
+```
+
+# to do
+
+- add BF
+- handle between study differences
+- extend to other DVs
+- separate workflow for intentions (multinominal logistic)
+- add metas
+  - sensitivity analyses for training and testing exclusions
+- add anova for study 7
+- plot training and testing data
+
+
+
+
+
+
+
