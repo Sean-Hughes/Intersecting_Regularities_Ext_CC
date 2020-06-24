@@ -1672,7 +1672,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Data processing</h1>
 <h4 class="author">Sean Hughes &amp; Ian Hussey</h4>
-<h4 class="date">22 juni 2020</h4>
+<h4 class="date">24 juni 2020</h4>
 
 </div>
 
@@ -1728,7 +1728,7 @@ div.tocify {
 <span id="cb2-37"><a href="#cb2-37"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/testing_right1b_rev.xlsx&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb2-38"><a href="#cb2-38"></a><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">response =</span> <span class="kw">as.character</span>(response))</span>
 <span id="cb2-39"><a href="#cb2-39"></a>  ) <span class="op">%&gt;%</span></span>
-<span id="cb2-40"><a href="#cb2-40"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition and extinction&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb2-40"><a href="#cb2-40"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_and_extinction&quot;</span>) <span class="op">%&gt;%</span></span>
 <span id="cb2-41"><a href="#cb2-41"></a><span class="st">  </span><span class="kw">select</span>(subject, experiment_condition) <span class="op">%&gt;%</span></span>
 <span id="cb2-42"><a href="#cb2-42"></a><span class="st">  </span><span class="kw">distinct</span>(subject, <span class="dt">.keep_all =</span> <span class="ot">TRUE</span>)</span>
 <span id="cb2-43"><a href="#cb2-43"></a></span>
@@ -1746,7 +1746,7 @@ div.tocify {
 <span id="cb2-55"><a href="#cb2-55"></a><span class="st">  </span><span class="kw">full_join</span>(data_experiment_condition, <span class="dt">by =</span> <span class="st">&quot;subject&quot;</span>) <span class="op">%&gt;%</span></span>
 <span id="cb2-56"><a href="#cb2-56"></a><span class="st">  </span><span class="kw">full_join</span>(data_task_order, <span class="dt">by =</span> <span class="st">&quot;subject&quot;</span>) <span class="op">%&gt;%</span></span>
 <span id="cb2-57"><a href="#cb2-57"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">experiment =</span> current_experiment_number,</span>
-<span id="cb2-58"><a href="#cb2-58"></a>         <span class="dt">experiment_condition =</span> <span class="kw">ifelse</span>(<span class="kw">is.na</span>(experiment_condition), <span class="st">&quot;acquisition only&quot;</span>, experiment_condition))</span>
+<span id="cb2-58"><a href="#cb2-58"></a>         <span class="dt">experiment_condition =</span> <span class="kw">ifelse</span>(<span class="kw">is.na</span>(experiment_condition), <span class="st">&quot;acquisition_only&quot;</span>, experiment_condition))</span>
 <span id="cb2-59"><a href="#cb2-59"></a></span>
 <span id="cb2-60"><a href="#cb2-60"></a><span class="kw">rm</span>(data_stimulus_identity_condition, data_experiment_condition, data_task_order)</span></code></pre></div>
 </div>
@@ -2211,36 +2211,38 @@ partial
 <span id="cb14-30"><a href="#cb14-30"></a>      stimulus_identity_condition <span class="op">==</span><span class="st"> &quot;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad&quot;</span> <span class="op">~</span><span class="st"> </span>IAT_D2_controlling_stimulus_identity</span>
 <span id="cb14-31"><a href="#cb14-31"></a>    )</span>
 <span id="cb14-32"><a href="#cb14-32"></a>  ) <span class="op">%&gt;%</span></span>
-<span id="cb14-33"><a href="#cb14-33"></a><span class="st">  </span><span class="kw">select</span>(experiment, </span>
-<span id="cb14-34"><a href="#cb14-34"></a>         subject, </span>
-<span id="cb14-35"><a href="#cb14-35"></a>         age, </span>
-<span id="cb14-36"><a href="#cb14-36"></a>         gender, </span>
-<span id="cb14-37"><a href="#cb14-37"></a>         stimulus_identity_condition, </span>
-<span id="cb14-38"><a href="#cb14-38"></a>         experiment_condition, </span>
-<span id="cb14-39"><a href="#cb14-39"></a>         task_order, </span>
-<span id="cb14-40"><a href="#cb14-40"></a>         completeness_acquisition_testing, completeness_acquisition_training, </span>
-<span id="cb14-41"><a href="#cb14-41"></a>         completeness_extinction_testing, completeness_extinction_training, </span>
-<span id="cb14-42"><a href="#cb14-42"></a>         mean_correct_acquisition_training, mean_correct_acquisition_testing, </span>
-<span id="cb14-43"><a href="#cb14-43"></a>         mean_correct_extinction_testing, mean_correct_extinction_training, </span>
-<span id="cb14-44"><a href="#cb14-44"></a>         passed_performance_criterion_acquisition_training, passed_performance_criterion_acquisition_testing, </span>
-<span id="cb14-45"><a href="#cb14-45"></a>         passed_performance_criterion_extinction_testing, passed_performance_criterion_extinction_training, </span>
-<span id="cb14-46"><a href="#cb14-46"></a>         self_reported_OEC_effect, self_reported_OEC_effect_controlling_stimulus_identity, </span>
-<span id="cb14-47"><a href="#cb14-47"></a>         self_reported_IR_effect, self_reported_IR_effect_controlling_stimulus_identity, </span>
-<span id="cb14-48"><a href="#cb14-48"></a>         complete_iat_data, </span>
-<span id="cb14-49"><a href="#cb14-49"></a>         iat_block_order,</span>
-<span id="cb14-50"><a href="#cb14-50"></a>         passed_iat_performance,</span>
-<span id="cb14-51"><a href="#cb14-51"></a>         IAT_D2, IAT_D2_controlling_stimulus_identity, </span>
-<span id="cb14-52"><a href="#cb14-52"></a>         behavioral_intentions_OEC, behavioral_intentions_IR,</span>
-<span id="cb14-53"><a href="#cb14-53"></a>         demand_response, </span>
-<span id="cb14-54"><a href="#cb14-54"></a>         reactance_response_<span class="dv">1</span>, reactance_response_<span class="dv">2</span>, </span>
-<span id="cb14-55"><a href="#cb14-55"></a>         confidence_stim_<span class="dv">1</span>, confidence_stim_<span class="dv">2</span>, confidence_stim_<span class="dv">3</span>, confidence_stim_<span class="dv">4</span>,</span>
-<span id="cb14-56"><a href="#cb14-56"></a>         believability_response_<span class="dv">1</span>, believability_response_<span class="dv">2</span>)</span>
-<span id="cb14-57"><a href="#cb14-57"></a></span>
-<span id="cb14-58"><a href="#cb14-58"></a><span class="co"># Ensures that the processed data folder exists</span></span>
-<span id="cb14-59"><a href="#cb14-59"></a><span class="kw">dir.create</span>(<span class="st">&quot;processed&quot;</span>)</span>
-<span id="cb14-60"><a href="#cb14-60"></a></span>
-<span id="cb14-61"><a href="#cb14-61"></a><span class="co"># write to disk</span></span>
-<span id="cb14-62"><a href="#cb14-62"></a><span class="kw">write_csv</span>(data_processed, <span class="st">&quot;processed/data_processed.csv&quot;</span>)</span></code></pre></div>
+<span id="cb14-33"><a href="#cb14-33"></a><span class="st">  </span></span>
+<span id="cb14-34"><a href="#cb14-34"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">unique_id =</span> <span class="kw">paste</span>(experiment, subject, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb14-35"><a href="#cb14-35"></a><span class="st">  </span><span class="kw">select</span>(experiment, </span>
+<span id="cb14-36"><a href="#cb14-36"></a>         unique_id,</span>
+<span id="cb14-37"><a href="#cb14-37"></a>         age, </span>
+<span id="cb14-38"><a href="#cb14-38"></a>         gender, </span>
+<span id="cb14-39"><a href="#cb14-39"></a>         stimulus_identity_condition, </span>
+<span id="cb14-40"><a href="#cb14-40"></a>         experiment_condition, </span>
+<span id="cb14-41"><a href="#cb14-41"></a>         task_order, </span>
+<span id="cb14-42"><a href="#cb14-42"></a>         completeness_acquisition_testing, completeness_acquisition_training, </span>
+<span id="cb14-43"><a href="#cb14-43"></a>         completeness_extinction_testing, completeness_extinction_training, </span>
+<span id="cb14-44"><a href="#cb14-44"></a>         mean_correct_acquisition_training, mean_correct_acquisition_testing, </span>
+<span id="cb14-45"><a href="#cb14-45"></a>         mean_correct_extinction_testing, mean_correct_extinction_training, </span>
+<span id="cb14-46"><a href="#cb14-46"></a>         passed_performance_criterion_acquisition_training, passed_performance_criterion_acquisition_testing, </span>
+<span id="cb14-47"><a href="#cb14-47"></a>         passed_performance_criterion_extinction_testing, passed_performance_criterion_extinction_training, </span>
+<span id="cb14-48"><a href="#cb14-48"></a>         self_reported_OEC_effect, self_reported_OEC_effect_controlling_stimulus_identity, </span>
+<span id="cb14-49"><a href="#cb14-49"></a>         self_reported_IR_effect, self_reported_IR_effect_controlling_stimulus_identity, </span>
+<span id="cb14-50"><a href="#cb14-50"></a>         complete_iat_data, </span>
+<span id="cb14-51"><a href="#cb14-51"></a>         iat_block_order,</span>
+<span id="cb14-52"><a href="#cb14-52"></a>         passed_iat_performance,</span>
+<span id="cb14-53"><a href="#cb14-53"></a>         IAT_D2, IAT_D2_controlling_stimulus_identity, </span>
+<span id="cb14-54"><a href="#cb14-54"></a>         behavioral_intentions_OEC, behavioral_intentions_IR,</span>
+<span id="cb14-55"><a href="#cb14-55"></a>         demand_response, </span>
+<span id="cb14-56"><a href="#cb14-56"></a>         reactance_response_<span class="dv">1</span>, reactance_response_<span class="dv">2</span>, </span>
+<span id="cb14-57"><a href="#cb14-57"></a>         confidence_stim_<span class="dv">1</span>, confidence_stim_<span class="dv">2</span>, confidence_stim_<span class="dv">3</span>, confidence_stim_<span class="dv">4</span>,</span>
+<span id="cb14-58"><a href="#cb14-58"></a>         believability_response_<span class="dv">1</span>, believability_response_<span class="dv">2</span>)</span>
+<span id="cb14-59"><a href="#cb14-59"></a></span>
+<span id="cb14-60"><a href="#cb14-60"></a><span class="co"># Ensures that the processed data folder exists</span></span>
+<span id="cb14-61"><a href="#cb14-61"></a><span class="kw">dir.create</span>(<span class="st">&quot;processed&quot;</span>)</span>
+<span id="cb14-62"><a href="#cb14-62"></a></span>
+<span id="cb14-63"><a href="#cb14-63"></a><span class="co"># write to disk</span></span>
+<span id="cb14-64"><a href="#cb14-64"></a><span class="kw">write_csv</span>(data_processed, <span class="st">&quot;processed/data_processed.csv&quot;</span>)</span></code></pre></div>
 </div>
 
 
