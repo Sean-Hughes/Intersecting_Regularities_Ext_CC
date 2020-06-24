@@ -1701,7 +1701,7 @@ div.tocify {
 <span id="cb2-9"><a href="#cb2-9"></a>             <span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_only&quot;</span>,</span>
 <span id="cb2-10"><a href="#cb2-10"></a>             <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
 <span id="cb2-11"><a href="#cb2-11"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/acquisition_only/intersecting_regularities_2_no_location.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb2-12"><a href="#cb2-12"></a><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">stimulus_identity_condition =</span> <span class="st">&quot;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad&quot;</span>,</span>
+<span id="cb2-12"><a href="#cb2-12"></a><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">stimulus_identity_condition =</span> <span class="st">&quot;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good&quot;</span>,</span>
 <span id="cb2-13"><a href="#cb2-13"></a>             <span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_only&quot;</span>,</span>
 <span id="cb2-14"><a href="#cb2-14"></a>             <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
 <span id="cb2-15"><a href="#cb2-15"></a>    <span class="co"># counterconditioning </span></span>
@@ -1710,16 +1710,16 @@ div.tocify {
 <span id="cb2-18"><a href="#cb2-18"></a>             <span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_and_counterconditioning&quot;</span>,</span>
 <span id="cb2-19"><a href="#cb2-19"></a>             <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
 <span id="cb2-20"><a href="#cb2-20"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/counterconditioning/intersecting_regularities_2_no_location.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb2-21"><a href="#cb2-21"></a><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">stimulus_identity_condition =</span> <span class="st">&quot;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad&quot;</span>,</span>
+<span id="cb2-21"><a href="#cb2-21"></a><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">stimulus_identity_condition =</span> <span class="st">&quot;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good&quot;</span>,</span>
 <span id="cb2-22"><a href="#cb2-22"></a>             <span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_and_counterconditioning&quot;</span>,</span>
 <span id="cb2-23"><a href="#cb2-23"></a>             <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
-<span id="cb2-24"><a href="#cb2-24"></a>    <span class="co"># extinction only</span></span>
+<span id="cb2-24"><a href="#cb2-24"></a>    <span class="co"># extinction </span></span>
 <span id="cb2-25"><a href="#cb2-25"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/extinction/intersecting_regularities_1_no_location.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
 <span id="cb2-26"><a href="#cb2-26"></a><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">stimulus_identity_condition =</span> <span class="st">&quot;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad&quot;</span>,</span>
 <span id="cb2-27"><a href="#cb2-27"></a>             <span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_and_extinction&quot;</span>,</span>
 <span id="cb2-28"><a href="#cb2-28"></a>             <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
 <span id="cb2-29"><a href="#cb2-29"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/extinction/intersecting_regularities_2_no_location.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb2-30"><a href="#cb2-30"></a><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">stimulus_identity_condition =</span> <span class="st">&quot;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad&quot;</span>,</span>
+<span id="cb2-30"><a href="#cb2-30"></a><span class="st">      </span><span class="kw">mutate</span>(<span class="dt">stimulus_identity_condition =</span> <span class="st">&quot;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good&quot;</span>,</span>
 <span id="cb2-31"><a href="#cb2-31"></a>             <span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_and_extinction&quot;</span>,</span>
 <span id="cb2-32"><a href="#cb2-32"></a>             <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
 <span id="cb2-33"><a href="#cb2-33"></a>  ) <span class="op">%&gt;%</span></span>

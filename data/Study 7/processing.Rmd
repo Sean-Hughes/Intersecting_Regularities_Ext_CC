@@ -46,7 +46,7 @@ data_stimulus_identity_condition <-
              experiment_condition = "acquisition_only",
              subject = paste(subject, experiment_condition, sep = "_")),
     read_xlsx("raw/acquisition_only/intersecting_regularities_2_no_location.xlsx") %>%
-      mutate(stimulus_identity_condition = "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad",
+      mutate(stimulus_identity_condition = "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good",
              experiment_condition = "acquisition_only",
              subject = paste(subject, experiment_condition, sep = "_")),
     # counterconditioning 
@@ -55,16 +55,16 @@ data_stimulus_identity_condition <-
              experiment_condition = "acquisition_and_counterconditioning",
              subject = paste(subject, experiment_condition, sep = "_")),
     read_xlsx("raw/counterconditioning/intersecting_regularities_2_no_location.xlsx") %>%
-      mutate(stimulus_identity_condition = "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad",
+      mutate(stimulus_identity_condition = "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good",
              experiment_condition = "acquisition_and_counterconditioning",
              subject = paste(subject, experiment_condition, sep = "_")),
-    # extinction only
+    # extinction 
     read_xlsx("raw/extinction/intersecting_regularities_1_no_location.xlsx") %>%
       mutate(stimulus_identity_condition = "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad",
              experiment_condition = "acquisition_and_extinction",
              subject = paste(subject, experiment_condition, sep = "_")),
     read_xlsx("raw/extinction/intersecting_regularities_2_no_location.xlsx") %>%
-      mutate(stimulus_identity_condition = "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad",
+      mutate(stimulus_identity_condition = "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good",
              experiment_condition = "acquisition_and_extinction",
              subject = paste(subject, experiment_condition, sep = "_"))
   ) %>%
