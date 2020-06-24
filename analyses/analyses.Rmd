@@ -27,6 +27,7 @@ library(knitr)
 library(kableExtra)
 library(broom)
 library(effsize)
+library(BayesFactor)
 
 # round p value using apa format
 apa_p_value <- function(p){
@@ -87,7 +88,7 @@ workflow returns mean_reference and mean_comparison, where reference is the firs
 ```{r}
 
 # calculate cohens d and return its output in tidy format - a helper function for analysis_workflow
-tidy_cohens_d <- function(data, DV, IV){
+tidy_cohens_d <- function(data){
   require(effsize)
   
   fit <- effsize::cohen.d(DV ~ IV, data = data)
@@ -99,13 +100,22 @@ tidy_cohens_d <- function(data, DV, IV){
   return(results)
 }
 
+# calculate cohens d and return its output in tidy format - a helper function for analysis_workflow
+tidy_ttest_bf <- function(data){
+  require(BayesFactor)
+  
+  fit <- data %>%
+    ttestBF(formula = DV ~ IV, data = .)
 
+  results <- data.frame(bf10 = extractBF(fit)$bf)
+  return(results)
+}
 
 
 # full analysis workflow
-analysis_workflow <- function(data, DV, IV){
+analysis_workflow <- function(data){
   
-  # t test
+  # frequentist t test
   results_t_test <- data %>%
     group_by(experiment) %>%
     do(broom::tidy(t.test(DV ~ IV, data = .))) %>%
@@ -121,13 +131,20 @@ analysis_workflow <- function(data, DV, IV){
     group_by(experiment) %>%
     do(tidy_cohens_d(data = .))
   
+  # BF t test
+  results_bf_t_test <- data %>%
+    group_by(experiment) %>%
+    do(tidy_ttest_bf(data = .))
+  
   # combine
   results <- 
     full_join(results_t_test,
               results_cohens_d,
               by = "experiment") %>%
-    select(experiment, mean_reference, mean_comaprison, t, df, p, cohens_d, cohens_d_ci_lower, cohens_d_ci_upper) %>%
-    mutate(reportable_result = paste0("Reference group M = ", round(mean_reference, 2), ", comparison group M = ", round(mean_comaprison, 2), ", t(", round(df, 2), ") = ", round(t, 2), ", p ", apa_p_value(p), ", d = ", round(cohens_d, 2), ", 95% CI [", round(cohens_d_ci_lower, 2), ", ", round(cohens_d_ci_upper, 2), "]"))
+    full_join(results_bf_t_test,
+              by = "experiment") %>%
+    select(experiment, mean_reference, mean_comaprison, t, df, p, cohens_d, cohens_d_ci_lower, cohens_d_ci_upper, bf10) %>%
+    mutate(reportable_result = paste0("Reference group M = ", round(mean_reference, 2), ", comparison group M = ", round(mean_comaprison, 2), ", t(", round(df, 2), ") = ", round(t, 2), ", p ", apa_p_value(p), ", d = ", round(cohens_d, 2), ", 95% CI [", round(cohens_d_ci_lower, 2), ", ", round(cohens_d_ci_upper, 2), "], BF10 = ", round(bf10, 1)))
   
   return(results)
 }
@@ -145,21 +162,11 @@ data_processed %>%
          IV = stimulus_identity_condition) %>%
   analysis_workflow()
 
-library(BayesFactor)
-
-
-
-
-data_processed %>%
-  rename(DV = IAT_D2, 
-         IV = stimulus_identity_condition) %>%
-  ttestBF(formula = DV ~ IV, data = .)
 
 ```
 
 # to do
 
-- add BF
 - handle between study differences
 - extend to other DVs
 - separate workflow for intentions (multinominal logistic)
