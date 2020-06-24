@@ -145,6 +145,16 @@ data_processed %>%
          IV = stimulus_identity_condition) %>%
   analysis_workflow()
 
+library(BayesFactor)
+
+
+
+
+data_processed %>%
+  rename(DV = IAT_D2, 
+         IV = stimulus_identity_condition) %>%
+  ttestBF(formula = DV ~ IV, data = .)
+
 ```
 
 # to do
