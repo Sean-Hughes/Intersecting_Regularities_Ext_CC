@@ -29,6 +29,7 @@ library(kableExtra)
 library(broom)
 library(effsize)
 library(BayesFactor)
+library(metafor)
 
 # functions -----
 # round p value using apa format
@@ -104,6 +105,13 @@ analysis_workflow <- function(data){
     mutate(reportable_result = paste0("Reference group M = ", round(mean_reference, 2), ", comparison group M = ", round(mean_comaprison, 2), ", t(", round(df, 2), ") = ", round(t, 2), ", p ", apa_p_value(p), ", d = ", round(cohens_d, 2), ", 95% CI [", round(cohens_d_ci_lower, 2), ", ", round(cohens_d_ci_upper, 2), "], BF10 = ", round(bf10, 1)))
   
   return(results)
+}
+
+# add heterogeneity stats string for forest plot
+add_heterogeneity_metrics_to_forest <- function(fit) {
+  bquote(paste("RE Model (", tau^2, " = ", .(formatC(round(fit$tau2, 1))), 
+               ", ", I^2, " = ", .(formatC(round(fit$I2, 1))),
+               "%, ", H^2," = ", .(formatC(round(fit$H2, 1))), ")"))
 }
 
 ```
@@ -197,13 +205,78 @@ results_moderation_of_basic_effect %>%
 
 ```
 
+# Meta-analyses
+
+```{r}
+
+results_for_meta_basic_effect <- results_basic_effect %>%
+  rename(yi = cohens_d) %>%
+  mutate(sei = (cohens_d_ci_upper - cohens_d_ci_lower)/(2*1.96)) %>%
+  select(experiment, DV_type, yi, sei)
+
+# iat
+fit_basic_effect_iat <- results_for_meta_basic_effect %>%
+  filter(str_detect(DV_type, "IAT_D2")) %>%
+  rma(yi = yi,
+      sei = sei,
+      data = .,
+      slab = experiment)
+
+metafor::forest(fit_basic_effect_iat,
+                xlab = "Cohen's d",
+                addcred = TRUE,
+                refline = 0,
+                #xlim = c(-1.5, 1.7),
+                #at = c(-0.5, -0.25, 0, 0.25, 0.5, 0.75, 1),
+                mlab = add_heterogeneity_metrics_to_forest(fit_basic_effect_iat))
+# text(-1.5, 10, "Study", pos = 4)
+# text(1.7, 10, "ICC [95% CI]", pos = 2)
+
+# IR
+fit_basic_effect_ir <- results_for_meta_basic_effect %>%
+  filter(str_detect(DV_type, "_IR_")) %>%
+  rma(yi = yi,
+      sei = sei,
+      data = .,
+      slab = experiment)
+
+metafor::forest(fit_basic_effect_ir,
+                xlab = "Cohen's d",
+                addcred = TRUE,
+                refline = 0,
+                #xlim = c(-1.5, 1.7),
+                #at = c(-0.5, -0.25, 0, 0.25, 0.5, 0.75, 1),
+                mlab = add_heterogeneity_metrics_to_forest(fit_basic_effect_ir))
+# text(-1.5, 10, "Study", pos = 4)
+# text(1.7, 10, "ICC [95% CI]", pos = 2)
+
+# OEC
+fit_basic_effect_oec <- results_for_meta_basic_effect %>%
+  filter(str_detect(DV_type, "_OEC_")) %>%
+  rma(yi = yi,
+      sei = sei,
+      data = .,
+      slab = experiment)
+
+metafor::forest(fit_basic_effect_oec,
+                xlab = "Cohen's d",
+                addcred = TRUE,
+                refline = 0,
+                #xlim = c(-1.5, 1.7),
+                #at = c(-0.5, -0.25, 0, 0.25, 0.5, 0.75, 1),
+                mlab = add_heterogeneity_metrics_to_forest(fit_basic_effect_oec))
+# text(-1.5, 10, "Study", pos = 4)
+# text(1.7, 10, "ICC [95% CI]", pos = 2)
+
+```
+
+
 # to do
 
 - handle between study differences
   - remove the for testing filter call in data processing!
 - separate workflow for intentions (multinominal logistic)
-- add metas
-  - sensitivity analyses for training and testing exclusions
+- sensitivity meta analyses for training and testing exclusions
 - add anova for study 7
 - plot training and testing data
 - separate reading in of data and exclusions, do demographics descriptives before exclusions
