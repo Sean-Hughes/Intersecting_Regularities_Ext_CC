@@ -804,12 +804,19 @@ data_processed <- data_conditions %>%
          experiment_condition,
          task_order, 
          passed_manipulation_check,
-         completeness_acquisition_testing, completeness_acquisition_training, 
-         mean_correct_acquisition_training, mean_correct_acquisition_testing, 
-         completeness_counterconditioning_training, 
-         mean_correct_counterconditioning_training, 
+         
+         completeness_acquisition_training, completeness_acquisition_testing, 
+         completeness_counterconditioning_training, completeness_counterconditioning_testing,
+         completeness_extinction_training, completeness_extinction_testing,
+         
+         mean_correct_acquisition_training, 
+         mean_correct_counterconditioning_training, mean_correct_acquisition_testing, 
+         mean_correct_extinction_training, mean_correct_extinction_testing, 
+         
          passed_performance_criterion_acquisition_training, passed_performance_criterion_acquisition_testing, 
-         passed_performance_criterion_counterconditioning_training, 
+         passed_performance_criterion_counterconditioning_training, passed_performance_criterion_counterconditioning_testing,
+         passed_performance_criterion_extinction_training, passed_performance_criterion_extinction_testing,
+         
          self_reported_OEC_effect, self_reported_OEC_effect_controlling_stimulus_identity, 
          self_reported_IR_effect, self_reported_IR_effect_controlling_stimulus_identity, 
          complete_iat_data, 

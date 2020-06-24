@@ -2671,30 +2671,37 @@ TRUE
 <span id="cb16-43"><a href="#cb16-43"></a>         experiment_condition,</span>
 <span id="cb16-44"><a href="#cb16-44"></a>         task_order, </span>
 <span id="cb16-45"><a href="#cb16-45"></a>         passed_manipulation_check,</span>
-<span id="cb16-46"><a href="#cb16-46"></a>         completeness_acquisition_testing, completeness_acquisition_training, </span>
-<span id="cb16-47"><a href="#cb16-47"></a>         mean_correct_acquisition_training, mean_correct_acquisition_testing, </span>
-<span id="cb16-48"><a href="#cb16-48"></a>         completeness_counterconditioning_training, </span>
-<span id="cb16-49"><a href="#cb16-49"></a>         mean_correct_counterconditioning_training, </span>
-<span id="cb16-50"><a href="#cb16-50"></a>         passed_performance_criterion_acquisition_training, passed_performance_criterion_acquisition_testing, </span>
-<span id="cb16-51"><a href="#cb16-51"></a>         passed_performance_criterion_counterconditioning_training, </span>
-<span id="cb16-52"><a href="#cb16-52"></a>         self_reported_OEC_effect, self_reported_OEC_effect_controlling_stimulus_identity, </span>
-<span id="cb16-53"><a href="#cb16-53"></a>         self_reported_IR_effect, self_reported_IR_effect_controlling_stimulus_identity, </span>
-<span id="cb16-54"><a href="#cb16-54"></a>         complete_iat_data, </span>
-<span id="cb16-55"><a href="#cb16-55"></a>         iat_block_order,</span>
-<span id="cb16-56"><a href="#cb16-56"></a>         passed_iat_performance,</span>
-<span id="cb16-57"><a href="#cb16-57"></a>         IAT_D2, IAT_D2_controlling_stimulus_identity, </span>
-<span id="cb16-58"><a href="#cb16-58"></a>         behavioral_intentions_OEC, behavioral_intentions_IR,</span>
-<span id="cb16-59"><a href="#cb16-59"></a>         complete_equivalence_data, passsed_equivalence,</span>
-<span id="cb16-60"><a href="#cb16-60"></a>         demand_response, </span>
-<span id="cb16-61"><a href="#cb16-61"></a>         reactance_response_<span class="dv">1</span>, reactance_response_<span class="dv">2</span>, </span>
-<span id="cb16-62"><a href="#cb16-62"></a>         confidence_stim_<span class="dv">1</span>, confidence_stim_<span class="dv">2</span>, confidence_stim_<span class="dv">3</span>, confidence_stim_<span class="dv">4</span>)</span>
-<span id="cb16-63"><a href="#cb16-63"></a>         <span class="co">#believability_response_1, believability_response_2)  # not present in this study</span></span>
-<span id="cb16-64"><a href="#cb16-64"></a></span>
-<span id="cb16-65"><a href="#cb16-65"></a><span class="co"># Ensures that the processed data folder exists</span></span>
-<span id="cb16-66"><a href="#cb16-66"></a><span class="kw">dir.create</span>(<span class="st">&quot;processed&quot;</span>)</span>
-<span id="cb16-67"><a href="#cb16-67"></a></span>
-<span id="cb16-68"><a href="#cb16-68"></a><span class="co"># write to disk</span></span>
-<span id="cb16-69"><a href="#cb16-69"></a><span class="kw">write_csv</span>(data_processed, <span class="st">&quot;processed/data_processed.csv&quot;</span>)</span></code></pre></div>
+<span id="cb16-46"><a href="#cb16-46"></a>         </span>
+<span id="cb16-47"><a href="#cb16-47"></a>         completeness_acquisition_training, completeness_acquisition_testing, </span>
+<span id="cb16-48"><a href="#cb16-48"></a>         completeness_counterconditioning_training, completeness_counterconditioning_testing,</span>
+<span id="cb16-49"><a href="#cb16-49"></a>         completeness_extinction_training, completeness_extinction_testing,</span>
+<span id="cb16-50"><a href="#cb16-50"></a>         </span>
+<span id="cb16-51"><a href="#cb16-51"></a>         mean_correct_acquisition_training, </span>
+<span id="cb16-52"><a href="#cb16-52"></a>         mean_correct_counterconditioning_training, mean_correct_acquisition_testing, </span>
+<span id="cb16-53"><a href="#cb16-53"></a>         mean_correct_extinction_training, mean_correct_extinction_testing, </span>
+<span id="cb16-54"><a href="#cb16-54"></a>         </span>
+<span id="cb16-55"><a href="#cb16-55"></a>         passed_performance_criterion_acquisition_training, passed_performance_criterion_acquisition_testing, </span>
+<span id="cb16-56"><a href="#cb16-56"></a>         passed_performance_criterion_counterconditioning_training, passed_performance_criterion_counterconditioning_testing,</span>
+<span id="cb16-57"><a href="#cb16-57"></a>         passed_performance_criterion_extinction_training, passed_performance_criterion_extinction_testing,</span>
+<span id="cb16-58"><a href="#cb16-58"></a>         </span>
+<span id="cb16-59"><a href="#cb16-59"></a>         self_reported_OEC_effect, self_reported_OEC_effect_controlling_stimulus_identity, </span>
+<span id="cb16-60"><a href="#cb16-60"></a>         self_reported_IR_effect, self_reported_IR_effect_controlling_stimulus_identity, </span>
+<span id="cb16-61"><a href="#cb16-61"></a>         complete_iat_data, </span>
+<span id="cb16-62"><a href="#cb16-62"></a>         iat_block_order,</span>
+<span id="cb16-63"><a href="#cb16-63"></a>         passed_iat_performance,</span>
+<span id="cb16-64"><a href="#cb16-64"></a>         IAT_D2, IAT_D2_controlling_stimulus_identity, </span>
+<span id="cb16-65"><a href="#cb16-65"></a>         behavioral_intentions_OEC, behavioral_intentions_IR,</span>
+<span id="cb16-66"><a href="#cb16-66"></a>         complete_equivalence_data, passsed_equivalence,</span>
+<span id="cb16-67"><a href="#cb16-67"></a>         demand_response, </span>
+<span id="cb16-68"><a href="#cb16-68"></a>         reactance_response_<span class="dv">1</span>, reactance_response_<span class="dv">2</span>, </span>
+<span id="cb16-69"><a href="#cb16-69"></a>         confidence_stim_<span class="dv">1</span>, confidence_stim_<span class="dv">2</span>, confidence_stim_<span class="dv">3</span>, confidence_stim_<span class="dv">4</span>)</span>
+<span id="cb16-70"><a href="#cb16-70"></a>         <span class="co">#believability_response_1, believability_response_2)  # not present in this study</span></span>
+<span id="cb16-71"><a href="#cb16-71"></a></span>
+<span id="cb16-72"><a href="#cb16-72"></a><span class="co"># Ensures that the processed data folder exists</span></span>
+<span id="cb16-73"><a href="#cb16-73"></a><span class="kw">dir.create</span>(<span class="st">&quot;processed&quot;</span>)</span>
+<span id="cb16-74"><a href="#cb16-74"></a></span>
+<span id="cb16-75"><a href="#cb16-75"></a><span class="co"># write to disk</span></span>
+<span id="cb16-76"><a href="#cb16-76"></a><span class="kw">write_csv</span>(data_processed, <span class="st">&quot;processed/data_processed.csv&quot;</span>)</span></code></pre></div>
 </div>
 
 

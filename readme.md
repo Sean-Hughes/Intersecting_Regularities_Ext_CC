@@ -60,7 +60,9 @@ I'll leave it this way for the moment, but just FYI that there are differences i
 
 - There are participants in each study with excess data. Figure out what do with this (retain them?). Without further action they will likely be excluded.
 
-- 
+- ensure that testing data is excluded
+
+- remove processing of manipulation check as its redundant and add a note why
 
   
 
