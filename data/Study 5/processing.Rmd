@@ -64,7 +64,7 @@ data_experiment_condition <-
     read_xlsx("raw/counterconditioning1a_intersecting_regularities_right_rev.xlsx") %>% 
       mutate(response = as.character(response)),
   ) %>%
-  mutate(experiment_condition = "acquisition and counterconditioning") %>%
+  mutate(experiment_condition = "acquisition_and_counterconditioning") %>%
   select(subject, experiment_condition) %>%
   distinct(subject, .keep_all = TRUE)
 
@@ -82,7 +82,7 @@ data_conditions <- data_stimulus_identity_condition %>%
   full_join(data_experiment_condition, by = "subject") %>%
   full_join(data_task_order, by = "subject") %>%
   mutate(experiment = current_experiment_number,
-         experiment_condition = ifelse(is.na(experiment_condition), "acquisition only", experiment_condition))
+         experiment_condition = ifelse(is.na(experiment_condition), "acquisition_only", experiment_condition))
 
 rm(data_stimulus_identity_condition, data_experiment_condition, data_task_order)
 
@@ -491,8 +491,11 @@ data_processed <- data_conditions %>%
       stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" ~ IAT_D2_controlling_stimulus_identity
     )
   ) %>%
+  # make unique id
+  mutate(unique_id = paste(experiment, subject, sep = "_")) %>%
+  # select and reorder variables
   select(experiment, 
-         subject, 
+         unique_id, 
          age, 
          gender, 
          stimulus_identity_condition, 
