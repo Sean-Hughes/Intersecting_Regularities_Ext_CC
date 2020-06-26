@@ -365,33 +365,6 @@ data_training_and_testing_performance <- data_training_and_testing_performance_t
 
 - NB because the last block each participant completes is selected, if participants have partial data, their means refer to their last completed block not the ultimate block. therefore ensure that partial data exclusions are done.
 
-# Manipulation check
-
-```{r}
-
-data_manipulation_check <- 
-  bind_rows(
-    read_xlsx("raw/acquisition_only/manipulation_check_instructions.xlsx") %>%
-        mutate(experiment_condition = "acquisition_only",
-               subject = paste(subject, experiment_condition, sep = "_")),
-    read_xlsx("raw/counterconditioning/manipulation_check_instructions.xlsx") %>%
-        mutate(experiment_condition = "acquisition_and_counterconditioning",
-               subject = paste(subject, experiment_condition, sep = "_")),
-    read_xlsx("raw/extinction/manipulation_check_instructions.xlsx") %>%
-        mutate(experiment_condition = "acquisition_and_extinction",
-               subject = paste(subject, experiment_condition, sep = "_"))
-  ) %>%
-  select(subject, manipulation_check_response = testquestion_Instruction_response) %>%
-  mutate(passed_manipulation_check = ifelse(manipulation_check_response == "I have to click on the specific letter that goes with the image I see", TRUE, FALSE)) %>%
-  select(subject, passed_manipulation_check)
-
-data_manipulation_check %>%
-  count(passed_manipulation_check) %>%
-  kable() %>%
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
-
-```
-
 # Self-reports
 
 ```{r}
@@ -761,7 +734,6 @@ data_equivalence %>%
 
 data_processed <- data_conditions %>%
   full_join(data_demographics, by = "subject") %>%
-  full_join(data_manipulation_check, by = "subject") %>%
   full_join(data_training_and_testing_completeness, by = "subject") %>%
   full_join(data_training_and_testing_performance, by = "subject") %>%
   full_join(data_ratings, by = "subject") %>%
@@ -800,11 +772,10 @@ data_processed <- data_conditions %>%
          unique_id, 
          age, 
          gender, 
+         
          stimulus_identity_condition, 
          experiment_condition,
-         task_order, 
-         passed_manipulation_check,
-         
+         # task_order, 
          completeness_acquisition_training, completeness_acquisition_testing, 
          completeness_counterconditioning_training, completeness_counterconditioning_testing,
          completeness_extinction_training, completeness_extinction_testing,

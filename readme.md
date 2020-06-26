@@ -62,8 +62,6 @@ I'll leave it this way for the moment, but just FYI that there are differences i
 
 - ensure that testing data is excluded
 
-- remove processing of manipulation check as its redundant and add a note why
-
   
 
 ### analyses
