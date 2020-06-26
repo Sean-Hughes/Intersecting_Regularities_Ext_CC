@@ -102,7 +102,7 @@ data_demographics <- read_xlsx("raw/demographics.xlsx") %>%
 ## Get data and tidy
 
 ```{r}
-data_training_and_testing_input <-
+
 data_training_and_testing_input <- 
   bind_rows(
     # acquisition_training 
@@ -132,17 +132,7 @@ data_training_and_testing_input <-
     ) %>%
       mutate(phase = "extinction_training",
              response = as.character(response)) %>%
-      select(-starts_with("stimulus")),
-    
-    # extinction test 
-    bind_rows(
-      read_xlsx("raw/testing_left.xlsx"),
-      read_xlsx("raw/testing_left_rev.xlsx"),
-      read_xlsx("raw/testing_right.xlsx"),
-      read_xlsx("raw/testing_right_rev.xlsx")
-    ) %>%
-      mutate(phase = "extinction_testing",
-             response = as.character(response))
+      select(-starts_with("stimulus"))
   ) %>%
   filter(blockcode != "Begin") %>% 
   select(subject, phase, block_number = blocknum, trial_number = trialnum, correct) %>%
@@ -160,16 +150,14 @@ data_training_and_testing_completeness_temp <- data_training_and_testing_input %
   mutate(complete_training_testing_data = 
            case_when((phase == "acquisition_training" & n == 80) |
                        (phase == "acquisition_testing" & n == 8) |
-                       (phase == "extinction_training" & n == 80) |
-                       (phase == "extinction_testing" & n == 8) ~ "complete", 
+                       (phase == "extinction_training" & n == 80) ~ "complete", 
                      (phase == "acquisition_training" & n > 80) |
                        (phase == "acquisition_testing" & n > 8) |
-                       (phase == "extinction_training" & n > 80) |
-                       (phase == "extinction_testing" & n > 8) ~ "excess", 
+                       (phase == "extinction_training" & n > 80) ~ "excess", 
                      (phase == "acquisition_training" & n < 80) |
                        (phase == "acquisition_testing" & n < 8) |
-                       (phase == "extinction_training" & n < 80) |
-                       (phase == "extinction_testing" & n < 8) ~ "partial")) %>%
+                       (phase == "extinction_training" & n < 80)
+                    ~ "partial")) %>%
   ungroup() %>%
   select(-n) 
 
@@ -191,7 +179,7 @@ data_training_and_testing_completeness <- data_training_and_testing_completeness
 
 data_training_and_testing_performance_temp <- data_training_and_testing_input %>%
   # in this study, extinction was merely the presentation of stimuli on screen with no responses, so no performance metrics needed
-  filter(phase != "extinction_training") %>%
+  filter(!str_detect(phase, "extinction")) %>%
   # summarize performance by block
   group_by(subject, phase, block_number) %>% 
   summarise(mean_correct = mean(correct), 
@@ -203,8 +191,8 @@ data_training_and_testing_performance_temp <- data_training_and_testing_input %>
   mutate(passed_performance_criterion = ifelse(block_number == max(block_number) & passed_performance_criterion_by_block == TRUE, TRUE, FALSE)) %>%
   ungroup() %>%
   mutate(phase = fct_relevel(phase,
-                             "extinction_testing",
-                             "extinction_training",
+                             # "extinction_testing", # not in this study
+                             # "extinction_training",
                              "acqusitiion_testing",
                              "acqusitiion_training")) %>%
   drop_na()
@@ -484,30 +472,39 @@ data_processed <- data_conditions %>%
          unique_id, 
          age, 
          gender, 
+         
+         # conditions
          stimulus_identity_condition, 
-         experiment_condition, 
-         task_order, 
-         completeness_acquisition_testing, completeness_acquisition_training, 
-         completeness_extinction_testing, completeness_extinction_training, 
-         #mean_correct_acquisition_training, 
-         mean_correct_acquisition_testing, 
-         mean_correct_extinction_testing, 
-         # mean_correct_extinction_training, 
-         # passed_performance_criterion_acquisition_training, 
-         passed_performance_criterion_acquisition_testing, 
-         #passed_performance_criterion_extinction_training, 
-         passed_performance_criterion_extinction_testing, 
+         experiment_condition,
+         completeness_acquisition_training, completeness_acquisition_testing, 
+         #completeness_counterconditioning_training, completeness_counterconditioning_testing,
+         completeness_extinction_training, #completeness_extinction_testing, # not in this study
+         complete_iat_data, 
+         
+         # training and testing
+         mean_correct_acquisition_training, mean_correct_acquisition_testing, 
+         #mean_correct_counterconditioning_training, mean_correct_counterconditioning_testing,
+         #mean_correct_extinction_training, mean_correct_extinction_testing, # not in this study
+         
+         passed_performance_criterion_acquisition_training, passed_performance_criterion_acquisition_testing, 
+         #passed_performance_criterion_counterconditioning_training, passed_performance_criterion_counterconditioning_testing,
+         #passed_performance_criterion_extinction_training, passed_performance_criterion_extinction_testing, # not in this study
+         passed_iat_performance,
+         
+         # DVs
          self_reported_OEC_effect, self_reported_OEC_effect_controlling_stimulus_identity, 
          self_reported_IR_effect, self_reported_IR_effect_controlling_stimulus_identity, 
-         complete_iat_data, 
-         iat_block_order,
-         passed_iat_performance,
          IAT_D2, IAT_D2_controlling_stimulus_identity, 
          behavioral_intentions_OEC, behavioral_intentions_IR,
+         
+         # exploratory measures
+         task_order, 
+         iat_block_order,
+         #complete_equivalence_data, passed_equivalence,
          demand_response, 
          reactance_response_1, reactance_response_2, 
          confidence_stim_1, confidence_stim_2, confidence_stim_3, confidence_stim_4,
-         believability_response_1, believability_response_2)
+         believability_response_1, believability_response_2)  
 
 # Ensures that the processed data folder exists
 dir.create("processed")

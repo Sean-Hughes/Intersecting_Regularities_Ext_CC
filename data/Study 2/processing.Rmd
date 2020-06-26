@@ -496,29 +496,42 @@ data_processed <- data_conditions %>%
   
   mutate(unique_id = paste(experiment, subject, sep = "_")) %>% 
   select(experiment, 
-         unique_id,
+         unique_id, 
          age, 
          gender, 
+         
+         # conditions
          stimulus_identity_condition, 
-         experiment_condition, 
-         task_order, 
-         completeness_acquisition_testing, completeness_acquisition_training, 
-         completeness_extinction_testing, completeness_extinction_training, 
+         experiment_condition,
+         completeness_acquisition_training, completeness_acquisition_testing, 
+         #completeness_counterconditioning_training, completeness_counterconditioning_testing,
+         completeness_extinction_training, completeness_extinction_testing,
+         complete_iat_data, 
+         
+         # training and testing
          mean_correct_acquisition_training, mean_correct_acquisition_testing, 
-         mean_correct_extinction_testing, mean_correct_extinction_training, 
+         #mean_correct_counterconditioning_training, mean_correct_counterconditioning_testing,
+         mean_correct_extinction_training, mean_correct_extinction_testing, 
+         
          passed_performance_criterion_acquisition_training, passed_performance_criterion_acquisition_testing, 
-         passed_performance_criterion_extinction_testing, passed_performance_criterion_extinction_training, 
+         #passed_performance_criterion_counterconditioning_training, passed_performance_criterion_counterconditioning_testing,
+         passed_performance_criterion_extinction_training, passed_performance_criterion_extinction_testing,
+         passed_iat_performance,
+         
+         # DVs
          self_reported_OEC_effect, self_reported_OEC_effect_controlling_stimulus_identity, 
          self_reported_IR_effect, self_reported_IR_effect_controlling_stimulus_identity, 
-         complete_iat_data, 
-         iat_block_order,
-         passed_iat_performance,
          IAT_D2, IAT_D2_controlling_stimulus_identity, 
          behavioral_intentions_OEC, behavioral_intentions_IR,
+         
+         # exploratory measures
+         task_order, 
+         iat_block_order,
+         #complete_equivalence_data, passed_equivalence,
          demand_response, 
          reactance_response_1, reactance_response_2, 
          confidence_stim_1, confidence_stim_2, confidence_stim_3, confidence_stim_4,
-         believability_response_1, believability_response_2)
+         believability_response_1, believability_response_2)  
 
 # Ensures that the processed data folder exists
 dir.create("processed")
