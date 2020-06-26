@@ -30,6 +30,8 @@ library(broom)
 library(effsize)
 library(BayesFactor)
 library(metafor)
+library(ez)
+library(schoRsch)
 
 # functions -----
 # round p value using apa format
@@ -329,6 +331,70 @@ results_moderation_by_counterconditioning %>%
 
 ```
 
+## Study 7 ANOVA
+
+drop_na SHOULDN'T BE NEEDED ??
+
+```{r}
+
+data_study_7 <- data_processed_after_exclusions %>%
+  filter(experiment == 7) %>%
+  select(unique_id,
+         self_reported_IR_effect_controlling_stimulus_identity,
+         self_reported_OEC_effect_controlling_stimulus_identity,
+         IAT_D2_controlling_stimulus_identity,
+         experiment_condition) %>%
+  drop_na()
+
+# IAT
+fit_study_7_iat <- ez::ezANOVA(data     = data_study_7,
+                               dv       = IAT_D2_controlling_stimulus_identity,
+                               between  = experiment_condition,
+                               wid      = unique_id,
+                               type     = 3,
+                               detailed = TRUE)
+
+ 
+  
+# IR
+fit_study_7_ir <- ez::ezANOVA(data     = data_study_7,
+                              dv       = self_reported_IR_effect_controlling_stimulus_identity,
+                              between  = experiment_condition,
+                              wid      = unique_id,
+                              type     = 3,
+                              detailed = TRUE)
+
+# OEC
+fit_study_7_oec <- ez::ezANOVA(data     = data_study_7,
+                               dv       = self_reported_OEC_effect_controlling_stimulus_identity,
+                               between  = experiment_condition,
+                               wid      = unique_id,
+                               type     = 3,
+                               detailed = TRUE)
+
+# combine results
+results_study_7 <- 
+  bind_rows(anova_out(fit_study_7_iat, 
+                      etasq = "partial", 
+                      print = FALSE)$`--- FORMATTED RESULTS ------------------------------------` %>%
+              mutate(DV = "IAT"),
+            anova_out(fit_study_7_ir, 
+                      etasq = "partial", 
+                      print = FALSE)$`--- FORMATTED RESULTS ------------------------------------` %>%
+              mutate(DV = "IR"),
+            anova_out(fit_study_7_oec, 
+                      etasq = "partial", 
+                      print = FALSE)$`--- FORMATTED RESULTS ------------------------------------` %>%
+              mutate(DV = "OEC")) %>%
+  filter(Effect == "experiment_condition") %>%
+  select(DV, Text)
+
+results_study_7 %>%
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+```
+
 # Meta-analyses
 
 ## Basic effect
@@ -527,11 +593,10 @@ passed_performance_criterion_acquisition_testing == TRUE &
 # to do
 
 - demographics SUGGESTS THERE ARE REMAINING PROCESSING ISSUES - , na.rm = TRUE shouldn't be needed
-- counterconditioning analysis returns NaN for cohens d, no idea why
+- counterconditioning analysis returns NaN for cohens d, no idea why. cant apply meta analyses until its fixed.
 - check if there are any issues with the data processing for the pass rate in studies 3 and 7 extinction testing - they're oddly low
 - study 7 participants could have extra training and testing data depending on performance. currently this is excluded, but it should be used. change data processing.
 - study 7 data processing needs attention for other unknown reasons: why are there multiple rows with the same unique id in the processed data? why do the Ns for the extinction and counterconditioning training and testing processed data equal the acquisition phase, when only one third of people should have done CC and extinction (each).
-- separate data read from exclusions, run demographics on full data
 - handle between study differences
   - remove the for testing filter call in data processing!
   - training and testing percent passes etc need code added to handle CC
