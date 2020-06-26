@@ -118,7 +118,7 @@ add_heterogeneity_metrics_to_forest <- function(fit) {
 
 # Data and exclusions
 
- for sensitivity analyses later:
+for sensitivity analyses later:
 passed_performance_criterion_acquisition_training == TRUE &
 passed_performance_criterion_acquisition_testing == TRUE &
 
@@ -270,15 +270,96 @@ metafor::forest(fit_basic_effect_oec,
 
 ```
 
+# Training and testing mastery
+
+## Percentage accuracy
+
+```{r fig.height=10, fig.width=7}
+
+results_training_and_testing_percent_accuracy <- data_processed %>% 
+  select(unique_id, experiment, 
+         mean_correct_acquisition_training,         mean_correct_acquisition_testing, 
+         mean_correct_extinction_training,          mean_correct_extinction_testing, 
+         mean_correct_counterconditioning_training, mean_correct_counterconditioning_testing) %>%
+  gather(phase, mean_correct, c(mean_correct_acquisition_training, mean_correct_acquisition_testing, 
+                                mean_correct_extinction_training, mean_correct_extinction_testing, 
+                                mean_correct_counterconditioning_training, mean_correct_counterconditioning_testing)) %>%
+  distinct(unique_id, phase, .keep_all = TRUE) %>%
+  drop_na() %>%
+  mutate(phase = dplyr::recode(phase, 
+                               "mean_correct_acquisition_testing" = "Acquisition\ntest",
+                               "mean_correct_acquisition_training" = "Acquisition\ntraining",
+                               "mean_correct_extinction_testing" = "Extinction\ntesting",			
+                               "mean_correct_extinction_training" = "Extinction\ntraining")) %>%
+  group_by(experiment, phase) %>% 
+  dplyr::summarise(mean_accuracy = mean(mean_correct*100, na.rm = TRUE), 
+                   sd_accuracy = sd(mean_correct*100, na.rm = TRUE)) %>%
+  ungroup()
+
+results_training_and_testing_percent_accuracy %>%
+  mutate_if(is.numeric, round, digits = 0) %>%
+  mutate(result = paste0(mean_accuracy, " (", sd_accuracy, ")")) %>%
+  select(-mean_accuracy, -sd_accuracy) %>%
+  spread(phase, result) %>%
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+  
+# ggplot(results_training_and_testing_percent_accuracy, aes(x = phase, y = mean_accuracy)) +
+#   geom_bar(colour = "black", stat = "identity") + 
+#   geom_errorbar(aes(ymin = mean_accuracy - sd_accuracy, ymax = mean_accuracy + sd_accuracy), 
+#                 width = .2) + 
+#   theme_classic() +
+#   facet_wrap(~experiment, ncol = 1)
+
+```
+
+## Percentage pass
+
+```{r fig.height=10, fig.width=7}
+
+results_training_and_testing_percent_pass <- data_processed %>% 
+  select(unique_id, experiment, 
+         passed_performance_criterion_acquisition_training,         passed_performance_criterion_acquisition_testing, 
+         passed_performance_criterion_extinction_training,          passed_performance_criterion_extinction_testing, 
+         passed_performance_criterion_counterconditioning_training, passed_performance_criterion_counterconditioning_testing) %>%
+  gather(phase, passed_performance_criterion, c(passed_performance_criterion_acquisition_training,
+                                                passed_performance_criterion_acquisition_testing, 
+                                                passed_performance_criterion_extinction_training,
+                                                passed_performance_criterion_extinction_testing, 
+                                                passed_performance_criterion_counterconditioning_training,
+                                                passed_performance_criterion_counterconditioning_testing)) %>%
+  distinct(unique_id, phase, .keep_all = TRUE) %>%
+  drop_na() %>%
+  mutate(phase = dplyr::recode(phase, 
+                               "passed_performance_criterion_acquisition_testing" = "Acquisition\ntest",
+                               "passed_performance_criterion_acquisition_training" = "Acquisition\ntraining",
+                               "passed_performance_criterion_extinction_testing" = "Extinction\ntesting",			
+                               "passed_performance_criterion_extinction_training" = "Extinction\ntraining")) %>%
+  group_by(experiment, phase) %>% 
+  dplyr::summarise(percent_passed = mean(passed_performance_criterion*100, na.rm = TRUE)) %>%
+  ungroup()
+
+results_training_and_testing_percent_pass %>%
+  mutate_if(is.numeric, round, digits = 0) %>%
+  spread(phase, percent_passed) %>%
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+  
+```
 
 # to do
 
+- check if there are any issues with the data processing for the pass rate in studies 3 and 7 extinction testing - they're oddly low
+- study 7 participants could have extra training and testing data depending on performance. currently this is excluded, but it should be used. change data processing.
+- study 7 data processing needs attention for other unknown reasons: why are there multiple rows with the same unique id in the processed data? why do the Ns for the extinction and counterconditioning training and testing processed data equal the acquisition phase, when only one third of people should have done CC and extinction (each).
+- possibly reorder the cols in the processing
+- separate data read from exclusions, run demographics on full data
 - handle between study differences
   - remove the for testing filter call in data processing!
+  - training and testing percent passes etc need code added to handle CC
 - separate workflow for intentions (multinominal logistic)
 - sensitivity meta analyses for training and testing exclusions
 - add anova for study 7
-- plot training and testing data
 - separate reading in of data and exclusions, do demographics descriptives before exclusions
 
 
