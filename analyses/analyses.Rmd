@@ -79,7 +79,7 @@ analysis_workflow <- function(data){
            p = p.value,
            mean_reference = estimate1,
            mean_comaprison = estimate2)
-  
+
   # cohens d
   results_cohens_d <- data %>%
     group_by(experiment, DV_type) %>%
@@ -118,12 +118,9 @@ add_heterogeneity_metrics_to_forest <- function(fit) {
 
 # Data and exclusions
 
-for sensitivity analyses later:
-passed_performance_criterion_acquisition_training == TRUE &
-passed_performance_criterion_acquisition_testing == TRUE &
-
 ```{r}
 
+# full data
 data_processed <-
   bind_rows(
     read_csv("../data/Study 1/processed/data_processed.csv"),
@@ -134,15 +131,6 @@ data_processed <-
     read_csv("../data/Study 6/processed/data_processed.csv"),
     read_csv("../data/Study 7/processed/data_processed.csv")
   ) %>%
-  # exclusions
-  filter(completeness_acquisition_training == "complete" &
-           completeness_acquisition_testing == "complete" &
-           (completeness_extinction_training == "complete" | is.na(completeness_extinction_training)) &
-           (completeness_extinction_testing == "complete" | is.na(completeness_extinction_testing)) &
-           (completeness_counterconditioning_training == "complete" | is.na(completeness_counterconditioning_training)) &
-           (completeness_counterconditioning_testing == "complete" | is.na(completeness_counterconditioning_testing)) &
-           complete_iat_data == "complete" &
-           passed_iat_performance == TRUE) %>%
   # set factor levels for t test comparisons
   mutate(experiment_condition = fct_relevel(experiment_condition,
                                             "acquisition_only", 
@@ -151,122 +139,42 @@ data_processed <-
          stimulus_identity_condition = fct_relevel(stimulus_identity_condition,
                                                    "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad",
                                                    "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good")) %>%
-  
-  # for testing
-  filter(experiment_condition %in% c("acquisition_only", "acquisition_and_extinction") & 
-           experiment %in% c(1,2,3,4,7))
+  mutate(exclude = ifelse(completeness_acquisition_training == "complete" &
+                            completeness_acquisition_testing == "complete" &
+                            (completeness_extinction_training == "complete" | 
+                               is.na(completeness_extinction_training)) &
+                            (completeness_extinction_testing == "complete" | 
+                               is.na(completeness_extinction_testing)) &
+                            (completeness_counterconditioning_training == "complete" |
+                               is.na(completeness_counterconditioning_training)) &
+                            (completeness_counterconditioning_testing == "complete" |
+                               is.na(completeness_counterconditioning_testing)) &
+                            complete_iat_data == "complete" &
+                            passed_iat_performance == TRUE,
+                          FALSE, TRUE))
+
+# exclusions
+data_processed_after_exclusions <- data_processed %>%
+  filter(exclude == FALSE)
 
 ```
 
-# Analyses by study
+# Demographics
 
-## Was there an IR effect?
+, na.rm = TRUE shouldn't be needed, check data processing
 
-- by DV
-- Differences between stimulus identity, using only the acquisition_only condition.
-
-```{r}
-
-results_basic_effect <- data_processed %>%
-  filter(experiment_condition == "acquisition_only") %>%
-  rename(IV = stimulus_identity_condition) %>%
-  gather(DV_type, DV, c(self_reported_OEC_effect, self_reported_IR_effect, IAT_D2)) %>%
-  select(experiment, DV_type, DV, IV) %>%
-  drop_na() %>%
-  analysis_workflow(data = .)
-
-results_basic_effect %>%
-  select(experiment, DV_type, reportable_result) %>%
-  kable() %>% 
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
-
-```
-
-## Was the IR moderated by intervention?
-
-- by DV
-- Differences between experiment conditions, after reverse scoring for stimulus identity.
+why are there 49 participants in an unknown experiment?
 
 ```{r}
 
-results_moderation_of_basic_effect <- data_processed %>%
-  rename(IV = experiment_condition) %>%
-  gather(DV_type, DV, c(self_reported_OEC_effect_controlling_stimulus_identity, 
-                        self_reported_IR_effect_controlling_stimulus_identity, 
-                        IAT_D2_controlling_stimulus_identity)) %>%
-  select(experiment, DV_type, DV, IV) %>%
-  drop_na() %>%
-  analysis_workflow(data = .)
-
-results_moderation_of_basic_effect %>%
-  select(experiment, DV_type, reportable_result) %>%
-  kable() %>% 
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
-
-```
-
-# Meta-analyses
-
-```{r}
-
-results_for_meta_basic_effect <- results_basic_effect %>%
-  rename(yi = cohens_d) %>%
-  mutate(sei = (cohens_d_ci_upper - cohens_d_ci_lower)/(2*1.96)) %>%
-  select(experiment, DV_type, yi, sei)
-
-# iat
-fit_basic_effect_iat <- results_for_meta_basic_effect %>%
-  filter(str_detect(DV_type, "IAT_D2")) %>%
-  rma(yi = yi,
-      sei = sei,
-      data = .,
-      slab = experiment)
-
-metafor::forest(fit_basic_effect_iat,
-                xlab = "Cohen's d",
-                addcred = TRUE,
-                refline = 0,
-                #xlim = c(-1.5, 1.7),
-                #at = c(-0.5, -0.25, 0, 0.25, 0.5, 0.75, 1),
-                mlab = add_heterogeneity_metrics_to_forest(fit_basic_effect_iat))
-# text(-1.5, 10, "Study", pos = 4)
-# text(1.7, 10, "ICC [95% CI]", pos = 2)
-
-# IR
-fit_basic_effect_ir <- results_for_meta_basic_effect %>%
-  filter(str_detect(DV_type, "_IR_")) %>%
-  rma(yi = yi,
-      sei = sei,
-      data = .,
-      slab = experiment)
-
-metafor::forest(fit_basic_effect_ir,
-                xlab = "Cohen's d",
-                addcred = TRUE,
-                refline = 0,
-                #xlim = c(-1.5, 1.7),
-                #at = c(-0.5, -0.25, 0, 0.25, 0.5, 0.75, 1),
-                mlab = add_heterogeneity_metrics_to_forest(fit_basic_effect_ir))
-# text(-1.5, 10, "Study", pos = 4)
-# text(1.7, 10, "ICC [95% CI]", pos = 2)
-
-# OEC
-fit_basic_effect_oec <- results_for_meta_basic_effect %>%
-  filter(str_detect(DV_type, "_OEC_")) %>%
-  rma(yi = yi,
-      sei = sei,
-      data = .,
-      slab = experiment)
-
-metafor::forest(fit_basic_effect_oec,
-                xlab = "Cohen's d",
-                addcred = TRUE,
-                refline = 0,
-                #xlim = c(-1.5, 1.7),
-                #at = c(-0.5, -0.25, 0, 0.25, 0.5, 0.75, 1),
-                mlab = add_heterogeneity_metrics_to_forest(fit_basic_effect_oec))
-# text(-1.5, 10, "Study", pos = 4)
-# text(1.7, 10, "ICC [95% CI]", pos = 2)
+data_processed %>%
+  group_by(experiment) %>%
+  summarize(n = n(),
+            age_mean = mean(age, na.rm = TRUE),
+            age_sd = mean(age, na.rm = TRUE),
+            excluded_n = sum(exclude, na.rm = TRUE),
+            excluded_percent = mean(exclude*100, na.rm = TRUE)) %>%
+  mutate_if(is.numeric, round, digits = 1)
 
 ```
 
@@ -276,7 +184,7 @@ metafor::forest(fit_basic_effect_oec,
 
 ```{r fig.height=10, fig.width=7}
 
-results_training_and_testing_percent_accuracy <- data_processed %>% 
+results_training_and_testing_percent_accuracy <- data_processed_after_exclusions %>% 
   select(unique_id, experiment, 
          mean_correct_acquisition_training,         mean_correct_acquisition_testing, 
          mean_correct_extinction_training,          mean_correct_extinction_testing, 
@@ -317,7 +225,7 @@ results_training_and_testing_percent_accuracy %>%
 
 ```{r fig.height=10, fig.width=7}
 
-results_training_and_testing_percent_pass <- data_processed %>% 
+results_training_and_testing_percent_pass <- data_processed_after_exclusions %>% 
   select(unique_id, experiment, 
          passed_performance_criterion_acquisition_training,         passed_performance_criterion_acquisition_testing, 
          passed_performance_criterion_extinction_training,          passed_performance_criterion_extinction_testing, 
@@ -347,12 +255,282 @@ results_training_and_testing_percent_pass %>%
   
 ```
 
+# Analyses by study
+
+## Was there an IR effect?
+
+- by DV
+- Differences between stimulus identity, using only the acquisition_only condition.
+
+```{r}
+
+results_basic_effect <- data_processed_after_exclusions %>%
+  filter(experiment_condition == "acquisition_only") %>%
+  rename(IV = stimulus_identity_condition) %>%
+  gather(DV_type, DV, c(self_reported_OEC_effect, self_reported_IR_effect, IAT_D2)) %>%
+  select(experiment, DV_type, DV, IV) %>%
+  drop_na() %>%
+  analysis_workflow(data = .)
+
+results_basic_effect %>%
+  select(experiment, DV_type, reportable_result) %>%
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+```
+
+## Was the IR moderated by extinction?
+
+- by DV
+- Differences between experiment conditions, after reverse scoring for stimulus identity.
+
+```{r}
+
+results_moderation_by_extinction <- data_processed_after_exclusions %>%
+  filter(experiment_condition %in% c("acquisition_only", "acquisition_and_extinction") & 
+           experiment %in% c(1, 2, 3, 4, 7)) %>%
+  rename(IV = experiment_condition) %>%
+  gather(DV_type, DV, c(self_reported_OEC_effect_controlling_stimulus_identity, 
+                        self_reported_IR_effect_controlling_stimulus_identity, 
+                        IAT_D2_controlling_stimulus_identity)) %>%
+  select(experiment, DV_type, DV, IV) %>%
+  drop_na() %>%
+  analysis_workflow(data = .)
+
+results_moderation_by_extinction %>%
+  select(experiment, DV_type, reportable_result) %>%
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+```
+
+## Was the IR moderated by counter conditioning?
+
+- by DV
+- Differences between experiment conditions, after reverse scoring for stimulus identity.
+
+```{r}
+
+results_moderation_by_counterconditioning <- data_processed_after_exclusions %>%
+  filter(experiment_condition %in% c("acquisition_only", "acquisition_and_counterconditioning") & 
+           experiment %in% c(5, 6, 7)) %>%
+  rename(IV = experiment_condition) %>%
+  gather(DV_type, DV, c(self_reported_OEC_effect_controlling_stimulus_identity, 
+                        self_reported_IR_effect_controlling_stimulus_identity, 
+                        IAT_D2_controlling_stimulus_identity)) %>%
+  select(experiment, DV_type, DV, IV) %>%
+  drop_na() %>%
+  analysis_workflow(data = .)
+
+results_moderation_by_counterconditioning %>%
+  select(experiment, DV_type, reportable_result) %>%
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+```
+
+# Meta-analyses
+
+## Basic effect
+
+```{r}
+
+results_for_meta_basic_effect <- results_basic_effect %>%
+  rename(yi = cohens_d) %>%
+  mutate(sei = (cohens_d_ci_upper - cohens_d_ci_lower)/(2*1.96)) %>%
+  select(experiment, DV_type, yi, sei)
+
+# iat
+fit_basic_effect_iat <- results_for_meta_basic_effect %>%
+  filter(str_detect(DV_type, "IAT_D2")) %>%
+  rma(yi = yi,
+      sei = sei,
+      data = .,
+      slab = experiment)
+
+metafor::forest(fit_basic_effect_iat,
+                xlab = "Cohen's d",
+                addcred = TRUE,
+                refline = 0,
+                xlim = c(-1.5, 4),
+                at = c(-0.5, 0, 0.5, 1.0, 1.5, 2.0, 2.5))
+text(-1.5, 9, "IAT", pos = 4)
+text(4, 9, "d [95% CI]", pos = 2)
+
+# IR
+fit_basic_effect_ir <- results_for_meta_basic_effect %>%
+  filter(str_detect(DV_type, "_IR_")) %>%
+  rma(yi = yi,
+      sei = sei,
+      data = .,
+      slab = experiment)
+
+metafor::forest(fit_basic_effect_ir,
+                xlab = "Cohen's d",
+                addcred = TRUE,
+                refline = 0,
+                xlim = c(-1.5, 4),
+                at = c(-0.5, 0, 0.5, 1.0, 1.5, 2.0, 2.5))
+text(-1.5, 9, "IR", pos = 4)
+text(4, 9, "d [95% CI]", pos = 2)
+
+# OEC
+fit_basic_effect_oec <- results_for_meta_basic_effect %>%
+  filter(str_detect(DV_type, "_OEC_")) %>%
+  rma(yi = yi,
+      sei = sei,
+      data = .,
+      slab = experiment)
+
+metafor::forest(fit_basic_effect_oec,
+                xlab = "Cohen's d",
+                addcred = TRUE,
+                refline = 0,
+                xlim = c(-1.5, 4),
+                at = c(-0.5, 0, 0.5, 1.0, 1.5, 2.0, 2.5))
+text(-1.5, 9, "OEC", pos = 4)
+text(4, 9, "d [95% CI]", pos = 2)
+
+```
+
+## Moderation by extinction
+
+```{r}
+
+results_for_meta_extinction <- results_moderation_by_extinction %>%
+  rename(yi = cohens_d) %>%
+  mutate(sei = (cohens_d_ci_upper - cohens_d_ci_lower)/(2*1.96)) %>%
+  select(experiment, DV_type, yi, sei)
+
+# iat
+fit_moderation_extinction_iat <- results_for_meta_extinction %>%
+  filter(str_detect(DV_type, "IAT_D2")) %>%
+  rma(yi = yi,
+      sei = sei,
+      data = .,
+      slab = experiment)
+
+metafor::forest(fit_moderation_extinction_iat,
+                xlab = "Cohen's d",
+                addcred = TRUE,
+                refline = 0,
+                xlim = c(-2.25, 2.25),
+                at = c(-1.5, -1.0, -0.5, 0, 0.5, 1.0))
+text(-2.25, 7, "IAT", pos = 4)
+text(2.25, 7, "d [95% CI]", pos = 2)
+
+# IR
+fit_moderation_extinction_ir <- results_for_meta_extinction %>%
+  filter(str_detect(DV_type, "_IR_")) %>%
+  rma(yi = yi,
+      sei = sei,
+      data = .,
+      slab = experiment)
+
+metafor::forest(fit_moderation_extinction_ir,
+                xlab = "Cohen's d",
+                addcred = TRUE,
+                refline = 0,
+                xlim = c(-2.25, 2.25),
+                at = c(-1.5, -1.0, -0.5, 0, 0.5, 1.0))
+text(-2.25, 7, "IR", pos = 4)
+text(2.25, 7, "d [95% CI]", pos = 2)
+
+# OEC
+fit_moderation_extinction_oec <- results_for_meta_extinction %>%
+  filter(str_detect(DV_type, "_OEC_")) %>%
+  rma(yi = yi,
+      sei = sei,
+      data = .,
+      slab = experiment)
+
+metafor::forest(fit_moderation_extinction_oec,
+                xlab = "Cohen's d",
+                addcred = TRUE,
+                refline = 0,
+                xlim = c(-2.25, 2.25),
+                at = c(-1.5, -1.0, -0.5, 0, 0.5, 1.0))
+text(-2.25, 7, "OEC", pos = 4)
+text(2.25, 7, "d [95% CI]", pos = 2)
+
+```
+
+## Moderation by counter conditioning
+
+```{r}
+
+results_for_meta_counterconditioning <- results_moderation_by_counterconditioning %>%
+  rename(yi = cohens_d) %>%
+  mutate(sei = (cohens_d_ci_upper - cohens_d_ci_lower)/(2*1.96)) %>%
+  select(experiment, DV_type, yi, sei)
+
+# iat
+fit_moderation_extinction_iat <- results_for_meta_counterconditioning %>%
+  filter(str_detect(DV_type, "IAT_D2")) %>%
+  rma(yi = yi,
+      sei = sei,
+      data = .,
+      slab = experiment)
+
+metafor::forest(fit_moderation_extinction_iat,
+                xlab = "Cohen's d",
+                addcred = TRUE,
+                refline = 0,
+                xlim = c(-2.25, 2.25),
+                at = c(-1.5, -1.0, -0.5, 0, 0.5, 1.0))
+text(-2.25, 7, "IAT", pos = 4)
+text(2.25, 7, "d [95% CI]", pos = 2)
+
+# IR
+fit_moderation_extinction_ir <- results_for_meta_counterconditioning %>%
+  filter(str_detect(DV_type, "_IR_")) %>%
+  rma(yi = yi,
+      sei = sei,
+      data = .,
+      slab = experiment)
+
+metafor::forest(fit_moderation_extinction_ir,
+                xlab = "Cohen's d",
+                addcred = TRUE,
+                refline = 0,
+                xlim = c(-2.25, 2.25),
+                at = c(-1.5, -1.0, -0.5, 0, 0.5, 1.0))
+text(-2.25, 7, "IR", pos = 4)
+text(2.25, 7, "d [95% CI]", pos = 2)
+
+# OEC
+fit_moderation_extinction_oec <- results_for_meta_counterconditioning %>%
+  filter(str_detect(DV_type, "_OEC_")) %>%
+  rma(yi = yi,
+      sei = sei,
+      data = .,
+      slab = experiment)
+
+metafor::forest(fit_moderation_extinction_oec,
+                xlab = "Cohen's d",
+                addcred = TRUE,
+                refline = 0,
+                xlim = c(-2.25, 2.25),
+                at = c(-1.5, -1.0, -0.5, 0, 0.5, 1.0))
+text(-2.25, 7, "OEC", pos = 4)
+text(2.25, 7, "d [95% CI]", pos = 2)
+
+```
+
+# Sensitivity meta-analyses
+
+duplicate the above metas once finsihed, adding the following filters:
+
+passed_performance_criterion_acquisition_training == TRUE &
+passed_performance_criterion_acquisition_testing == TRUE &
+
 # to do
 
+- demographics SUGGESTS THERE ARE REMAINING PROCESSING ISSUES - , na.rm = TRUE shouldn't be needed
+- counterconditioning analysis returns NaN for cohens d, no idea why
 - check if there are any issues with the data processing for the pass rate in studies 3 and 7 extinction testing - they're oddly low
 - study 7 participants could have extra training and testing data depending on performance. currently this is excluded, but it should be used. change data processing.
 - study 7 data processing needs attention for other unknown reasons: why are there multiple rows with the same unique id in the processed data? why do the Ns for the extinction and counterconditioning training and testing processed data equal the acquisition phase, when only one third of people should have done CC and extinction (each).
-- possibly reorder the cols in the processing
 - separate data read from exclusions, run demographics on full data
 - handle between study differences
   - remove the for testing filter call in data processing!
