@@ -52,21 +52,19 @@ I'll leave it this way for the moment, but just FYI that there are differences i
 ### documentation
 
 - deviations from prereg document needs updating. for example, it currently states that study 7 was created from data taken from previous studies, which isn't the case.\
-- ensure that test cases are excluded, eg age and gender with strings
 
-
+  
 
 ### processing.rmd scripts
 
 - There are participants in each study with excess data. Figure out what do with this (retain them?). Without further action they will likely be excluded.
+- ensure that test cases are excluded, eg age and gender with strings
 
-- ensure that testing data is excluded
 
-  
 
 ### analyses
 
-currently not present. where is this done? It'll probably need to be redone?
+- in progress
 
 
 

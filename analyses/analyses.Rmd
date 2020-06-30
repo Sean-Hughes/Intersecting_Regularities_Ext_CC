@@ -33,6 +33,9 @@ library(metafor)
 library(ez)
 library(schoRsch)
 
+# Ensures that the processed data folder exists
+dir.create("models")
+
 # functions -----
 # round p value using apa format
 apa_p_value <- function(p){
@@ -292,6 +295,7 @@ results_moderation_by_extinction <- data_processed_after_exclusions %>%
   filter(experiment_condition %in% c("acquisition_only", "acquisition_and_extinction") & 
            experiment %in% c(1, 2, 3, 4, 7)) %>%
   rename(IV = experiment_condition) %>%
+  mutate(IV = fct_relevel(IV, "acquisition_and_extinction", "acquisition_only")) %>%
   gather(DV_type, DV, c(self_reported_OEC_effect_controlling_stimulus_identity, 
                         self_reported_IR_effect_controlling_stimulus_identity, 
                         IAT_D2_controlling_stimulus_identity)) %>%
@@ -317,6 +321,7 @@ results_moderation_by_counterconditioning <- data_processed_after_exclusions %>%
   filter(experiment_condition %in% c("acquisition_only", "acquisition_and_counterconditioning") & 
            experiment %in% c(5, 6, 7)) %>%
   rename(IV = experiment_condition) %>%
+  mutate(IV = fct_relevel(IV, "acquisition_and_counterconditioning", "acquisition_only")) %>%
   gather(DV_type, DV, c(self_reported_OEC_effect_controlling_stimulus_identity, 
                         self_reported_IR_effect_controlling_stimulus_identity, 
                         IAT_D2_controlling_stimulus_identity)) %>%
@@ -409,8 +414,8 @@ results_for_meta_basic_effect <- results_basic_effect %>%
 # iat
 fit_basic_effect_iat <- results_for_meta_basic_effect %>%
   filter(str_detect(DV_type, "IAT_D2")) %>%
-  rma(yi = yi,
-      sei = sei,
+  rma(yi   = yi,
+      sei  = sei,
       data = .,
       slab = experiment)
 
@@ -456,6 +461,11 @@ metafor::forest(fit_basic_effect_oec,
                 at = c(-0.5, 0, 0.5, 1.0, 1.5, 2.0, 2.5))
 text(-1.5, 9, "OEC", pos = 4)
 text(4, 9, "d [95% CI]", pos = 2)
+
+# save model fits for making pdf plots for publication
+write_rds(fit_basic_effect_iat, "models/fit_basic_effect_iat.rds")
+write_rds(fit_basic_effect_ir, "models/fit_basic_effect_ir.rds")
+write_rds(fit_basic_effect_oec, "models/fit_basic_effect_oec.rds")
 
 ```
 
@@ -519,6 +529,11 @@ metafor::forest(fit_moderation_extinction_oec,
 text(-2.25, 7, "OEC", pos = 4)
 text(2.25, 7, "d [95% CI]", pos = 2)
 
+# save model fits for making pdf plots for publication
+write_rds(fit_moderation_extinction_iat, "models/fit_moderation_extinction_iat.rds")
+write_rds(fit_moderation_extinction_ir, "models/fit_moderation_extinction_ir.rds")
+write_rds(fit_moderation_extinction_oec, "models/fit_moderation_extinction_oec.rds")
+
 ```
 
 ## Moderation by counter conditioning
@@ -531,55 +546,60 @@ results_for_meta_counterconditioning <- results_moderation_by_counterconditionin
   select(experiment, DV_type, yi, sei)
 
 # iat
-fit_moderation_extinction_iat <- results_for_meta_counterconditioning %>%
+fit_moderation_counterconditioning_iat <- results_for_meta_counterconditioning %>%
   filter(str_detect(DV_type, "IAT_D2")) %>%
   rma(yi = yi,
       sei = sei,
       data = .,
       slab = experiment)
 
-metafor::forest(fit_moderation_extinction_iat,
+metafor::forest(fit_moderation_counterconditioning_iat,
                 xlab = "Cohen's d",
                 addcred = TRUE,
                 refline = 0,
-                xlim = c(-2.25, 2.25),
-                at = c(-1.5, -1.0, -0.5, 0, 0.5, 1.0))
-text(-2.25, 7, "IAT", pos = 4)
-text(2.25, 7, "d [95% CI]", pos = 2)
+                xlim = c(-3.2, 3.8),
+                at = c(-2.0, -1.0, 0, 1.0, 2.0))
+text(-3.2, 5, "IAT", pos = 4)
+text(3.8, 5, "d [95% CI]", pos = 2)
 
 # IR
-fit_moderation_extinction_ir <- results_for_meta_counterconditioning %>%
+fit_moderation_counterconditioning_ir <- results_for_meta_counterconditioning %>%
   filter(str_detect(DV_type, "_IR_")) %>%
   rma(yi = yi,
       sei = sei,
       data = .,
       slab = experiment)
 
-metafor::forest(fit_moderation_extinction_ir,
+metafor::forest(fit_moderation_counterconditioning_ir,
                 xlab = "Cohen's d",
                 addcred = TRUE,
                 refline = 0,
-                xlim = c(-2.25, 2.25),
-                at = c(-1.5, -1.0, -0.5, 0, 0.5, 1.0))
-text(-2.25, 7, "IR", pos = 4)
-text(2.25, 7, "d [95% CI]", pos = 2)
+                xlim = c(-3.2, 3.8),
+                at = c(-2.0, -1.0, 0, 1.0, 2.0))
+text(-3.2, 5, "IR", pos = 4)
+text(3.8, 5, "d [95% CI]", pos = 2)
 
 # OEC
-fit_moderation_extinction_oec <- results_for_meta_counterconditioning %>%
+fit_moderation_counterconditioning_oec <- results_for_meta_counterconditioning %>%
   filter(str_detect(DV_type, "_OEC_")) %>%
   rma(yi = yi,
       sei = sei,
       data = .,
       slab = experiment)
 
-metafor::forest(fit_moderation_extinction_oec,
+metafor::forest(fit_moderation_counterconditioning_oec,
                 xlab = "Cohen's d",
                 addcred = TRUE,
                 refline = 0,
-                xlim = c(-2.25, 2.25),
-                at = c(-1.5, -1.0, -0.5, 0, 0.5, 1.0))
-text(-2.25, 7, "OEC", pos = 4)
-text(2.25, 7, "d [95% CI]", pos = 2)
+                xlim = c(-3.2, 3.8),
+                at = c(-2.0, -1.0, 0, 1.0, 2.0))
+text(-3.2, 5, "OEC", pos = 4)
+text(3.8, 5, "d [95% CI]", pos = 2)
+
+# save model fits for making pdf plots for publication
+write_rds(fit_moderation_counterconditioning_iat, "models/fit_moderation_counterconditioning_iat.rds")
+write_rds(fit_moderation_counterconditioning_ir, "models/fit_moderation_counterconditioning_ir.rds")
+write_rds(fit_moderation_counterconditioning_oec, "models/fit_moderation_counterconditioning_oec.rds")
 
 ```
 
@@ -594,12 +614,10 @@ passed_performance_criterion_acquisition_testing == TRUE &
 
 - demographics SUGGESTS THERE ARE REMAINING PROCESSING ISSUES - , na.rm = TRUE shouldn't be needed
 - anova study 7 shouldn't require drop_na, why are there NAs after exclusions?
-- counterconditioning analysis returns NaN for cohens d, no idea why. cant apply meta analyses until its fixed.
 - check if there are any issues with the data processing for the pass rate in studies 3 and 7 extinction testing - they're oddly low
 - study 7 participants could have extra training and testing data depending on performance. currently this is excluded, but it should be used. change data processing.
 - study 7 data processing needs attention for other unknown reasons: why are there multiple rows with the same unique id in the processed data? why do the Ns for the extinction and counterconditioning training and testing processed data equal the acquisition phase, when only one third of people should have done CC and extinction (each).
 - handle between study differences
-  - remove the for testing filter call in data processing!
   - training and testing percent passes etc need code added to handle CC
 - separate workflow for intentions (multinominal logistic)
 - sensitivity meta analyses for training and testing exclusions
