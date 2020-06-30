@@ -32,6 +32,7 @@ library(BayesFactor)
 library(metafor)
 library(ez)
 library(schoRsch)
+library(nnet)
 
 # Ensures that the processed data folder exists
 dir.create("models")
@@ -112,6 +113,61 @@ analysis_workflow <- function(data){
   return(results)
 }
 
+# multinominal analysis
+tidy_multinominal_analysis <- function(data) {
+  
+  require(nnet)
+  
+  # fit model
+  fit <- multinom(DV ~ IV, 
+                  data = data)
+  
+  # calculate p values
+  z <- summary(fit)$coefficients/summary(fit)$standard.errors
+  p <- (1 - pnorm(abs(z), 0, 1)) * 2
+  
+  pvalues <- p %>%
+    as.data.frame() %>%
+    rownames_to_column(var = "var") %>%
+    rename(p = "IVcondition_2") %>%
+    mutate(p = apa_p_value(p)) %>%
+    select(p)
+  
+  # calc odds ratios and CIs
+  coefficients <- as.data.frame(summary(fit)$coefficients) %>%
+    rownames_to_column(var = "var") %>%
+    rename(logOR = "IVcondition_2") %>%
+    select(var, logOR)
+  
+  se <- as.data.frame(summary(fit)$standard.errors) %>%
+    rownames_to_column(var = "var") %>%
+    rename(logOR_se = "IVcondition_2") %>%
+    select(logOR_se)
+  
+  # combine
+  results <- bind_cols(coefficients, se) %>%
+    mutate(OR = round(exp(logOR), 2),
+           OR_ci_lwr = round(exp(logOR - logOR_se*1.96), 2),
+           OR_ci_upr = round(exp(logOR + logOR_se*1.96), 2)) %>%
+    bind_cols(pvalues) %>%
+    rename(comparison_level = var)
+  
+  return(results)
+}
+
+# multinominal logistic regression workflow 
+logistic_analysis_workflow <- function(data){
+  require(nnet)
+  
+  results <- data %>%
+    group_by(experiment, DV_type) %>%
+    do(tidy_multinominal_analysis(data = .)) %>%
+    ungroup() %>%
+    mutate(reportable_result = paste0("OR = ", round(OR, 2), ", 95% CI [", round(OR_ci_lwr, 2), ", ", round(OR_ci_upr, 2), "], p ", apa_p_value(p)))
+  
+  return(results)
+}
+
 # add heterogeneity stats string for forest plot
 add_heterogeneity_metrics_to_forest <- function(fit) {
   bquote(paste("RE Model (", tau^2, " = ", .(formatC(round(fit$tau2, 1))), 
@@ -156,11 +212,60 @@ data_processed <-
                                is.na(completeness_counterconditioning_testing)) &
                             complete_iat_data == "complete" &
                             passed_iat_performance == TRUE,
-                          FALSE, TRUE))
+                          FALSE, TRUE)) %>%
+  
+  ## move this to data processing??
+  
+  mutate(
+    # recoding for the IR intentions data
+    behavioral_intentions_IR = case_when(
+      as.character(behavioral_intentions_IR) == "I would try Brand 2" ~ "brand_A",
+      as.character(behavioral_intentions_IR) == "I would try Brand 4" ~ "brand_B",
+      as.character(behavioral_intentions_IR) == "I would try Brands 2 and 4" ~ "both",
+      as.character(behavioral_intentions_IR) == "I would try neither Brand" ~ "neither",
+      as.character(behavioral_intentions_IR) == "I don't know" ~ "idontknow",
+      TRUE ~ as.character(behavioral_intentions_IR)
+    ),
+    # recoding for the OEC intentions data
+    behavioral_intentions_OEC = case_when(
+      as.character(behavioral_intentions_OEC) == "I would try Brand 1" ~ "brand_A",
+      as.character(behavioral_intentions_OEC) == "I would try Brand 3" ~ "brand_B",
+      as.character(behavioral_intentions_OEC) == "I would try Brands 1 and 3" ~ "both",
+      as.character(behavioral_intentions_OEC) == "I would try neither Brand" ~ "neither",
+      as.character(behavioral_intentions_OEC) == "I don't know" ~ "idontknow",
+      TRUE ~ as.character(behavioral_intentions_OEC)
+    ),
+    # reverse score
+    behavioral_intentions_IR_controlling_stimulus_identity = case_when(
+      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" & 
+        as.character(behavioral_intentions_IR) == "brand_A" ~ "brand_B",
+      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" & 
+        as.character(behavioral_intentions_IR) == "brand_A" ~ "brand_A",
+      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" & 
+        as.character(behavioral_intentions_IR) == "brand_B" ~ "brand_A",
+      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" & 
+        as.character(behavioral_intentions_IR) == "brand_B" ~ "brand_B",
+      TRUE ~ as.character(behavioral_intentions_IR)
+    ),
+    behavioral_intentions_OEC_controlling_stimulus_identity = case_when(
+      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" & 
+        as.character(behavioral_intentions_OEC) == "brand_A" ~ "brand_B",
+      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" & 
+        as.character(behavioral_intentions_OEC) == "brand_A" ~ "brand_A",
+      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" & 
+        as.character(behavioral_intentions_OEC) == "brand_B" ~ "brand_A",
+      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" & 
+        as.character(behavioral_intentions_OEC) == "brand_B" ~ "brand_B",
+      TRUE ~ as.character(behavioral_intentions_OEC)
+    )
+  ) 
+
+
 
 # exclusions
 data_processed_after_exclusions <- data_processed %>%
   filter(exclude == FALSE)
+
 
 ```
 
@@ -264,12 +369,14 @@ results_training_and_testing_percent_pass %>%
 
 ## Was there an IR effect?
 
+### IAT & self_reports
+
 - by DV
 - Differences between stimulus identity, using only the acquisition_only condition.
 
 ```{r}
 
-results_basic_effect <- data_processed_after_exclusions %>%
+results_basic_effect_iat_selfreports <- data_processed_after_exclusions %>%
   filter(experiment_condition == "acquisition_only") %>%
   rename(IV = stimulus_identity_condition) %>%
   gather(DV_type, DV, c(self_reported_OEC_effect, self_reported_IR_effect, IAT_D2)) %>%
@@ -277,7 +384,36 @@ results_basic_effect <- data_processed_after_exclusions %>%
   drop_na() %>%
   analysis_workflow(data = .)
 
-results_basic_effect %>%
+results_basic_effect_iat_selfreports %>%
+  select(experiment, DV_type, reportable_result) %>%
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+```
+
+### Behavioral intentions
+
+```{r}
+
+results_basic_effect_intentions <- data_processed_after_exclusions %>%
+  filter(experiment_condition == "acquisition_only") %>%
+  # recode the IV to work with the generic workflow
+  mutate(
+    stimulus_identity_condition = case_when(stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" ~ "condition_1",
+                                            stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" ~ "condition_2"),
+    stimulus_identity_condition = fct_relevel(stimulus_identity_condition, "condition_1", "condition_2")
+  ) %>%
+  # rename to work with the generic workflow
+  rename(IV = stimulus_identity_condition) %>%
+  gather(DV_type, DV, c(behavioral_intentions_IR, behavioral_intentions_OEC)) %>%
+  # set a reference category for the multinominal logistic regression
+  mutate(DV = relevel(as.factor(DV), ref = "brand_A")) %>%
+  select(experiment, DV_type, DV, IV) %>%
+  logistic_analysis_workflow()
+
+results_basic_effect_intentions %>%
+  # return results for only the comparison of interest
+  filter(comparison_level == "brand_B") %>%
   select(experiment, DV_type, reportable_result) %>%
   kable() %>% 
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
@@ -285,6 +421,8 @@ results_basic_effect %>%
 ```
 
 ## Was the IR moderated by extinction?
+
+### IAT & self_reports
 
 - by DV
 - Differences between experiment conditions, after reverse scoring for stimulus identity.
@@ -310,7 +448,41 @@ results_moderation_by_extinction %>%
 
 ```
 
+### Behavioral intentions
+
+```{r}
+
+results_moderation_by_extinction_intentions <- data_processed_after_exclusions %>%
+  filter(experiment_condition %in% c("acquisition_only", "acquisition_and_extinction") & 
+           experiment %in% c(1, 2, 3, 4, 7)) %>%
+  # recode the IV to work with the generic workflow
+  mutate(
+    experiment_condition = case_when(experiment_condition == "acquisition_only" ~ "condition_1",
+                                     experiment_condition == "acquisition_and_extinction" ~ "condition_2"),
+    experiment_condition = fct_relevel(experiment_condition, "condition_1", "condition_2")
+  ) %>%
+  # rename to work with the generic workflow
+  rename(IV = experiment_condition) %>%
+  gather(DV_type, DV, c(behavioral_intentions_IR_controlling_stimulus_identity,
+                        behavioral_intentions_OEC_controlling_stimulus_identity)) %>%
+  # set a reference category for the multinominal logistic regression
+  mutate(DV = relevel(as.factor(DV), ref = "brand_A")) %>%
+  select(experiment, DV_type, DV, IV) %>%
+  drop_na() %>%
+  logistic_analysis_workflow()
+
+results_moderation_by_extinction_intentions %>%
+  # return results for only the comparison of interest
+  filter(comparison_level == "brand_B") %>%
+  select(experiment, DV_type, reportable_result) %>%
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+```
+
 ## Was the IR moderated by counter conditioning?
+
+### IAT & self_reports
 
 - by DV
 - Differences between experiment conditions, after reverse scoring for stimulus identity.
@@ -330,6 +502,38 @@ results_moderation_by_counterconditioning <- data_processed_after_exclusions %>%
   analysis_workflow(data = .)
 
 results_moderation_by_counterconditioning %>%
+  select(experiment, DV_type, reportable_result) %>%
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+```
+
+### Behavioral intentions
+
+```{r}
+
+results_moderation_by_counterconditioning_intentions <- data_processed_after_exclusions %>%
+  filter(experiment_condition %in% c("acquisition_only", "acquisition_and_counterconditioning") & 
+           experiment %in% c(5, 6, 7)) %>%
+  # recode the IV to work with the generic workflow
+  mutate(
+    experiment_condition = case_when(experiment_condition == "acquisition_only" ~ "condition_1",
+                                     experiment_condition == "acquisition_and_counterconditioning" ~ "condition_2"),
+    experiment_condition = fct_relevel(experiment_condition, "condition_1", "condition_2")
+  ) %>%
+  # rename to work with the generic workflow
+  rename(IV = experiment_condition) %>%
+  gather(DV_type, DV, c(behavioral_intentions_IR_controlling_stimulus_identity, 
+                        behavioral_intentions_OEC_controlling_stimulus_identity)) %>%
+  # set a reference category for the multinominal logistic regression
+  mutate(DV = relevel(as.factor(DV), ref = "brand_A")) %>%
+  select(experiment, DV_type, DV, IV) %>%
+  drop_na() %>%
+  logistic_analysis_workflow()
+
+results_moderation_by_counterconditioning_intentions %>%
+  # return results for only the comparison of interest
+  filter(comparison_level == "brand_B") %>%
   select(experiment, DV_type, reportable_result) %>%
   kable() %>% 
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
@@ -404,15 +608,17 @@ results_study_7 %>%
 
 ## Basic effect
 
+### IAT & self_reports
+
 ```{r}
 
-results_for_meta_basic_effect <- results_basic_effect %>%
+results_for_meta_basic_effect_iat_selfreports <- results_basic_effect_iat_selfreports %>%
   rename(yi = cohens_d) %>%
   mutate(sei = (cohens_d_ci_upper - cohens_d_ci_lower)/(2*1.96)) %>%
   select(experiment, DV_type, yi, sei)
 
 # iat
-fit_basic_effect_iat <- results_for_meta_basic_effect %>%
+fit_basic_effect_iat <- results_for_meta_basic_effect_iat_selfreports %>%
   filter(str_detect(DV_type, "IAT_D2")) %>%
   rma(yi   = yi,
       sei  = sei,
@@ -425,11 +631,11 @@ metafor::forest(fit_basic_effect_iat,
                 refline = 0,
                 xlim = c(-1.5, 4),
                 at = c(-0.5, 0, 0.5, 1.0, 1.5, 2.0, 2.5))
-text(-1.5, 9, "IAT", pos = 4)
+text(-1.5, 9, "IAT (IR)", pos = 4)
 text(4, 9, "d [95% CI]", pos = 2)
 
 # IR
-fit_basic_effect_ir <- results_for_meta_basic_effect %>%
+fit_basic_effect_ir <- results_for_meta_basic_effect_iat_selfreports %>%
   filter(str_detect(DV_type, "_IR_")) %>%
   rma(yi = yi,
       sei = sei,
@@ -442,11 +648,11 @@ metafor::forest(fit_basic_effect_ir,
                 refline = 0,
                 xlim = c(-1.5, 4),
                 at = c(-0.5, 0, 0.5, 1.0, 1.5, 2.0, 2.5))
-text(-1.5, 9, "IR", pos = 4)
+text(-1.5, 9, "Self-reported evaluations (IR)", pos = 4)
 text(4, 9, "d [95% CI]", pos = 2)
 
 # OEC
-fit_basic_effect_oec <- results_for_meta_basic_effect %>%
+fit_basic_effect_oec <- results_for_meta_basic_effect_iat_selfreports %>%
   filter(str_detect(DV_type, "_OEC_")) %>%
   rma(yi = yi,
       sei = sei,
@@ -459,7 +665,7 @@ metafor::forest(fit_basic_effect_oec,
                 refline = 0,
                 xlim = c(-1.5, 4),
                 at = c(-0.5, 0, 0.5, 1.0, 1.5, 2.0, 2.5))
-text(-1.5, 9, "OEC", pos = 4)
+text(-1.5, 9, "Self-reported evaluations (OEC)", pos = 4)
 text(4, 9, "d [95% CI]", pos = 2)
 
 # save model fits for making pdf plots for publication
@@ -469,7 +675,58 @@ write_rds(fit_basic_effect_oec, "models/fit_basic_effect_oec.rds")
 
 ```
 
+### Behavioral intentions
+
+```{r}
+
+results_for_meta_basic_effect_intentions <- results_basic_effect_intentions %>%
+  # return results for only the comparison of interest
+  filter(comparison_level == "brand_B") %>%
+  rename(yi = logOR, 
+         sei = logOR_se) %>%
+  select(experiment, DV_type, yi, sei)
+
+# ir
+fit_basic_effect_intentions_ir <- results_for_meta_basic_effect_intentions %>%
+  filter(str_detect(DV_type, "behavioral_intentions_IR")) %>%
+  rma(yi   = yi,
+      sei  = sei,
+      data = .,
+      slab = experiment)
+
+metafor::forest(fit_basic_effect_intentions_ir,
+                #transf = exp,
+                xlab = "OR",
+                addcred = TRUE,
+                refline = 1)
+                # xlim = c(-1.5, 4),
+                # at = c(-0.5, 0, 0.5, 1.0, 1.5, 2.0, 2.5))
+# text(-1.5, 9, "Behavioral intentions (IR)", pos = 4)
+# text(4, 9, "OR [95% CI]", pos = 2)
+
+# oec
+fit_basic_effect_intentions_oec <- results_for_meta_basic_effect_intentions %>%
+  filter(str_detect(DV_type, "behavioral_intentions_OEC")) %>%
+  rma(yi   = yi,
+      sei  = sei,
+      data = .,
+      slab = experiment)
+
+metafor::forest(fit_basic_effect_intentions_oec,
+                #transf = exp,
+                xlab = "OR",
+                addcred = TRUE,
+                refline = 1)
+                # xlim = c(-1.5, 4),
+                # at = c(-0.5, 0, 0.5, 1.0, 1.5, 2.0, 2.5))
+# text(-1.5, 9, "Behavioral intentions (OEC)", pos = 4)
+# text(4, 9, "OR [95% CI]", pos = 2)
+
+```
+
 ## Moderation by extinction
+
+### IAT & self_reports
 
 ```{r}
 
@@ -492,7 +749,7 @@ metafor::forest(fit_moderation_extinction_iat,
                 refline = 0,
                 xlim = c(-2.25, 2.25),
                 at = c(-1.5, -1.0, -0.5, 0, 0.5, 1.0))
-text(-2.25, 7, "IAT", pos = 4)
+text(-2.25, 7, "IAT (IR)", pos = 4)
 text(2.25, 7, "d [95% CI]", pos = 2)
 
 # IR
@@ -509,7 +766,7 @@ metafor::forest(fit_moderation_extinction_ir,
                 refline = 0,
                 xlim = c(-2.25, 2.25),
                 at = c(-1.5, -1.0, -0.5, 0, 0.5, 1.0))
-text(-2.25, 7, "IR", pos = 4)
+text(-2.25, 7, "Self-reported evaluations (IR)", pos = 4)
 text(2.25, 7, "d [95% CI]", pos = 2)
 
 # OEC
@@ -526,7 +783,7 @@ metafor::forest(fit_moderation_extinction_oec,
                 refline = 0,
                 xlim = c(-2.25, 2.25),
                 at = c(-1.5, -1.0, -0.5, 0, 0.5, 1.0))
-text(-2.25, 7, "OEC", pos = 4)
+text(-2.25, 7, "Self-reported evaluations (OEC)", pos = 4)
 text(2.25, 7, "d [95% CI]", pos = 2)
 
 # save model fits for making pdf plots for publication
@@ -536,7 +793,58 @@ write_rds(fit_moderation_extinction_oec, "models/fit_moderation_extinction_oec.r
 
 ```
 
+### Behavioral intentions
+
+```{r}
+
+results_for_meta_extinction_intentions <- results_moderation_by_extinction_intentions %>%
+  # return results for only the comparison of interest
+  filter(comparison_level == "brand_B") %>%
+  rename(yi = logOR, 
+         sei = logOR_se) %>%
+  select(experiment, DV_type, yi, sei)
+
+# ir
+fit_moderation_extinction_ir <- results_for_meta_extinction_intentions %>%
+  filter(str_detect(DV_type, "behavioral_intentions_IR")) %>%
+  rma(yi   = yi,
+      sei  = sei,
+      data = .,
+      slab = experiment)
+
+metafor::forest(fit_moderation_extinction_ir,
+                transf = exp,
+                xlab = "OR",
+                addcred = TRUE,
+                refline = 1)
+                # xlim = c(-1.5, 4),
+                # at = c(-0.5, 0, 0.5, 1.0, 1.5, 2.0, 2.5))
+# text(-1.5, 9, "Behavioral intentions (IR)", pos = 4)
+# text(4, 9, "OR [95% CI]", pos = 2)
+
+# oec
+fit_moderation_extinction_oec <- results_for_meta_extinction_intentions %>%
+  filter(str_detect(DV_type, "behavioral_intentions_OEC")) %>%
+  rma(yi   = yi,
+      sei  = sei,
+      data = .,
+      slab = experiment)
+
+metafor::forest(fit_moderation_extinction_oec,
+                transf = exp,
+                xlab = "OR",
+                addcred = TRUE,
+                refline = 1)
+                # xlim = c(-1.5, 4),
+                # at = c(-0.5, 0, 0.5, 1.0, 1.5, 2.0, 2.5))
+# text(-1.5, 9, "Behavioral intentions (OEC)", pos = 4)
+# text(4, 9, "OR [95% CI]", pos = 2)
+
+```
+
 ## Moderation by counter conditioning
+
+### IAT & self_reports
 
 ```{r}
 
@@ -559,7 +867,7 @@ metafor::forest(fit_moderation_counterconditioning_iat,
                 refline = 0,
                 xlim = c(-3.2, 3.8),
                 at = c(-2.0, -1.0, 0, 1.0, 2.0))
-text(-3.2, 5, "IAT", pos = 4)
+text(-3.2, 5, "IAT (IR)", pos = 4)
 text(3.8, 5, "d [95% CI]", pos = 2)
 
 # IR
@@ -576,7 +884,7 @@ metafor::forest(fit_moderation_counterconditioning_ir,
                 refline = 0,
                 xlim = c(-3.2, 3.8),
                 at = c(-2.0, -1.0, 0, 1.0, 2.0))
-text(-3.2, 5, "IR", pos = 4)
+text(-3.2, 5, "Self-reported evaluations (IR)", pos = 4)
 text(3.8, 5, "d [95% CI]", pos = 2)
 
 # OEC
@@ -593,13 +901,311 @@ metafor::forest(fit_moderation_counterconditioning_oec,
                 refline = 0,
                 xlim = c(-3.2, 3.8),
                 at = c(-2.0, -1.0, 0, 1.0, 2.0))
-text(-3.2, 5, "OEC", pos = 4)
+text(-3.2, 5, "Self-reported evaluations (OEC)", pos = 4)
 text(3.8, 5, "d [95% CI]", pos = 2)
 
 # save model fits for making pdf plots for publication
 write_rds(fit_moderation_counterconditioning_iat, "models/fit_moderation_counterconditioning_iat.rds")
 write_rds(fit_moderation_counterconditioning_ir, "models/fit_moderation_counterconditioning_ir.rds")
 write_rds(fit_moderation_counterconditioning_oec, "models/fit_moderation_counterconditioning_oec.rds")
+
+```
+
+### Behavioral intentions
+
+```{r}
+
+results_for_meta_counterconditioning_intentions <- results_moderation_by_counterconditioning_intentions %>%
+  # return results for only the comparison of interest
+  filter(comparison_level == "brand_B") %>%
+  rename(yi = logOR, 
+         sei = logOR_se) %>%
+  select(experiment, DV_type, yi, sei)
+
+# ir
+fit_moderation_counterconditioning_ir <- results_for_meta_counterconditioning_intentions %>%
+  filter(str_detect(DV_type, "behavioral_intentions_IR")) %>%
+  rma(yi   = yi,
+      sei  = sei,
+      data = .,
+      slab = experiment)
+
+metafor::forest(fit_moderation_counterconditioning_ir,
+                transf = exp,
+                xlab = "OR",
+                addcred = TRUE,
+                refline = 1)
+                # xlim = c(-1.5, 4),
+                # at = c(-0.5, 0, 0.5, 1.0, 1.5, 2.0, 2.5))
+# text(-1.5, 9, "Behavioral intentions (IR)", pos = 4)
+# text(4, 9, "OR [95% CI]", pos = 2)
+
+# oec
+fit_moderation_counterconditioning_oec <- results_for_meta_counterconditioning_intentions %>%
+  filter(str_detect(DV_type, "behavioral_intentions_OEC")) %>%
+  rma(yi   = yi,
+      sei  = sei,
+      data = .,
+      slab = experiment)
+
+metafor::forest(fit_moderation_counterconditioning_oec,
+                transf = exp,
+                xlab = "OR",
+                addcred = TRUE,
+                refline = 1)
+                # xlim = c(-1.5, 4),
+                # at = c(-0.5, 0, 0.5, 1.0, 1.5, 2.0, 2.5))
+# text(-1.5, 9, "Behavioral intentions (OEC)", pos = 4)
+# text(4, 9, "OR [95% CI]", pos = 2)
+
+```
+
+## alternative to multinominal
+
+instead of multinomial logistics, which dont seem to be working right now, we could just pull out the brand a and b responses and calculate odds ratios? 
+
+### IR basic effect
+
+```{r}
+
+data_processed_after_exclusions %>%
+  filter(experiment_condition == c("acquisition_only")) %>% 
+  count(experiment, stimulus_identity_condition, behavioral_intentions_IR) %>%
+  spread(behavioral_intentions_IR, n)
+
+```
+
+```{r}
+
+# p values by experiment
+
+library(epitools)
+
+reshaped <- data_processed_after_exclusions %>%
+  filter(experiment_condition == c("acquisition_only") & 
+           behavioral_intentions_IR %in% c("brand_A", "brand_B")) %>% 
+  count(experiment, stimulus_identity_condition, behavioral_intentions_IR) %>%
+  spread(behavioral_intentions_IR, n) %>%
+  # Haldane-Anscombe correction
+  group_by(experiment) %>%
+  mutate(count_zero = as.logical(max(c(is.na(brand_A), is.na(brand_B))))) %>%
+  ungroup() %>%
+  mutate(brand_A = ifelse(count_zero, brand_A+0.5, brand_A),
+         brand_A = ifelse(is.na(brand_A), 0.5, brand_A),
+         brand_B = ifelse(count_zero, brand_B+0.5, brand_B),
+         brand_B = ifelse(is.na(brand_B), 0.5, brand_B)) %>%
+  select(experiment, stimulus_identity_condition, brand_A, brand_B)
+
+# this could also be reshaped for meta anlaysis so that study 3 is included.
+
+
+  
+temp_study_1 <- reshaped %>%
+  filter(experiment == 3) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+temp_study_1$tab %>%
+  as.data.frame() %>%
+  drop_na() %>%
+  select(OR = oddsratio, 
+         OR_ci_lower = lower,
+         OR_ci_upper = upper,
+         p = p.value)
+
+```
+
+
+```{r}
+
+data_processed_after_exclusions %>%
+  filter(experiment_condition == c("acquisition_only")) %>% 
+  count(experiment, stimulus_identity_condition, behavioral_intentions_IR) %>%
+  spread(behavioral_intentions_IR, n)
+
+data_processed_after_exclusions %>%
+  filter(experiment_condition == c("acquisition_only")) %>% 
+  count(experiment, stimulus_identity_condition, behavioral_intentions_IR) %>%
+  spread(behavioral_intentions_IR, n) %>%
+  select(experiment, stimulus_identity_condition, brand_A, brand_B) %>%
+  mutate(stimulus_identity_condition = recode(stimulus_identity_condition, 
+                                              "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" = "condition_A",
+                                              "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" = "condition_B")) %>%
+  pivot_wider(names_from = stimulus_identity_condition, 
+              values_from = c(brand_A, brand_B)) %>%
+  escalc(measure = "OR",
+         ai = brand_A_condition_A,
+         bi = brand_A_condition_B,
+         ci = brand_B_condition_A,
+         di = brand_B_condition_B,
+         data = .) %>%
+  rma(yi   = yi,
+      vi   = vi,
+      data = .,
+      slab = experiment) %>%
+  forest(refline = 0)
+
+```
+
+### OEC basic effect
+
+```{r}
+
+data_processed_after_exclusions %>%
+  filter(experiment_condition == c("acquisition_only")) %>% 
+  count(experiment, stimulus_identity_condition, behavioral_intentions_OEC) %>%
+  spread(behavioral_intentions_OEC, n)
+
+data_processed_after_exclusions %>%
+  filter(experiment_condition == c("acquisition_only")) %>% 
+  count(experiment, stimulus_identity_condition, behavioral_intentions_OEC) %>%
+  spread(behavioral_intentions_OEC, n) %>%
+  select(experiment, stimulus_identity_condition, brand_A, brand_B) %>%
+  mutate(stimulus_identity_condition = recode(stimulus_identity_condition, 
+                                              "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" = "condition_A",
+                                              "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" = "condition_B")) %>%
+  pivot_wider(names_from = stimulus_identity_condition, 
+              values_from = c(brand_A, brand_B)) %>%
+  escalc(measure = "OR",
+         ai = brand_A_condition_A,
+         bi = brand_A_condition_B,
+         ci = brand_B_condition_A,
+         di = brand_B_condition_B,
+         data = .) %>%
+  rma(yi   = yi,
+      vi   = vi,
+      data = .,
+      slab = experiment) %>%
+  forest(refline = 0)
+
+```
+
+### IR moderation by extinction
+
+```{r}
+
+data_processed_after_exclusions %>%
+  filter(experiment %in% c(1, 2, 3, 4, 7) & 
+           experiment_condition %in% c("acquisition_only", "acquisition_and_extinction")) %>% 
+  count(experiment, experiment_condition, behavioral_intentions_IR_controlling_stimulus_identity) %>%
+  spread(behavioral_intentions_IR_controlling_stimulus_identity, n)
+
+data_processed_after_exclusions %>%
+  filter(experiment %in% c(1, 2, 3, 4, 7) & 
+           experiment_condition %in% c("acquisition_only", "acquisition_and_extinction")) %>% 
+  count(experiment, experiment_condition, behavioral_intentions_IR_controlling_stimulus_identity) %>%
+  spread(behavioral_intentions_IR_controlling_stimulus_identity, n) %>%
+  select(experiment, experiment_condition, brand_A, brand_B) %>%
+  pivot_wider(names_from = experiment_condition, 
+              values_from = c(brand_A, brand_B)) %>%
+  escalc(measure = "OR",
+         ai = brand_A_acquisition_and_extinction,
+         bi = brand_A_acquisition_only,
+         ci = brand_B_acquisition_and_extinction,
+         di = brand_B_acquisition_only,
+         data = .) %>%
+  rma(yi   = yi,
+      vi   = vi,
+      data = .,
+      slab = experiment) %>%
+  forest(refline = 0)
+
+```
+
+### OEC moderation by extinction
+
+```{r}
+
+data_processed_after_exclusions %>%
+  filter(experiment %in% c(1, 2, 3, 4, 7) & 
+           experiment_condition %in% c("acquisition_only", "acquisition_and_extinction")) %>% 
+  count(experiment, experiment_condition, behavioral_intentions_OEC_controlling_stimulus_identity) %>%
+  spread(behavioral_intentions_OEC_controlling_stimulus_identity, n)
+
+data_processed_after_exclusions %>%
+  filter(experiment %in% c(1, 2, 3, 4, 7) & 
+           experiment_condition %in% c("acquisition_only", "acquisition_and_extinction")) %>% 
+  count(experiment, experiment_condition, behavioral_intentions_OEC_controlling_stimulus_identity) %>%
+  spread(behavioral_intentions_OEC_controlling_stimulus_identity, n) %>%
+  select(experiment, experiment_condition, brand_A, brand_B) %>%
+  pivot_wider(names_from = experiment_condition, 
+              values_from = c(brand_A, brand_B)) %>%
+  escalc(measure = "OR",
+         ai = brand_A_acquisition_and_extinction,
+         bi = brand_A_acquisition_only,
+         ci = brand_B_acquisition_and_extinction,
+         di = brand_B_acquisition_only,
+         data = .) %>%
+  rma(yi   = yi,
+      vi   = vi,
+      data = .,
+      slab = experiment) %>%
+  forest(refline = 0)
+
+```
+
+### IR moderation by counterconditioning
+
+```{r}
+
+data_processed_after_exclusions %>%
+  filter(experiment %in% c(5, 6, 7) & 
+           experiment_condition %in% c("acquisition_only", "acquisition_and_counterconditioning")) %>% 
+  count(experiment, experiment_condition, behavioral_intentions_IR_controlling_stimulus_identity) %>%
+  spread(behavioral_intentions_IR_controlling_stimulus_identity, n)
+
+data_processed_after_exclusions %>%
+  filter(experiment %in% c(5, 6, 7) & 
+           experiment_condition %in% c("acquisition_only", "acquisition_and_counterconditioning")) %>% 
+  count(experiment, experiment_condition, behavioral_intentions_IR_controlling_stimulus_identity) %>%
+  spread(behavioral_intentions_IR_controlling_stimulus_identity, n) %>%
+  select(experiment, experiment_condition, brand_A, brand_B) %>%
+  pivot_wider(names_from = experiment_condition, 
+              values_from = c(brand_A, brand_B)) %>%
+  escalc(measure = "OR",
+         ai = brand_A_acquisition_and_counterconditioning,
+         bi = brand_A_acquisition_only,
+         ci = brand_B_acquisition_and_counterconditioning,
+         di = brand_B_acquisition_only,
+         data = .) %>%
+  rma(yi   = yi,
+      vi   = vi,
+      data = .,
+      slab = experiment) %>%
+  forest(refline = 0)
+
+```
+
+### OEC moderation by counterconditioning
+
+```{r}
+
+data_processed_after_exclusions %>%
+  filter(experiment %in% c(5, 6, 7) & 
+           experiment_condition %in% c("acquisition_only", "acquisition_and_counterconditioning")) %>% 
+  count(experiment, experiment_condition, behavioral_intentions_OEC_controlling_stimulus_identity) %>%
+  spread(behavioral_intentions_OEC_controlling_stimulus_identity, n)
+
+data_processed_after_exclusions %>%
+  filter(experiment %in% c(5, 6, 7) & 
+           experiment_condition %in% c("acquisition_only", "acquisition_and_counterconditioning")) %>% 
+  count(experiment, experiment_condition, behavioral_intentions_OEC_controlling_stimulus_identity) %>%
+  spread(behavioral_intentions_OEC_controlling_stimulus_identity, n) %>%
+  select(experiment, experiment_condition, brand_A, brand_B) %>%
+  pivot_wider(names_from = experiment_condition, 
+              values_from = c(brand_A, brand_B)) %>%
+  escalc(measure = "OR",
+         ai = brand_A_acquisition_and_counterconditioning,
+         bi = brand_A_acquisition_only,
+         ci = brand_B_acquisition_and_counterconditioning,
+         di = brand_B_acquisition_only,
+         data = .) %>%
+  rma(yi   = yi,
+      vi   = vi,
+      data = .,
+      slab = experiment) %>%
+  forest(refline = 0)
 
 ```
 
@@ -612,14 +1218,21 @@ passed_performance_criterion_acquisition_testing == TRUE &
 
 # to do
 
+## high priority
+
+- study 7 participants could have extra training and testing data depending on performance. currently this is excluded, but it should be used. change data processing.
+- check if there are any issues with the data processing for the pass rate in studies 3 and 7 extinction testing - they're oddly low
+- study 7 data processing needs attention for other unknown reasons: why are there multiple rows with the same unique id in the processed data? why do the Ns for the extinction and counterconditioning training and testing processed data equal the acquisition phase, when only one third of people should have done CC and extinction (each).
+- workflow for intentions (multinominal logistic)
+  - results look possibly off, check workflow. CIs are not congruent with p values
+
+## medium priority
+
+- in analyses of individual studies, write full results to disk in each case.
 - demographics SUGGESTS THERE ARE REMAINING PROCESSING ISSUES - , na.rm = TRUE shouldn't be needed
 - anova study 7 shouldn't require drop_na, why are there NAs after exclusions?
-- check if there are any issues with the data processing for the pass rate in studies 3 and 7 extinction testing - they're oddly low
-- study 7 participants could have extra training and testing data depending on performance. currently this is excluded, but it should be used. change data processing.
-- study 7 data processing needs attention for other unknown reasons: why are there multiple rows with the same unique id in the processed data? why do the Ns for the extinction and counterconditioning training and testing processed data equal the acquisition phase, when only one third of people should have done CC and extinction (each).
 - handle between study differences
   - training and testing percent passes etc need code added to handle CC
-- separate workflow for intentions (multinominal logistic)
 - sensitivity meta analyses for training and testing exclusions
 
 

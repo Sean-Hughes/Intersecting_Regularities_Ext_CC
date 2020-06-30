@@ -62,21 +62,15 @@ I'll leave it this way for the moment, but just FYI that there are differences i
 
 
 
-### analyses
+### analyses & meta analyes
 
-- in progress
-
-
-
-### meta-analyses
-
-currently work off of manually extracted effect sizes; rework to use actual data
+- in progress, to do in rmd
 
 
 
 ### plotting
 
-update/add
+add
 
 
 
