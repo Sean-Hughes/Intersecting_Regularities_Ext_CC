@@ -771,6 +771,52 @@ data_processed <- data_conditions %>%
       stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" ~ IAT_D2_controlling_stimulus_identity
     )
   ) %>%
+  
+    # recode and reverse score intentions
+  mutate(
+    # recoding for the IR intentions data
+    behavioral_intentions_IR = case_when(
+      as.character(behavioral_intentions_IR) == "I would try Brand 2" ~ "brand_A",
+      as.character(behavioral_intentions_IR) == "I would try Brand 4" ~ "brand_B",
+      as.character(behavioral_intentions_IR) == "I would try Brands 2 and 4" ~ "both",
+      as.character(behavioral_intentions_IR) == "I would try neither Brand" ~ "neither",
+      as.character(behavioral_intentions_IR) == "I don't know" ~ "idontknow",
+      TRUE ~ as.character(behavioral_intentions_IR)
+    ),
+    # recoding for the OEC intentions data
+    behavioral_intentions_OEC = case_when(
+      as.character(behavioral_intentions_OEC) == "I would try Brand 1" ~ "brand_A",
+      as.character(behavioral_intentions_OEC) == "I would try Brand 3" ~ "brand_B",
+      as.character(behavioral_intentions_OEC) == "I would try Brands 1 and 3" ~ "both",
+      as.character(behavioral_intentions_OEC) == "I would try neither Brand" ~ "neither",
+      as.character(behavioral_intentions_OEC) == "I don't know" ~ "idontknow",
+      TRUE ~ as.character(behavioral_intentions_OEC)
+    ),
+    # reverse score
+    behavioral_intentions_IR_controlling_stimulus_identity = case_when(
+      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" &
+        as.character(behavioral_intentions_IR) == "brand_A" ~ "brand_B",
+      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" &
+        as.character(behavioral_intentions_IR) == "brand_A" ~ "brand_A",
+      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" &
+        as.character(behavioral_intentions_IR) == "brand_B" ~ "brand_A",
+      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" &
+        as.character(behavioral_intentions_IR) == "brand_B" ~ "brand_B",
+      TRUE ~ as.character(behavioral_intentions_IR)
+    ),
+    behavioral_intentions_OEC_controlling_stimulus_identity = case_when(
+      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" &
+        as.character(behavioral_intentions_OEC) == "brand_A" ~ "brand_B",
+      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" &
+        as.character(behavioral_intentions_OEC) == "brand_A" ~ "brand_A",
+      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" &
+        as.character(behavioral_intentions_OEC) == "brand_B" ~ "brand_A",
+      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" &
+        as.character(behavioral_intentions_OEC) == "brand_B" ~ "brand_B",
+      TRUE ~ as.character(behavioral_intentions_OEC)
+    )
+  ) %>%
+  
   # make unique id
   mutate(experiment = current_experiment_number,
          unique_id = paste(experiment, subject, sep = "_")) %>%
@@ -802,7 +848,8 @@ data_processed <- data_conditions %>%
          self_reported_OEC_effect, self_reported_OEC_effect_controlling_stimulus_identity, 
          self_reported_IR_effect, self_reported_IR_effect_controlling_stimulus_identity, 
          IAT_D2, IAT_D2_controlling_stimulus_identity, 
-         behavioral_intentions_OEC, behavioral_intentions_IR,
+         behavioral_intentions_OEC, behavioral_intentions_OEC_controlling_stimulus_identity,
+         behavioral_intentions_IR, behavioral_intentions_IR_controlling_stimulus_identity,
          
          # exploratory measures
          task_order, 

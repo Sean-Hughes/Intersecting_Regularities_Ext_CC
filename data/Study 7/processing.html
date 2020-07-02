@@ -2612,53 +2612,100 @@ TRUE
 <span id="cb15-31"><a href="#cb15-31"></a>      stimulus_identity_condition <span class="op">==</span><span class="st"> &quot;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad&quot;</span> <span class="op">~</span><span class="st"> </span>IAT_D2_controlling_stimulus_identity</span>
 <span id="cb15-32"><a href="#cb15-32"></a>    )</span>
 <span id="cb15-33"><a href="#cb15-33"></a>  ) <span class="op">%&gt;%</span></span>
-<span id="cb15-34"><a href="#cb15-34"></a><span class="st">  </span><span class="co"># make unique id</span></span>
-<span id="cb15-35"><a href="#cb15-35"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">experiment =</span> current_experiment_number,</span>
-<span id="cb15-36"><a href="#cb15-36"></a>         <span class="dt">unique_id =</span> <span class="kw">paste</span>(experiment, subject, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb15-37"><a href="#cb15-37"></a><span class="st">  </span><span class="co"># select and reorder variables</span></span>
-<span id="cb15-38"><a href="#cb15-38"></a><span class="st">  </span><span class="kw">select</span>(experiment, </span>
-<span id="cb15-39"><a href="#cb15-39"></a>         unique_id, </span>
-<span id="cb15-40"><a href="#cb15-40"></a>         age, </span>
-<span id="cb15-41"><a href="#cb15-41"></a>         gender, </span>
-<span id="cb15-42"><a href="#cb15-42"></a>         </span>
-<span id="cb15-43"><a href="#cb15-43"></a>         <span class="co"># conditions</span></span>
-<span id="cb15-44"><a href="#cb15-44"></a>         stimulus_identity_condition, </span>
-<span id="cb15-45"><a href="#cb15-45"></a>         experiment_condition,</span>
-<span id="cb15-46"><a href="#cb15-46"></a>         completeness_acquisition_training, completeness_acquisition_testing, </span>
-<span id="cb15-47"><a href="#cb15-47"></a>         completeness_counterconditioning_training, completeness_counterconditioning_testing,</span>
-<span id="cb15-48"><a href="#cb15-48"></a>         completeness_extinction_training, completeness_extinction_testing,</span>
-<span id="cb15-49"><a href="#cb15-49"></a>         complete_iat_data, </span>
-<span id="cb15-50"><a href="#cb15-50"></a>         </span>
-<span id="cb15-51"><a href="#cb15-51"></a>         <span class="co"># training and testing</span></span>
-<span id="cb15-52"><a href="#cb15-52"></a>         mean_correct_acquisition_training, mean_correct_acquisition_testing, </span>
-<span id="cb15-53"><a href="#cb15-53"></a>         mean_correct_counterconditioning_training, mean_correct_counterconditioning_testing,</span>
-<span id="cb15-54"><a href="#cb15-54"></a>         mean_correct_extinction_training, mean_correct_extinction_testing, </span>
-<span id="cb15-55"><a href="#cb15-55"></a>         </span>
-<span id="cb15-56"><a href="#cb15-56"></a>         passed_performance_criterion_acquisition_training, passed_performance_criterion_acquisition_testing, </span>
-<span id="cb15-57"><a href="#cb15-57"></a>         passed_performance_criterion_counterconditioning_training, passed_performance_criterion_counterconditioning_testing,</span>
-<span id="cb15-58"><a href="#cb15-58"></a>         passed_performance_criterion_extinction_training, passed_performance_criterion_extinction_testing,</span>
-<span id="cb15-59"><a href="#cb15-59"></a>         passed_iat_performance,</span>
-<span id="cb15-60"><a href="#cb15-60"></a>         </span>
-<span id="cb15-61"><a href="#cb15-61"></a>         <span class="co"># DVs</span></span>
-<span id="cb15-62"><a href="#cb15-62"></a>         self_reported_OEC_effect, self_reported_OEC_effect_controlling_stimulus_identity, </span>
-<span id="cb15-63"><a href="#cb15-63"></a>         self_reported_IR_effect, self_reported_IR_effect_controlling_stimulus_identity, </span>
-<span id="cb15-64"><a href="#cb15-64"></a>         IAT_D2, IAT_D2_controlling_stimulus_identity, </span>
-<span id="cb15-65"><a href="#cb15-65"></a>         behavioral_intentions_OEC, behavioral_intentions_IR,</span>
-<span id="cb15-66"><a href="#cb15-66"></a>         </span>
-<span id="cb15-67"><a href="#cb15-67"></a>         <span class="co"># exploratory measures</span></span>
-<span id="cb15-68"><a href="#cb15-68"></a>         task_order, </span>
-<span id="cb15-69"><a href="#cb15-69"></a>         iat_block_order,</span>
-<span id="cb15-70"><a href="#cb15-70"></a>         complete_equivalence_data, passed_equivalence,</span>
-<span id="cb15-71"><a href="#cb15-71"></a>         demand_response, </span>
-<span id="cb15-72"><a href="#cb15-72"></a>         reactance_response_<span class="dv">1</span>, reactance_response_<span class="dv">2</span>, </span>
-<span id="cb15-73"><a href="#cb15-73"></a>         confidence_stim_<span class="dv">1</span>, confidence_stim_<span class="dv">2</span>, confidence_stim_<span class="dv">3</span>, confidence_stim_<span class="dv">4</span>)</span>
-<span id="cb15-74"><a href="#cb15-74"></a>         <span class="co">#believability_response_1, believability_response_2)  # not present in this study</span></span>
-<span id="cb15-75"><a href="#cb15-75"></a></span>
-<span id="cb15-76"><a href="#cb15-76"></a><span class="co"># Ensures that the processed data folder exists</span></span>
-<span id="cb15-77"><a href="#cb15-77"></a><span class="kw">dir.create</span>(<span class="st">&quot;processed&quot;</span>)</span>
-<span id="cb15-78"><a href="#cb15-78"></a></span>
-<span id="cb15-79"><a href="#cb15-79"></a><span class="co"># write to disk</span></span>
-<span id="cb15-80"><a href="#cb15-80"></a><span class="kw">write_csv</span>(data_processed, <span class="st">&quot;processed/data_processed.csv&quot;</span>)</span></code></pre></div>
+<span id="cb15-34"><a href="#cb15-34"></a><span class="st">  </span></span>
+<span id="cb15-35"><a href="#cb15-35"></a><span class="st">    </span><span class="co"># recode and reverse score intentions</span></span>
+<span id="cb15-36"><a href="#cb15-36"></a><span class="st">  </span><span class="kw">mutate</span>(</span>
+<span id="cb15-37"><a href="#cb15-37"></a>    <span class="co"># recoding for the IR intentions data</span></span>
+<span id="cb15-38"><a href="#cb15-38"></a>    <span class="dt">behavioral_intentions_IR =</span> <span class="kw">case_when</span>(</span>
+<span id="cb15-39"><a href="#cb15-39"></a>      <span class="kw">as.character</span>(behavioral_intentions_IR) <span class="op">==</span><span class="st"> &quot;I would try Brand 2&quot;</span> <span class="op">~</span><span class="st"> &quot;brand_A&quot;</span>,</span>
+<span id="cb15-40"><a href="#cb15-40"></a>      <span class="kw">as.character</span>(behavioral_intentions_IR) <span class="op">==</span><span class="st"> &quot;I would try Brand 4&quot;</span> <span class="op">~</span><span class="st"> &quot;brand_B&quot;</span>,</span>
+<span id="cb15-41"><a href="#cb15-41"></a>      <span class="kw">as.character</span>(behavioral_intentions_IR) <span class="op">==</span><span class="st"> &quot;I would try Brands 2 and 4&quot;</span> <span class="op">~</span><span class="st"> &quot;both&quot;</span>,</span>
+<span id="cb15-42"><a href="#cb15-42"></a>      <span class="kw">as.character</span>(behavioral_intentions_IR) <span class="op">==</span><span class="st"> &quot;I would try neither Brand&quot;</span> <span class="op">~</span><span class="st"> &quot;neither&quot;</span>,</span>
+<span id="cb15-43"><a href="#cb15-43"></a>      <span class="kw">as.character</span>(behavioral_intentions_IR) <span class="op">==</span><span class="st"> &quot;I don&#39;t know&quot;</span> <span class="op">~</span><span class="st"> &quot;idontknow&quot;</span>,</span>
+<span id="cb15-44"><a href="#cb15-44"></a>      <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> </span><span class="kw">as.character</span>(behavioral_intentions_IR)</span>
+<span id="cb15-45"><a href="#cb15-45"></a>    ),</span>
+<span id="cb15-46"><a href="#cb15-46"></a>    <span class="co"># recoding for the OEC intentions data</span></span>
+<span id="cb15-47"><a href="#cb15-47"></a>    <span class="dt">behavioral_intentions_OEC =</span> <span class="kw">case_when</span>(</span>
+<span id="cb15-48"><a href="#cb15-48"></a>      <span class="kw">as.character</span>(behavioral_intentions_OEC) <span class="op">==</span><span class="st"> &quot;I would try Brand 1&quot;</span> <span class="op">~</span><span class="st"> &quot;brand_A&quot;</span>,</span>
+<span id="cb15-49"><a href="#cb15-49"></a>      <span class="kw">as.character</span>(behavioral_intentions_OEC) <span class="op">==</span><span class="st"> &quot;I would try Brand 3&quot;</span> <span class="op">~</span><span class="st"> &quot;brand_B&quot;</span>,</span>
+<span id="cb15-50"><a href="#cb15-50"></a>      <span class="kw">as.character</span>(behavioral_intentions_OEC) <span class="op">==</span><span class="st"> &quot;I would try Brands 1 and 3&quot;</span> <span class="op">~</span><span class="st"> &quot;both&quot;</span>,</span>
+<span id="cb15-51"><a href="#cb15-51"></a>      <span class="kw">as.character</span>(behavioral_intentions_OEC) <span class="op">==</span><span class="st"> &quot;I would try neither Brand&quot;</span> <span class="op">~</span><span class="st"> &quot;neither&quot;</span>,</span>
+<span id="cb15-52"><a href="#cb15-52"></a>      <span class="kw">as.character</span>(behavioral_intentions_OEC) <span class="op">==</span><span class="st"> &quot;I don&#39;t know&quot;</span> <span class="op">~</span><span class="st"> &quot;idontknow&quot;</span>,</span>
+<span id="cb15-53"><a href="#cb15-53"></a>      <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> </span><span class="kw">as.character</span>(behavioral_intentions_OEC)</span>
+<span id="cb15-54"><a href="#cb15-54"></a>    ),</span>
+<span id="cb15-55"><a href="#cb15-55"></a>    <span class="co"># reverse score</span></span>
+<span id="cb15-56"><a href="#cb15-56"></a>    <span class="dt">behavioral_intentions_IR_controlling_stimulus_identity =</span> <span class="kw">case_when</span>(</span>
+<span id="cb15-57"><a href="#cb15-57"></a>      stimulus_identity_condition <span class="op">==</span><span class="st"> &quot;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good&quot;</span> <span class="op">&amp;</span></span>
+<span id="cb15-58"><a href="#cb15-58"></a><span class="st">        </span><span class="kw">as.character</span>(behavioral_intentions_IR) <span class="op">==</span><span class="st"> &quot;brand_A&quot;</span> <span class="op">~</span><span class="st"> &quot;brand_B&quot;</span>,</span>
+<span id="cb15-59"><a href="#cb15-59"></a>      stimulus_identity_condition <span class="op">==</span><span class="st"> &quot;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad&quot;</span> <span class="op">&amp;</span></span>
+<span id="cb15-60"><a href="#cb15-60"></a><span class="st">        </span><span class="kw">as.character</span>(behavioral_intentions_IR) <span class="op">==</span><span class="st"> &quot;brand_A&quot;</span> <span class="op">~</span><span class="st"> &quot;brand_A&quot;</span>,</span>
+<span id="cb15-61"><a href="#cb15-61"></a>      stimulus_identity_condition <span class="op">==</span><span class="st"> &quot;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good&quot;</span> <span class="op">&amp;</span></span>
+<span id="cb15-62"><a href="#cb15-62"></a><span class="st">        </span><span class="kw">as.character</span>(behavioral_intentions_IR) <span class="op">==</span><span class="st"> &quot;brand_B&quot;</span> <span class="op">~</span><span class="st"> &quot;brand_A&quot;</span>,</span>
+<span id="cb15-63"><a href="#cb15-63"></a>      stimulus_identity_condition <span class="op">==</span><span class="st"> &quot;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad&quot;</span> <span class="op">&amp;</span></span>
+<span id="cb15-64"><a href="#cb15-64"></a><span class="st">        </span><span class="kw">as.character</span>(behavioral_intentions_IR) <span class="op">==</span><span class="st"> &quot;brand_B&quot;</span> <span class="op">~</span><span class="st"> &quot;brand_B&quot;</span>,</span>
+<span id="cb15-65"><a href="#cb15-65"></a>      <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> </span><span class="kw">as.character</span>(behavioral_intentions_IR)</span>
+<span id="cb15-66"><a href="#cb15-66"></a>    ),</span>
+<span id="cb15-67"><a href="#cb15-67"></a>    <span class="dt">behavioral_intentions_OEC_controlling_stimulus_identity =</span> <span class="kw">case_when</span>(</span>
+<span id="cb15-68"><a href="#cb15-68"></a>      stimulus_identity_condition <span class="op">==</span><span class="st"> &quot;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good&quot;</span> <span class="op">&amp;</span></span>
+<span id="cb15-69"><a href="#cb15-69"></a><span class="st">        </span><span class="kw">as.character</span>(behavioral_intentions_OEC) <span class="op">==</span><span class="st"> &quot;brand_A&quot;</span> <span class="op">~</span><span class="st"> &quot;brand_B&quot;</span>,</span>
+<span id="cb15-70"><a href="#cb15-70"></a>      stimulus_identity_condition <span class="op">==</span><span class="st"> &quot;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad&quot;</span> <span class="op">&amp;</span></span>
+<span id="cb15-71"><a href="#cb15-71"></a><span class="st">        </span><span class="kw">as.character</span>(behavioral_intentions_OEC) <span class="op">==</span><span class="st"> &quot;brand_A&quot;</span> <span class="op">~</span><span class="st"> &quot;brand_A&quot;</span>,</span>
+<span id="cb15-72"><a href="#cb15-72"></a>      stimulus_identity_condition <span class="op">==</span><span class="st"> &quot;Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good&quot;</span> <span class="op">&amp;</span></span>
+<span id="cb15-73"><a href="#cb15-73"></a><span class="st">        </span><span class="kw">as.character</span>(behavioral_intentions_OEC) <span class="op">==</span><span class="st"> &quot;brand_B&quot;</span> <span class="op">~</span><span class="st"> &quot;brand_A&quot;</span>,</span>
+<span id="cb15-74"><a href="#cb15-74"></a>      stimulus_identity_condition <span class="op">==</span><span class="st"> &quot;Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad&quot;</span> <span class="op">&amp;</span></span>
+<span id="cb15-75"><a href="#cb15-75"></a><span class="st">        </span><span class="kw">as.character</span>(behavioral_intentions_OEC) <span class="op">==</span><span class="st"> &quot;brand_B&quot;</span> <span class="op">~</span><span class="st"> &quot;brand_B&quot;</span>,</span>
+<span id="cb15-76"><a href="#cb15-76"></a>      <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> </span><span class="kw">as.character</span>(behavioral_intentions_OEC)</span>
+<span id="cb15-77"><a href="#cb15-77"></a>    )</span>
+<span id="cb15-78"><a href="#cb15-78"></a>  ) <span class="op">%&gt;%</span></span>
+<span id="cb15-79"><a href="#cb15-79"></a><span class="st">  </span></span>
+<span id="cb15-80"><a href="#cb15-80"></a><span class="st">  </span><span class="co"># make unique id</span></span>
+<span id="cb15-81"><a href="#cb15-81"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">experiment =</span> current_experiment_number,</span>
+<span id="cb15-82"><a href="#cb15-82"></a>         <span class="dt">unique_id =</span> <span class="kw">paste</span>(experiment, subject, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb15-83"><a href="#cb15-83"></a><span class="st">  </span><span class="co"># select and reorder variables</span></span>
+<span id="cb15-84"><a href="#cb15-84"></a><span class="st">  </span><span class="kw">select</span>(experiment, </span>
+<span id="cb15-85"><a href="#cb15-85"></a>         unique_id, </span>
+<span id="cb15-86"><a href="#cb15-86"></a>         age, </span>
+<span id="cb15-87"><a href="#cb15-87"></a>         gender, </span>
+<span id="cb15-88"><a href="#cb15-88"></a>         </span>
+<span id="cb15-89"><a href="#cb15-89"></a>         <span class="co"># conditions</span></span>
+<span id="cb15-90"><a href="#cb15-90"></a>         stimulus_identity_condition, </span>
+<span id="cb15-91"><a href="#cb15-91"></a>         experiment_condition,</span>
+<span id="cb15-92"><a href="#cb15-92"></a>         completeness_acquisition_training, completeness_acquisition_testing, </span>
+<span id="cb15-93"><a href="#cb15-93"></a>         completeness_counterconditioning_training, completeness_counterconditioning_testing,</span>
+<span id="cb15-94"><a href="#cb15-94"></a>         completeness_extinction_training, completeness_extinction_testing,</span>
+<span id="cb15-95"><a href="#cb15-95"></a>         complete_iat_data, </span>
+<span id="cb15-96"><a href="#cb15-96"></a>         </span>
+<span id="cb15-97"><a href="#cb15-97"></a>         <span class="co"># training and testing</span></span>
+<span id="cb15-98"><a href="#cb15-98"></a>         mean_correct_acquisition_training, mean_correct_acquisition_testing, </span>
+<span id="cb15-99"><a href="#cb15-99"></a>         mean_correct_counterconditioning_training, mean_correct_counterconditioning_testing,</span>
+<span id="cb15-100"><a href="#cb15-100"></a>         mean_correct_extinction_training, mean_correct_extinction_testing, </span>
+<span id="cb15-101"><a href="#cb15-101"></a>         </span>
+<span id="cb15-102"><a href="#cb15-102"></a>         passed_performance_criterion_acquisition_training, passed_performance_criterion_acquisition_testing, </span>
+<span id="cb15-103"><a href="#cb15-103"></a>         passed_performance_criterion_counterconditioning_training, passed_performance_criterion_counterconditioning_testing,</span>
+<span id="cb15-104"><a href="#cb15-104"></a>         passed_performance_criterion_extinction_training, passed_performance_criterion_extinction_testing,</span>
+<span id="cb15-105"><a href="#cb15-105"></a>         passed_iat_performance,</span>
+<span id="cb15-106"><a href="#cb15-106"></a>         </span>
+<span id="cb15-107"><a href="#cb15-107"></a>         <span class="co"># DVs</span></span>
+<span id="cb15-108"><a href="#cb15-108"></a>         self_reported_OEC_effect, self_reported_OEC_effect_controlling_stimulus_identity, </span>
+<span id="cb15-109"><a href="#cb15-109"></a>         self_reported_IR_effect, self_reported_IR_effect_controlling_stimulus_identity, </span>
+<span id="cb15-110"><a href="#cb15-110"></a>         IAT_D2, IAT_D2_controlling_stimulus_identity, </span>
+<span id="cb15-111"><a href="#cb15-111"></a>         behavioral_intentions_OEC, behavioral_intentions_OEC_controlling_stimulus_identity,</span>
+<span id="cb15-112"><a href="#cb15-112"></a>         behavioral_intentions_IR, behavioral_intentions_IR_controlling_stimulus_identity,</span>
+<span id="cb15-113"><a href="#cb15-113"></a>         </span>
+<span id="cb15-114"><a href="#cb15-114"></a>         <span class="co"># exploratory measures</span></span>
+<span id="cb15-115"><a href="#cb15-115"></a>         task_order, </span>
+<span id="cb15-116"><a href="#cb15-116"></a>         iat_block_order,</span>
+<span id="cb15-117"><a href="#cb15-117"></a>         complete_equivalence_data, passed_equivalence,</span>
+<span id="cb15-118"><a href="#cb15-118"></a>         demand_response, </span>
+<span id="cb15-119"><a href="#cb15-119"></a>         reactance_response_<span class="dv">1</span>, reactance_response_<span class="dv">2</span>, </span>
+<span id="cb15-120"><a href="#cb15-120"></a>         confidence_stim_<span class="dv">1</span>, confidence_stim_<span class="dv">2</span>, confidence_stim_<span class="dv">3</span>, confidence_stim_<span class="dv">4</span>)</span>
+<span id="cb15-121"><a href="#cb15-121"></a>         <span class="co">#believability_response_1, believability_response_2)  # not present in this study</span></span>
+<span id="cb15-122"><a href="#cb15-122"></a></span>
+<span id="cb15-123"><a href="#cb15-123"></a><span class="co"># Ensures that the processed data folder exists</span></span>
+<span id="cb15-124"><a href="#cb15-124"></a><span class="kw">dir.create</span>(<span class="st">&quot;processed&quot;</span>)</span>
+<span id="cb15-125"><a href="#cb15-125"></a></span>
+<span id="cb15-126"><a href="#cb15-126"></a><span class="co"># write to disk</span></span>
+<span id="cb15-127"><a href="#cb15-127"></a><span class="kw">write_csv</span>(data_processed, <span class="st">&quot;processed/data_processed.csv&quot;</span>)</span></code></pre></div>
 </div>
 
 

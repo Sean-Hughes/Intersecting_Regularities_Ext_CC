@@ -168,54 +168,6 @@ data_processed <-
                           FALSE, TRUE),
          # if exclude variable is missing, then exclude
          exclude = ifelse(is.na(exclude), TRUE, exclude)) %>%
-
-  ## move this to data processing??
-
-  mutate(
-    # recoding for the IR intentions data
-    behavioral_intentions_IR = case_when(
-      as.character(behavioral_intentions_IR) == "I would try Brand 2" ~ "brand_A",
-      as.character(behavioral_intentions_IR) == "I would try Brand 4" ~ "brand_B",
-      as.character(behavioral_intentions_IR) == "I would try Brands 2 and 4" ~ "both",
-      as.character(behavioral_intentions_IR) == "I would try neither Brand" ~ "neither",
-      as.character(behavioral_intentions_IR) == "I don't know" ~ "idontknow",
-      TRUE ~ as.character(behavioral_intentions_IR)
-    ),
-    # recoding for the OEC intentions data
-    behavioral_intentions_OEC = case_when(
-      as.character(behavioral_intentions_OEC) == "I would try Brand 1" ~ "brand_A",
-      as.character(behavioral_intentions_OEC) == "I would try Brand 3" ~ "brand_B",
-      as.character(behavioral_intentions_OEC) == "I would try Brands 1 and 3" ~ "both",
-      as.character(behavioral_intentions_OEC) == "I would try neither Brand" ~ "neither",
-      as.character(behavioral_intentions_OEC) == "I don't know" ~ "idontknow",
-      TRUE ~ as.character(behavioral_intentions_OEC)
-    ),
-    # reverse score
-    behavioral_intentions_IR_controlling_stimulus_identity = case_when(
-      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" &
-        as.character(behavioral_intentions_IR) == "brand_A" ~ "brand_B",
-      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" &
-        as.character(behavioral_intentions_IR) == "brand_A" ~ "brand_A",
-      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" &
-        as.character(behavioral_intentions_IR) == "brand_B" ~ "brand_A",
-      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" &
-        as.character(behavioral_intentions_IR) == "brand_B" ~ "brand_B",
-      TRUE ~ as.character(behavioral_intentions_IR)
-    ),
-    behavioral_intentions_OEC_controlling_stimulus_identity = case_when(
-      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" &
-        as.character(behavioral_intentions_OEC) == "brand_A" ~ "brand_B",
-      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" &
-        as.character(behavioral_intentions_OEC) == "brand_A" ~ "brand_A",
-      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" &
-        as.character(behavioral_intentions_OEC) == "brand_B" ~ "brand_A",
-      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" &
-        as.character(behavioral_intentions_OEC) == "brand_B" ~ "brand_B",
-      TRUE ~ as.character(behavioral_intentions_OEC)
-    )
-  ) %>%
-
-
   # remove test sessions
   filter(age != "sean" & gender != "sean")
 
@@ -1752,7 +1704,6 @@ write_rds(fit_moderation_counterconditioning_ir_sensitivity, "models/fit_moderat
 
 # to do
 
-- move "  ## move this to data processing??" chunk to data processing
 - study 7 data processing 
   - duplicate unique_ids in processed data?
   <!-- x <- read_csv("../data/Study 7/processed/data_processed.csv") %>% -->
