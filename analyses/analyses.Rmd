@@ -37,6 +37,7 @@ library(epitools)
 
 # Ensures that the processed data folder exists
 dir.create("models")
+dir.create("results")
 
 # functions -----
 # round p value using apa format
@@ -330,6 +331,8 @@ results_basic_effect_iat_selfreports <- data_processed_after_exclusions %>%
   drop_na() %>%
   analysis_workflow(data = .)
 
+write_csv(results_basic_effect_iat_selfreports, "results/results_basic_effect_iat_selfreports.csv")
+
 results_basic_effect_iat_selfreports %>%
   select(experiment, DV_type, reportable_result) %>%
   kable() %>% 
@@ -436,6 +439,8 @@ results_basic_effect_intentions_ir <-
          OR_ci_lower = round(OR_ci_lower, 2),
          OR_ci_upper = round(OR_ci_upper, 2))
 
+write_csv(results_basic_effect_intentions_ir, "results/results_basic_effect_intentions_ir.csv")
+
 results_basic_effect_intentions_ir %>%
   kable() %>% 
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
@@ -462,6 +467,8 @@ results_moderation_by_extinction <- data_processed_after_exclusions %>%
   select(experiment, DV_type, DV, IV) %>%
   drop_na() %>%
   analysis_workflow(data = .)
+
+write_csv(results_moderation_by_extinction, "results/results_moderation_by_extinction.csv")
 
 results_moderation_by_extinction %>%
   select(experiment, DV_type, reportable_result) %>%
@@ -548,6 +555,8 @@ results_moderation_by_extinction_intentions_ir <-
          OR_ci_lower = round(OR_ci_lower, 2),
          OR_ci_upper = round(OR_ci_upper, 2))
 
+write_csv(results_moderation_by_extinction_intentions_ir, "results/results_moderation_by_extinction_intentions_ir.csv")
+
 results_moderation_by_extinction_intentions_ir %>%
   kable() %>% 
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
@@ -574,6 +583,8 @@ results_moderation_by_counterconditioning <- data_processed_after_exclusions %>%
   select(experiment, DV_type, DV, IV) %>%
   drop_na() %>%
   analysis_workflow(data = .)
+
+write_csv(results_moderation_by_counterconditioning, "results/results_moderation_by_counterconditioning.csv")
 
 results_moderation_by_counterconditioning %>%
   select(experiment, DV_type, reportable_result) %>%
@@ -639,6 +650,9 @@ results_moderation_by_counterconditioning_intentions_ir <-
   mutate(OR = round(OR, 2),
          OR_ci_lower = round(OR_ci_lower, 2),
          OR_ci_upper = round(OR_ci_upper, 2))
+
+write_csv(results_moderation_by_counterconditioning_intentions_ir,
+          "results/results_moderation_by_counterconditioning_intentions_ir.csv")
 
 results_moderation_by_counterconditioning_intentions_ir %>%
   kable() %>% 
@@ -807,6 +821,9 @@ metafor::forest(fit_basic_effect_intentions_ir,
 # text(-1.5, 9, "Behavioral intentions (IR)", pos = 4)
 # text(4, 9, "OR [95% CI]", pos = 2)
 
+# save model fits for making pdf plots for publication
+write_rds(fit_basic_effect_intentions_ir, "models/fit_basic_effect_intentions_ir.rds")
+
 ```
 
 ## Moderation by extinction
@@ -903,6 +920,9 @@ metafor::forest(fit_moderation_extinction_ir,
                 # at = c(-0.5, 0, 0.5, 1.0, 1.5, 2.0, 2.5))
 # text(-1.5, 9, "Behavioral intentions (IR)", pos = 4)
 # text(4, 9, "OR [95% CI]", pos = 2)
+
+# save model fits for making pdf plots for publication
+write_rds(fit_moderation_extinction_ir, "models/fit_moderation_extinction_ir.rds")
 
 ```
 
@@ -1001,11 +1021,14 @@ metafor::forest(fit_moderation_counterconditioning_ir,
 # text(-1.5, 9, "Behavioral intentions (IR)", pos = 4)
 # text(4, 9, "OR [95% CI]", pos = 2)
 
+# save model fits for making pdf plots for publication
+write_rds(fit_moderation_counterconditioning_ir, "models/fit_moderation_counterconditioning_ir.rds")
+
 ```
 
 # Sensitivity meta-analyses
 
-duplicate the above metas once finsihed, adding the following filters:
+duplicate the above metas once finished, adding the following filters:
 
 passed_performance_criterion_acquisition_training == TRUE &
 passed_performance_criterion_acquisition_testing == TRUE &
@@ -1020,7 +1043,6 @@ passed_performance_criterion_acquisition_testing == TRUE &
 
 ## medium priority
 
-- in analyses of individual studies, write full results to disk in each case.
 - demographics SUGGESTS THERE ARE REMAINING PROCESSING ISSUES - , na.rm = TRUE shouldn't be needed
 - anova study 7 shouldn't require drop_na, why are there NAs after exclusions?
 - handle between study differences
