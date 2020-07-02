@@ -150,6 +150,7 @@ data_processed <-
          stimulus_identity_condition = fct_relevel(stimulus_identity_condition,
                                                    "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad",
                                                    "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good")) %>%
+  # create compound exclusion variable
   mutate(exclude = ifelse(completeness_acquisition_training == "complete" &
                             completeness_acquisition_testing == "complete" &
                             (completeness_extinction_training == "complete" | 
@@ -162,7 +163,9 @@ data_processed <-
                                is.na(completeness_counterconditioning_testing)) &
                             complete_iat_data == "complete" &
                             passed_iat_performance == TRUE,
-                          FALSE, TRUE)) %>%
+                          FALSE, TRUE),
+         # if exclude variable is missing, then exclude
+         exclude = ifelse(is.na(exclude), TRUE, exclude)) %>%
   
   ## move this to data processing??
   
@@ -208,33 +211,42 @@ data_processed <-
         as.character(behavioral_intentions_OEC) == "brand_B" ~ "brand_B",
       TRUE ~ as.character(behavioral_intentions_OEC)
     )
-  ) 
-
-
+  ) %>%
+  
+  
+  # remove test sessions
+  filter(age != "sean" & gender != "sean")
 
 # exclusions
 data_processed_after_exclusions <- data_processed %>%
   filter(exclude == FALSE)
 
-
 ```
 
 # Demographics
-
-, na.rm = TRUE shouldn't be needed, check data processing
-
-why are there 49 participants in an unknown experiment?
 
 ```{r}
 
 data_processed %>%
   group_by(experiment) %>%
   summarize(n = n(),
-            age_mean = mean(age, na.rm = TRUE),
-            age_sd = mean(age, na.rm = TRUE),
-            excluded_n = sum(exclude, na.rm = TRUE),
-            excluded_percent = mean(exclude*100, na.rm = TRUE)) %>%
-  mutate_if(is.numeric, round, digits = 1)
+            age_mean = mean(age),
+            age_sd = mean(age),
+            excluded_n = sum(exclude),
+            excluded_percent = mean(exclude*100)) %>%
+  mutate_if(is.numeric, round, digits = 1) %>%
+  kable(align = "c") %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE) 
+
+data_processed %>%
+  mutate(gender = str_remove_all(gender, "[0-9]"),
+         gender = str_remove_all(gender, "-"),
+         gender = ifelse(gender == "", NA, tolower(gender))) %>%
+  count(experiment, gender) %>%
+  spread(gender, n) %>%
+  rename(female = f, male = m, missing = "<NA>") %>%
+  kable(knitr.kable.NA = "/", align = "c") %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE) 
 
 ```
 
@@ -697,8 +709,6 @@ results_moderation_by_counterconditioning_intentions_ir %>%
 
 ## Study 7 ANOVA
 
-drop_na SHOULDN'T BE NEEDED ??
-
 ```{r}
 
 data_study_7 <- data_processed_after_exclusions %>%
@@ -854,7 +864,7 @@ metafor::forest(fit_basic_effect_intentions_ir,
                 xlim = c(-5, 12),
                 at = c(-2, 0, 2, 4, 6, 8))
 text(-5, 9, "IR effect (behavioral intentions)", pos = 4)
-text(12, 9, "OR [95% CI]", pos = 2)
+text(12, 9, "Log OR [95% CI]", pos = 2)
 
 # save model fits for making pdf plots for publication
 write_rds(fit_basic_effect_intentions_ir, "models/fit_basic_effect_intentions_ir.rds")
@@ -954,7 +964,7 @@ metafor::forest(fit_moderation_extinction_ir,
                 xlim = c(-5, 12),
                 at = c(-2, 0, 2, 4, 6, 8))
 text(-5, 7, "Moderation of IR by extinction (behavioral intentions)", pos = 4)
-text(12, 7, "OR [95% CI]", pos = 2)
+text(12, 7, "Log OR [95% CI]", pos = 2)
 
 # save model fits for making pdf plots for publication
 write_rds(fit_moderation_extinction_ir, "models/fit_moderation_extinction_ir.rds")
@@ -1054,37 +1064,589 @@ metafor::forest(fit_moderation_counterconditioning_ir,
                 xlim = c(-5, 12),
                 at = c(-2, 0, 2, 4, 6, 8))
 text(-5, 5, "Moderation of IR by counterconditioning (behavioral intentions)", pos = 4)
-text(12, 5, "OR [95% CI]", pos = 2)
+text(12, 5, "Log OR [95% CI]", pos = 2)
 
 # save model fits for making pdf plots for publication
 write_rds(fit_moderation_counterconditioning_ir, "models/fit_moderation_counterconditioning_ir.rds")
 
 ```
 
-# Sensitivity meta-analyses
+# Sensitivity meta-analyses 
 
-duplicate the above metas once finished, adding the following filters:
+Also excluded participants who failed to meet mastery criteria in training or testing phases. Question is considered only at the level of meta-analyses, as sample sizes likely to be under powered at study level.  
 
-passed_performance_criterion_acquisition_training == TRUE &
-passed_performance_criterion_acquisition_testing == TRUE &
+```{r}
+
+data_processed_after_exclusions_sensitivity <- data_processed_after_exclusions %>%
+  filter(passed_performance_criterion_acquisition_training == TRUE &
+           passed_performance_criterion_acquisition_testing == TRUE)
+
+```
+
+## Basic effect
+
+### IAT & self_reports
+
+```{r}
+
+results_basic_effect_iat_selfreports_sensitivity <- data_processed_after_exclusions_sensitivity %>%
+  filter(experiment_condition == "acquisition_only") %>%
+  rename(IV = stimulus_identity_condition) %>%
+  gather(DV_type, DV, c(self_reported_OEC_effect, self_reported_IR_effect, IAT_D2)) %>%
+  select(experiment, DV_type, DV, IV) %>%
+  drop_na() %>%
+  analysis_workflow(data = .)
+
+results_for_meta_basic_effect_iat_selfreports_sensitivity <- results_basic_effect_iat_selfreports_sensitivity %>%
+  rename(yi = cohens_d) %>%
+  mutate(sei = (cohens_d_ci_upper - cohens_d_ci_lower)/(2*1.96)) %>%
+  select(experiment, DV_type, yi, sei)
+
+# iat
+fit_basic_effect_iat_sensitivity <- results_for_meta_basic_effect_iat_selfreports_sensitivity %>%
+  filter(str_detect(DV_type, "IAT_D2")) %>%
+  rma(yi   = yi,
+      sei  = sei,
+      data = .,
+      slab = experiment)
+
+metafor::forest(fit_basic_effect_iat_sensitivity,
+                xlab = "Cohen's d",
+                addcred = TRUE,
+                refline = 0,
+                xlim = c(-1.5, 4),
+                at = c(-0.5, 0, 0.5, 1.0, 1.5, 2.0, 2.5))
+text(-1.5, 9, "IR effect (IAT)", pos = 4)
+text(4, 9, "d [95% CI]", pos = 2)
+
+# IR
+fit_basic_effect_ir_sensitivity <- results_for_meta_basic_effect_iat_selfreports_sensitivity %>%
+  filter(str_detect(DV_type, "_IR_")) %>%
+  rma(yi = yi,
+      sei = sei,
+      data = .,
+      slab = experiment)
+
+metafor::forest(fit_basic_effect_ir_sensitivity,
+                xlab = "Cohen's d",
+                addcred = TRUE,
+                refline = 0,
+                xlim = c(-1.5, 4),
+                at = c(-0.5, 0, 0.5, 1.0, 1.5, 2.0, 2.5))
+text(-1.5, 9, "IR effect (self-reported evaluations)", pos = 4)
+text(4, 9, "d [95% CI]", pos = 2)
+
+# OEC
+fit_basic_effect_oec_sensitivity <- results_for_meta_basic_effect_iat_selfreports_sensitivity %>%
+  filter(str_detect(DV_type, "_OEC_")) %>%
+  rma(yi = yi,
+      sei = sei,
+      data = .,
+      slab = experiment)
+
+metafor::forest(fit_basic_effect_oec_sensitivity,
+                xlab = "Cohen's d",
+                addcred = TRUE,
+                refline = 0,
+                xlim = c(-1.5, 4),
+                at = c(-0.5, 0, 0.5, 1.0, 1.5, 2.0, 2.5))
+text(-1.5, 9, "OEC effect (self-reported evaluations)", pos = 4)
+text(4, 9, "d [95% CI]", pos = 2)
+
+# save model fits for making pdf plots for publication
+write_rds(fit_basic_effect_iat_sensitivity, "models/fit_basic_effect_iat_sensitivity.rds")
+write_rds(fit_basic_effect_ir_sensitivity, "models/fit_basic_effect_ir_sensitivity.rds")
+write_rds(fit_basic_effect_oec_sensitivity, "models/fit_basic_effect_oec_sensitivity.rds")
+
+```
+
+### Behavioral intentions
+
+```{r}
+
+data_reshaped_intentions_acquisition_ir_sensitivity <- data_processed_after_exclusions_sensitivity %>%
+  filter(experiment_condition == c("acquisition_only") & 
+           behavioral_intentions_IR %in% c("brand_A", "brand_B")) %>% 
+  count(experiment, stimulus_identity_condition, behavioral_intentions_IR) %>%
+  spread(behavioral_intentions_IR, n) %>%
+  # Haldane-Anscombe correction
+  group_by(experiment) %>%
+  mutate(count_zero = as.logical(max(c(is.na(brand_A), is.na(brand_B))))) %>%
+  ungroup() %>%
+  mutate(brand_A = ifelse(count_zero, brand_A+1, brand_A),
+         brand_A = ifelse(is.na(brand_A), 1, brand_A),
+         brand_B = ifelse(count_zero, brand_B+1, brand_B),
+         brand_B = ifelse(is.na(brand_B), 1, brand_B)) %>%
+  select(experiment, stimulus_identity_condition, brand_A, brand_B)
+
+temp_study_1 <- data_reshaped_intentions_acquisition_ir_sensitivity %>%
+  filter(experiment == 1) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+temp_study_2 <- data_reshaped_intentions_acquisition_ir_sensitivity %>%
+  filter(experiment == 2) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+temp_study_3 <- data_reshaped_intentions_acquisition_ir_sensitivity %>%
+  filter(experiment == 3) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+temp_study_4 <- data_reshaped_intentions_acquisition_ir_sensitivity %>%
+  filter(experiment == 4) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+temp_study_5 <- data_reshaped_intentions_acquisition_ir_sensitivity %>%
+  filter(experiment == 5) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+temp_study_6 <- data_reshaped_intentions_acquisition_ir_sensitivity %>%
+  filter(experiment == 6) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+temp_study_7 <- data_reshaped_intentions_acquisition_ir_sensitivity %>%
+  filter(experiment == 7) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+results_basic_effect_intentions_ir_sensitivity <- 
+  bind_rows(
+    as.data.frame(temp_study_1$tab) %>%
+      drop_na() %>%
+      select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+      mutate(experiment = 1),
+    as.data.frame(temp_study_2$tab) %>%
+      drop_na() %>%
+      select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+      mutate(experiment = 2),
+    as.data.frame(temp_study_3$tab) %>%
+      drop_na() %>%
+      select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+      mutate(experiment = 3),
+    as.data.frame(temp_study_4$tab) %>%
+      drop_na() %>%
+      select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+      mutate(experiment = 4),
+    as.data.frame(temp_study_5$tab) %>%
+      drop_na() %>%
+      select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+      mutate(experiment = 5),
+    as.data.frame(temp_study_6$tab) %>%
+      drop_na() %>%
+      select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+      mutate(experiment = 6),
+    as.data.frame(temp_study_7$tab) %>%
+      drop_na() %>%
+      select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+      mutate(experiment = 7)
+  ) %>%
+  select(experiment, OR, OR_ci_lower, OR_ci_upper, p) %>%
+  mutate(OR = round(OR, 2),
+         OR_ci_lower = round(OR_ci_lower, 2),
+         OR_ci_upper = round(OR_ci_upper, 2))
+
+fit_basic_effect_intentions_ir_sensitivity <- data_reshaped_intentions_acquisition_ir_sensitivity %>%
+  pivot_wider(names_from = stimulus_identity_condition,
+              values_from = c(brand_A, brand_B)) %>%
+  escalc(measure = "OR",
+         ai = brand_A_Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad,
+         bi = brand_B_Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad,
+         ci = brand_A_Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good,
+         di = brand_B_Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good,
+         data = .) %>%
+  rma(yi   = yi,
+      vi   = vi,
+      data = .,
+      slab = experiment)
+
+metafor::forest(fit_basic_effect_intentions_ir_sensitivity,
+                addcred = TRUE,
+                refline = 0,
+                xlim = c(-5, 12),
+                at = c(-2, 0, 2, 4, 6, 8))
+text(-5, 9, "IR effect (behavioral intentions)", pos = 4)
+text(12, 9, "Log OR [95% CI]", pos = 2)
+
+# save model fits for making pdf plots for publication
+write_rds(fit_basic_effect_intentions_ir_sensitivity, "models/fit_basic_effect_intentions_ir_sensitivity.rds")
+
+```
+
+## Moderation by extinction
+
+### IAT & self_reports
+
+```{r}
+
+results_moderation_by_extinction_sensitivity <- data_processed_after_exclusions_sensitivity %>%
+  filter(experiment_condition %in% c("acquisition_only", "acquisition_and_extinction") & 
+           experiment %in% c(1, 2, 3, 4, 7)) %>%
+  rename(IV = experiment_condition) %>%
+  mutate(IV = fct_relevel(IV, "acquisition_and_extinction", "acquisition_only")) %>%
+  gather(DV_type, DV, c(self_reported_OEC_effect_controlling_stimulus_identity, 
+                        self_reported_IR_effect_controlling_stimulus_identity, 
+                        IAT_D2_controlling_stimulus_identity)) %>%
+  select(experiment, DV_type, DV, IV) %>%
+  drop_na() %>%
+  analysis_workflow(data = .)
+
+results_for_meta_extinction_sensitivity <- results_moderation_by_extinction_sensitivity %>%
+  rename(yi = cohens_d) %>%
+  mutate(sei = (cohens_d_ci_upper - cohens_d_ci_lower)/(2*1.96)) %>%
+  select(experiment, DV_type, yi, sei)
+
+# iat
+fit_moderation_extinction_iat_sensitivity <- results_for_meta_extinction_sensitivity %>%
+  filter(str_detect(DV_type, "IAT_D2")) %>%
+  rma(yi = yi,
+      sei = sei,
+      data = .,
+      slab = experiment)
+
+metafor::forest(fit_moderation_extinction_iat_sensitivity,
+                xlab = "Cohen's d",
+                addcred = TRUE,
+                refline = 0,
+                xlim = c(-2.25, 2.25),
+                at = c(-1.5, -1.0, -0.5, 0, 0.5, 1.0))
+text(-2.25, 7, "Moderation of IR by extinction (IAT)", pos = 4)
+text(2.25, 7, "d [95% CI]", pos = 2)
+
+# IR
+fit_moderation_extinction_ir_sensitivity <- results_for_meta_extinction_sensitivity %>%
+  filter(str_detect(DV_type, "_IR_")) %>%
+  rma(yi = yi,
+      sei = sei,
+      data = .,
+      slab = experiment)
+
+metafor::forest(fit_moderation_extinction_ir_sensitivity,
+                xlab = "Cohen's d",
+                addcred = TRUE,
+                refline = 0,
+                xlim = c(-2.25, 2.25),
+                at = c(-1.5, -1.0, -0.5, 0, 0.5, 1.0))
+text(-2.25, 7, "Moderation of IR by extinction (self-reported evaluations)", pos = 4)
+text(2.25, 7, "d [95% CI]", pos = 2)
+
+# OEC
+fit_moderation_extinction_oec_sensitivity <- results_for_meta_extinction_sensitivity %>%
+  filter(str_detect(DV_type, "_OEC_")) %>%
+  rma(yi = yi,
+      sei = sei,
+      data = .,
+      slab = experiment)
+
+metafor::forest(fit_moderation_extinction_oec_sensitivity,
+                xlab = "Cohen's d",
+                addcred = TRUE,
+                refline = 0,
+                xlim = c(-2.25, 2.25),
+                at = c(-1.5, -1.0, -0.5, 0, 0.5, 1.0))
+text(-2.25, 7, "Moderation of OEC by extinction (self-reported evaluations)", pos = 4)
+text(2.25, 7, "d [95% CI]", pos = 2)
+
+# save model fits for making pdf plots for publication
+write_rds(fit_moderation_extinction_iat_sensitivity, "models/fit_moderation_extinction_iat_sensitivity.rds")
+write_rds(fit_moderation_extinction_ir_sensitivity, "models/fit_moderation_extinction_ir_sensitivity.rds")
+write_rds(fit_moderation_extinction_oec_sensitivity, "models/fit_moderation_extinction_oec_sensitivity.rds")
+
+```
+
+### Behavioral intentions
+
+```{r}
+
+data_reshaped_intentions_moderation_by_extinction_ir_sensitivity <- data_processed_after_exclusions_sensitivity %>%
+  filter(experiment_condition %in% c("acquisition_only", "acquisition_and_extinction") & 
+           experiment %in% c(1, 2, 3, 4, 7) & 
+           behavioral_intentions_IR %in% c("brand_A", "brand_B")) %>% 
+  count(experiment, experiment_condition, behavioral_intentions_IR) %>%
+  spread(behavioral_intentions_IR, n) %>%
+  # Haldane-Anscombe correction
+  group_by(experiment) %>%
+  mutate(count_zero = as.logical(max(c(is.na(brand_A), is.na(brand_B))))) %>%
+  ungroup() %>%
+  mutate(brand_A = ifelse(count_zero, brand_A+1, brand_A),
+         brand_A = ifelse(is.na(brand_A), 1, brand_A),
+         brand_B = ifelse(count_zero, brand_B+1, brand_B),
+         brand_B = ifelse(is.na(brand_B), 1, brand_B)) %>%
+  select(experiment, experiment_condition, brand_A, brand_B)
+
+temp_study_1 <- data_reshaped_intentions_moderation_by_extinction_ir_sensitivity %>%
+  filter(experiment == 1) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+temp_study_2 <- data_reshaped_intentions_moderation_by_extinction_ir_sensitivity %>%
+  filter(experiment == 2) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+temp_study_3 <- data_reshaped_intentions_moderation_by_extinction_ir_sensitivity %>%
+  filter(experiment == 3) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+temp_study_4 <- data_reshaped_intentions_moderation_by_extinction_ir_sensitivity %>%
+  filter(experiment == 4) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+temp_study_7 <- data_reshaped_intentions_moderation_by_extinction_ir_sensitivity %>%
+  filter(experiment == 7) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+results_moderation_by_extinction_intentions_ir_sensitivity <- 
+  bind_rows(
+    as.data.frame(temp_study_1$tab) %>%
+      drop_na() %>%
+      select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+      mutate(experiment = 1),
+    as.data.frame(temp_study_2$tab) %>%
+      drop_na() %>%
+      select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+      mutate(experiment = 2),
+    as.data.frame(temp_study_3$tab) %>%
+      drop_na() %>%
+      select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+      mutate(experiment = 3),
+    as.data.frame(temp_study_4$tab) %>%
+      drop_na() %>%
+      select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+      mutate(experiment = 4),
+    as.data.frame(temp_study_7$tab) %>%
+      drop_na() %>%
+      select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+      mutate(experiment = 7)
+  ) %>%
+  select(experiment, OR, OR_ci_lower, OR_ci_upper, p) %>%
+  mutate(OR = round(OR, 2),
+         OR_ci_lower = round(OR_ci_lower, 2),
+         OR_ci_upper = round(OR_ci_upper, 2))
+
+fit_moderation_extinction_ir_sensitivity <- data_reshaped_intentions_moderation_by_extinction_ir_sensitivity %>%
+  pivot_wider(names_from = experiment_condition,
+              values_from = c(brand_A, brand_B)) %>%
+  escalc(measure = "OR",
+         ai = brand_A_acquisition_only,
+         bi = brand_B_acquisition_only,
+         ci = brand_A_acquisition_and_extinction,
+         di = brand_B_acquisition_and_extinction,
+         data = .) %>%
+  rma(yi   = yi,
+      vi   = vi,
+      data = .,
+      slab = experiment)
+
+metafor::forest(fit_moderation_extinction_ir_sensitivity,
+                addcred = TRUE,
+                refline = 0,
+                xlim = c(-5, 12),
+                at = c(-2, 0, 2, 4, 6, 8))
+text(-5, 7, "Moderation of IR by extinction (behavioral intentions)", pos = 4)
+text(12, 7, "Log OR [95% CI]", pos = 2)
+
+# save model fits for making pdf plots for publication
+write_rds(fit_moderation_extinction_ir_sensitivity, "models/fit_moderation_extinction_ir_sensitivity.rds")
+
+```
+
+## Moderation by counter conditioning
+
+### IAT & self_reports
+
+```{r}
+
+results_moderation_by_counterconditioning_sensitivity <- data_processed_after_exclusions_sensitivity %>%
+  filter(experiment_condition %in% c("acquisition_only", "acquisition_and_counterconditioning") & 
+           experiment %in% c(5, 6, 7)) %>%
+  rename(IV = experiment_condition) %>%
+  mutate(IV = fct_relevel(IV, "acquisition_and_counterconditioning", "acquisition_only")) %>%
+  gather(DV_type, DV, c(self_reported_OEC_effect_controlling_stimulus_identity, 
+                        self_reported_IR_effect_controlling_stimulus_identity, 
+                        IAT_D2_controlling_stimulus_identity)) %>%
+  select(experiment, DV_type, DV, IV) %>%
+  drop_na() %>%
+  analysis_workflow(data = .)
+
+results_for_meta_counterconditioning_sensitivity <- results_moderation_by_counterconditioning_sensitivity %>%
+  rename(yi = cohens_d) %>%
+  mutate(sei = (cohens_d_ci_upper - cohens_d_ci_lower)/(2*1.96)) %>%
+  select(experiment, DV_type, yi, sei)
+
+# iat
+fit_moderation_counterconditioning_iat_sensitivity <- results_for_meta_counterconditioning_sensitivity %>%
+  filter(str_detect(DV_type, "IAT_D2")) %>%
+  rma(yi = yi,
+      sei = sei,
+      data = .,
+      slab = experiment)
+
+metafor::forest(fit_moderation_counterconditioning_iat_sensitivity,
+                xlab = "Cohen's d",
+                addcred = TRUE,
+                refline = 0,
+                xlim = c(-3.2, 3.8),
+                at = c(-2.0, -1.0, 0, 1.0, 2.0))
+text(-3.2, 5, "Moderation of IR by counterconditioning (IAT)", pos = 4)
+text(3.8, 5, "d [95% CI]", pos = 2)
+
+# IR
+fit_moderation_counterconditioning_ir_sensitivity <- results_for_meta_counterconditioning_sensitivity %>%
+  filter(str_detect(DV_type, "_IR_")) %>%
+  rma(yi = yi,
+      sei = sei,
+      data = .,
+      slab = experiment)
+
+metafor::forest(fit_moderation_counterconditioning_ir_sensitivity,
+                xlab = "Cohen's d",
+                addcred = TRUE,
+                refline = 0,
+                xlim = c(-3.2, 3.8),
+                at = c(-2.0, -1.0, 0, 1.0, 2.0))
+text(-3.2, 5, "Moderation of IR by counterconditioning (self-reported evaluations)", pos = 4)
+text(3.8, 5, "d [95% CI]", pos = 2)
+
+# OEC
+fit_moderation_counterconditioning_oec_sensitivity <- results_for_meta_counterconditioning_sensitivity %>%
+  filter(str_detect(DV_type, "_OEC_")) %>%
+  rma(yi = yi,
+      sei = sei,
+      data = .,
+      slab = experiment)
+
+metafor::forest(fit_moderation_counterconditioning_oec_sensitivity,
+                xlab = "Cohen's d",
+                addcred = TRUE,
+                refline = 0,
+                xlim = c(-3.2, 3.8),
+                at = c(-2.0, -1.0, 0, 1.0, 2.0))
+text(-3.2, 5, "Moderation of OEC by counterconditioning (self-reported evaluations)", pos = 4)
+text(3.8, 5, "d [95% CI]", pos = 2)
+
+# save model fits for making pdf plots for publication
+write_rds(fit_moderation_counterconditioning_iat_sensitivity, "models/fit_moderation_counterconditioning_iat_sensitivity.rds")
+write_rds(fit_moderation_counterconditioning_ir_sensitivity, "models/fit_moderation_counterconditioning_ir_sensitivity.rds")
+write_rds(fit_moderation_counterconditioning_oec_sensitivity, "models/fit_moderation_counterconditioning_oec_sensitivity.rds")
+
+```
+
+### Behavioral intentions
+
+```{r}
+
+data_reshaped_intentions_moderation_by_counterconditioning_ir_sensitivity <- data_processed_after_exclusions_sensitivity %>%
+  filter(experiment_condition %in% c("acquisition_only", "acquisition_and_counterconditioning") & 
+           experiment %in% c(5, 6, 7) & 
+           behavioral_intentions_IR %in% c("brand_A", "brand_B")) %>% 
+  count(experiment, experiment_condition, behavioral_intentions_IR) %>%
+  spread(behavioral_intentions_IR, n) %>%
+  # Haldane-Anscombe correction
+  group_by(experiment) %>%
+  mutate(count_zero = as.logical(max(c(is.na(brand_A), is.na(brand_B))))) %>%
+  ungroup() %>%
+  mutate(brand_A = ifelse(count_zero, brand_A+1, brand_A),
+         brand_A = ifelse(is.na(brand_A), 1, brand_A),
+         brand_B = ifelse(count_zero, brand_B+1, brand_B),
+         brand_B = ifelse(is.na(brand_B), 1, brand_B)) %>%
+  select(experiment, experiment_condition, brand_A, brand_B)
+
+temp_study_5 <- data_reshaped_intentions_moderation_by_counterconditioning_ir_sensitivity %>%
+  filter(experiment == 5) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+temp_study_6 <- data_reshaped_intentions_moderation_by_counterconditioning_ir_sensitivity %>%
+  filter(experiment == 6) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+temp_study_7 <- data_reshaped_intentions_moderation_by_counterconditioning_ir_sensitivity %>%
+  filter(experiment == 7) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+results_moderation_by_counterconditioning_intentions_ir_sensitivity <- 
+  bind_rows(
+    as.data.frame(temp_study_5$tab) %>%
+      drop_na() %>%
+      select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+      mutate(experiment = 5),
+    as.data.frame(temp_study_6$tab) %>%
+      drop_na() %>%
+      select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+      mutate(experiment = 6),
+    as.data.frame(temp_study_7$tab) %>%
+      drop_na() %>%
+      select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+      mutate(experiment = 7)
+  ) %>%
+  select(experiment, OR, OR_ci_lower, OR_ci_upper, p) %>%
+  mutate(OR = round(OR, 2),
+         OR_ci_lower = round(OR_ci_lower, 2),
+         OR_ci_upper = round(OR_ci_upper, 2))
+
+fit_moderation_counterconditioning_ir_sensitivity <- data_reshaped_intentions_moderation_by_counterconditioning_ir_sensitivity %>%
+  pivot_wider(names_from = experiment_condition,
+              values_from = c(brand_A, brand_B)) %>%
+  escalc(measure = "OR",
+         ai = brand_A_acquisition_only,
+         bi = brand_B_acquisition_only,
+         ci = brand_A_acquisition_and_counterconditioning,
+         di = brand_B_acquisition_and_counterconditioning,
+         data = .) %>%
+  rma(yi   = yi,
+      vi   = vi,
+      data = .,
+      slab = experiment)
+
+metafor::forest(fit_moderation_counterconditioning_ir_sensitivity,
+                addcred = TRUE,
+                refline = 0,
+                xlim = c(-5, 12),
+                at = c(-2, 0, 2, 4, 6, 8))
+text(-5, 5, "Moderation of IR by counterconditioning (behavioral intentions)", pos = 4)
+text(12, 5, "Log OR [95% CI]", pos = 2)
+
+# save model fits for making pdf plots for publication
+write_rds(fit_moderation_counterconditioning_ir_sensitivity, "models/fit_moderation_counterconditioning_ir_sensitivity.rds")
+
+```
 
 # to do
 
-## high priority
-
+- move "  ## move this to data processing??" chunk to data processing
+- duplicate participant codes in study 7?
+<!-- x <- read_csv("../data/Study 7/processed/data_processed.csv") %>% -->
+<!--   arrange(unique_id) %>% -->
+<!--   filter(unique_id == lag(unique_id)) -->
 - study 7 participants could have extra training and testing data depending on performance. currently this is excluded, but it should be used. change data processing.
 - check if there are any issues with the data processing for the pass rate in studies 3 and 7 extinction testing - they're oddly low
 - study 7 data processing needs attention for other unknown reasons: why are there multiple rows with the same unique id in the processed data? why do the Ns for the extinction and counterconditioning training and testing processed data equal the acquisition phase, when only one third of people should have done CC and extinction (each).
-
-## medium priority
-
 - Moderation of OEC by extinction (self-reported evaluations) seems to go beyond limits of forest plot. when data processing is finalized, check that this and all plots' limits are appropriate and standardized. 
-- demographics SUGGESTS THERE ARE REMAINING PROCESSING ISSUES - , na.rm = TRUE shouldn't be needed
-- anova study 7 shouldn't require drop_na, why are there NAs after exclusions?
-- handle between study differences
-  - training and testing percent passes etc need code added to handle CC
-- sensitivity meta analyses for training and testing exclusions
-
 
 
 
