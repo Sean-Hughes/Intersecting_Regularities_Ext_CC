@@ -369,7 +369,9 @@ results_basic_effect_iat_selfreports %>%
 
 ### Behavioral intentions
 
-NB Haldane-Anscombe correction applied to studies where at least one cell contained zero/NA counts, in which case 1 was added to all cells. 
+Only "brand A" and "brand B" responses were considered (i.e., not both, neither, i dont know, or non responses). Counts of each response for each study and experiment condition were calculated, which were then used to calculate an odds ratio. P values were computed via fischer's exact test.  
+
+NB Haldane-Anscombe correction was applied to studies where at least one cell contained zero/NA counts, in which case 1 was added to all cells. 
 
 ```{r}
 
@@ -464,11 +466,13 @@ results_basic_effect_intentions_ir <-
   select(experiment, OR, OR_ci_lower, OR_ci_upper, p) %>%
   mutate(OR = round(OR, 2),
          OR_ci_lower = round(OR_ci_lower, 2),
-         OR_ci_upper = round(OR_ci_upper, 2))
+         OR_ci_upper = round(OR_ci_upper, 2),
+         reportable_result = paste0("OR = ", round(OR, 2), ", 95% CI [", round(OR_ci_lower, 2), ", ", round(OR_ci_upper, 2), "], p ", apa_p_value(p)))
 
 write_csv(results_basic_effect_intentions_ir, "results/results_basic_effect_intentions_ir.csv")
 
 results_basic_effect_intentions_ir %>%
+  select(experiment, reportable_result) %>%
   kable() %>% 
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 
@@ -580,11 +584,13 @@ results_moderation_by_extinction_intentions_ir <-
   select(experiment, OR, OR_ci_lower, OR_ci_upper, p) %>%
   mutate(OR = round(OR, 2),
          OR_ci_lower = round(OR_ci_lower, 2),
-         OR_ci_upper = round(OR_ci_upper, 2))
+         OR_ci_upper = round(OR_ci_upper, 2),
+         reportable_result = paste0("OR = ", round(OR, 2), ", 95% CI [", round(OR_ci_lower, 2), ", ", round(OR_ci_upper, 2), "], p ", apa_p_value(p)))
 
 write_csv(results_moderation_by_extinction_intentions_ir, "results/results_moderation_by_extinction_intentions_ir.csv")
 
 results_moderation_by_extinction_intentions_ir %>%
+  select(experiment, reportable_result) %>%
   kable() %>% 
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 
@@ -676,12 +682,14 @@ results_moderation_by_counterconditioning_intentions_ir <-
   select(experiment, OR, OR_ci_lower, OR_ci_upper, p) %>%
   mutate(OR = round(OR, 2),
          OR_ci_lower = round(OR_ci_lower, 2),
-         OR_ci_upper = round(OR_ci_upper, 2))
+         OR_ci_upper = round(OR_ci_upper, 2),
+         reportable_result = paste0("OR = ", round(OR, 2), ", 95% CI [", round(OR_ci_lower, 2), ", ", round(OR_ci_upper, 2), "], p ", apa_p_value(p)))
 
 write_csv(results_moderation_by_counterconditioning_intentions_ir,
           "results/results_moderation_by_counterconditioning_intentions_ir.csv")
 
 results_moderation_by_counterconditioning_intentions_ir %>%
+  select(experiment, reportable_result) %>%
   kable() %>% 
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 
@@ -1070,6 +1078,7 @@ passed_performance_criterion_acquisition_testing == TRUE &
 
 ## medium priority
 
+- Moderation of OEC by extinction (self-reported evaluations) seems to go beyond limits of forest plot. when data processing is finalized, check that this and all plots' limits are appropriate and standardized. 
 - demographics SUGGESTS THERE ARE REMAINING PROCESSING ISSUES - , na.rm = TRUE shouldn't be needed
 - anova study 7 shouldn't require drop_na, why are there NAs after exclusions?
 - handle between study differences
