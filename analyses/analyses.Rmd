@@ -3,12 +3,12 @@ title: "IR, extinction, & counter conditioning"
 subtitle: "Analyses & meta-analyses"
 author: "Ian Hussey & Sean Hughes"
 date: "`r format(Sys.time(), '%d %B %Y')`"
-output: 
+output:
   html_document:
     code_folding: hide
     highlight: haddock
     theme: flatly
-    toc: yes 
+    toc: yes
     toc_float: yes
 ---
 
@@ -54,20 +54,20 @@ apa_p_value <- function(p){
 # calculate cohens d and return its output in tidy format - a helper function for analysis_workflow
 tidy_cohens_d <- function(data){
   require(effsize)
-  
+
   fit <- effsize::cohen.d(DV ~ IV, data = data)
-  
+
   results <- tibble(cohens_d = fit$estimate,
                     cohens_d_ci_lower = fit$conf.int["lower"],
                     cohens_d_ci_upper = fit$conf.int["upper"])
-  
+
   return(results)
 }
 
 # calculate cohens d and return its output in tidy format - a helper function for analysis_workflow
 tidy_ttest_bf <- function(data){
   require(BayesFactor)
-  
+
   fit <- data %>%
     ttestBF(formula = DV ~ IV, data = .)
 
@@ -79,7 +79,7 @@ tidy_ttest_bf <- function(data){
 # full analysis workflow
 # NB workflow returns mean_reference and mean_comparison, where reference is the first factor level and comparison is the next highest level.
 analysis_workflow <- function(data){
-  
+
   # frequentist t test
   results_t_test <- data %>%
     group_by(experiment, DV_type) %>%
@@ -96,31 +96,31 @@ analysis_workflow <- function(data){
     group_by(experiment, DV_type) %>%
     do(tidy_cohens_d(data = .)) %>%
     ungroup()
-  
+
   # BF t test
   results_bf_t_test <- data %>%
     group_by(experiment, DV_type) %>%
     do(tidy_ttest_bf(data = .)) %>%
     ungroup()
-  
+
   # combine
-  results <- 
+  results <-
     full_join(results_t_test,
               results_cohens_d,
               by = c("experiment", "DV_type")) %>%
     full_join(results_bf_t_test,
               by = c("experiment", "DV_type")) %>%
-    select(experiment, DV_type, 
-           mean_reference, mean_comaprison, 
+    select(experiment, DV_type,
+           mean_reference, mean_comaprison,
            t, df, p, cohens_d, cohens_d_ci_lower, cohens_d_ci_upper, bf10) %>%
     mutate(reportable_result = paste0("Reference group M = ", round(mean_reference, 2), ", comparison group M = ", round(mean_comaprison, 2), ", t(", round(df, 2), ") = ", round(t, 2), ", p ", apa_p_value(p), ", d = ", round(cohens_d, 2), ", 95% CI [", round(cohens_d_ci_lower, 2), ", ", round(cohens_d_ci_upper, 2), "], BF10 = ", round(bf10, 1)))
-  
+
   return(results)
 }
 
 # add heterogeneity stats string for forest plot
 add_heterogeneity_metrics_to_forest <- function(fit) {
-  bquote(paste("RE Model (", tau^2, " = ", .(formatC(round(fit$tau2, 1))), 
+  bquote(paste("RE Model (", tau^2, " = ", .(formatC(round(fit$tau2, 1))),
                ", ", I^2, " = ", .(formatC(round(fit$I2, 1))),
                "%, ", H^2," = ", .(formatC(round(fit$H2, 1))), ")"))
 }
@@ -144,7 +144,7 @@ data_processed <-
   ) %>%
   # set factor levels for t test comparisons
   mutate(experiment_condition = fct_relevel(experiment_condition,
-                                            "acquisition_only", 
+                                            "acquisition_only",
                                             "acquisition_and_extinction",
                                             "acquisition_and_counterconditioning"),
          stimulus_identity_condition = fct_relevel(stimulus_identity_condition,
@@ -153,9 +153,9 @@ data_processed <-
   # create compound exclusion variable
   mutate(exclude = ifelse(completeness_acquisition_training == "complete" &
                             completeness_acquisition_testing == "complete" &
-                            (completeness_extinction_training == "complete" | 
+                            (completeness_extinction_training == "complete" |
                                is.na(completeness_extinction_training)) &
-                            (completeness_extinction_testing == "complete" | 
+                            (completeness_extinction_testing == "complete" |
                                is.na(completeness_extinction_testing)) &
                             (completeness_counterconditioning_training == "complete" |
                                is.na(completeness_counterconditioning_training)) &
@@ -166,9 +166,9 @@ data_processed <-
                           FALSE, TRUE),
          # if exclude variable is missing, then exclude
          exclude = ifelse(is.na(exclude), TRUE, exclude)) %>%
-  
+
   ## move this to data processing??
-  
+
   mutate(
     # recoding for the IR intentions data
     behavioral_intentions_IR = case_when(
@@ -190,30 +190,30 @@ data_processed <-
     ),
     # reverse score
     behavioral_intentions_IR_controlling_stimulus_identity = case_when(
-      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" & 
+      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" &
         as.character(behavioral_intentions_IR) == "brand_A" ~ "brand_B",
-      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" & 
+      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" &
         as.character(behavioral_intentions_IR) == "brand_A" ~ "brand_A",
-      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" & 
+      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" &
         as.character(behavioral_intentions_IR) == "brand_B" ~ "brand_A",
-      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" & 
+      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" &
         as.character(behavioral_intentions_IR) == "brand_B" ~ "brand_B",
       TRUE ~ as.character(behavioral_intentions_IR)
     ),
     behavioral_intentions_OEC_controlling_stimulus_identity = case_when(
-      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" & 
+      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" &
         as.character(behavioral_intentions_OEC) == "brand_A" ~ "brand_B",
-      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" & 
+      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" &
         as.character(behavioral_intentions_OEC) == "brand_A" ~ "brand_A",
-      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" & 
+      stimulus_identity_condition == "Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good" &
         as.character(behavioral_intentions_OEC) == "brand_B" ~ "brand_A",
-      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" & 
+      stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" &
         as.character(behavioral_intentions_OEC) == "brand_B" ~ "brand_B",
       TRUE ~ as.character(behavioral_intentions_OEC)
     )
   ) %>%
-  
-  
+
+
   # remove test sessions
   filter(age != "sean" & gender != "sean")
 
@@ -235,8 +235,8 @@ data_processed %>%
             excluded_n = sum(exclude),
             excluded_percent = mean(exclude*100)) %>%
   mutate_if(is.numeric, round, digits = 1) %>%
-  kable(align = "c") %>% 
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE) 
+  kable(align = "c") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 
 data_processed %>%
   mutate(gender = str_remove_all(gender, "[0-9]"),
@@ -245,8 +245,8 @@ data_processed %>%
   count(experiment, gender) %>%
   spread(gender, n) %>%
   rename(female = f, male = m, missing = "<NA>") %>%
-  kable(knitr.kable.NA = "/", align = "c") %>% 
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE) 
+  kable(knitr.kable.NA = "/", align = "c") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 
 ```
 
@@ -256,33 +256,33 @@ data_processed %>%
 
 ```{r fig.height=10, fig.width=7}
 
-results_training_and_testing_percent_accuracy <- data_processed_after_exclusions %>% 
-  select(unique_id, experiment, 
-         mean_correct_acquisition_training,         mean_correct_acquisition_testing, 
-         mean_correct_extinction_training,          mean_correct_extinction_testing, 
+results_training_and_testing_percent_accuracy <- data_processed_after_exclusions %>%
+  select(unique_id, experiment,
+         mean_correct_acquisition_training,         mean_correct_acquisition_testing,
+         mean_correct_extinction_training,          mean_correct_extinction_testing,
          mean_correct_counterconditioning_training, mean_correct_counterconditioning_testing) %>%
-  gather(phase, mean_correct, c(mean_correct_acquisition_training, mean_correct_acquisition_testing, 
-                                mean_correct_extinction_training, mean_correct_extinction_testing, 
+  gather(phase, mean_correct, c(mean_correct_acquisition_training, mean_correct_acquisition_testing,
+                                mean_correct_extinction_training, mean_correct_extinction_testing,
                                 mean_correct_counterconditioning_training, mean_correct_counterconditioning_testing)) %>%
   distinct(unique_id, phase, .keep_all = TRUE) %>%
   drop_na() %>%
-  mutate(phase = dplyr::recode(phase, 
+  mutate(phase = dplyr::recode(phase,
                                "mean_correct_acquisition_training" = "Acquisition\ntraining",
                                "mean_correct_acquisition_testing" = "Acquisition\ntest",
                                "mean_correct_extinction_training" = "Extinction\ntraining",
                                "mean_correct_extinction_testing" = "Extinction\ntesting",
                                "mean_correct_counterconditioning_training" = "Counterconditioning\ntraining",
                                "mean_correct_counterconditioning_testing" = "Counterconditioning\ntesting")) %>%
-  mutate(phase = as.factor(phase)) %>% 
+  mutate(phase = as.factor(phase)) %>%
   mutate(phase = fct_relevel(phase, "Acquisition\ntraining",
                                     "Acquisition\ntest",
                                     "Extinction\ntraining",
                                     "Extinction\ntesting",
                                     "Counterconditioning\ntraining",
                                     "Counterconditioning\ntesting")) %>%
-  
-  group_by(experiment, phase) %>% 
-  dplyr::summarise(mean_accuracy = mean(mean_correct*100, na.rm = TRUE), 
+
+  group_by(experiment, phase) %>%
+  dplyr::summarise(mean_accuracy = mean(mean_correct*100, na.rm = TRUE),
                    sd_accuracy = sd(mean_correct*100, na.rm = TRUE)) %>%
   ungroup()
 
@@ -291,14 +291,14 @@ results_training_and_testing_percent_accuracy %>%
   mutate(result = paste0(mean_accuracy, " (", sd_accuracy, ")")) %>%
   select(-mean_accuracy, -sd_accuracy) %>%
   spread(phase, result) %>%
-  kable(knitr.kable.NA = "/", align = "c") %>% 
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE) 
- 
-  
+  kable(knitr.kable.NA = "/", align = "c") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+
 # ggplot(results_training_and_testing_percent_accuracy, aes(x = phase, y = mean_accuracy)) +
-#   geom_bar(colour = "black", stat = "identity") + 
-#   geom_errorbar(aes(ymin = mean_accuracy - sd_accuracy, ymax = mean_accuracy + sd_accuracy), 
-#                 width = .2) + 
+#   geom_bar(colour = "black", stat = "identity") +
+#   geom_errorbar(aes(ymin = mean_accuracy - sd_accuracy, ymax = mean_accuracy + sd_accuracy),
+#                 width = .2) +
 #   theme_classic() +
 #   facet_wrap(~experiment, ncol = 1)
 
@@ -308,47 +308,47 @@ results_training_and_testing_percent_accuracy %>%
 
 ```{r fig.height=10, fig.width=7}
 
-results_training_and_testing_percent_pass <- data_processed_after_exclusions %>% 
-  select(unique_id, experiment, 
-         passed_performance_criterion_acquisition_training,         passed_performance_criterion_acquisition_testing, 
-         passed_performance_criterion_extinction_training,          passed_performance_criterion_extinction_testing, 
+results_training_and_testing_percent_pass <- data_processed_after_exclusions %>%
+  select(unique_id, experiment,
+         passed_performance_criterion_acquisition_training,         passed_performance_criterion_acquisition_testing,
+         passed_performance_criterion_extinction_training,          passed_performance_criterion_extinction_testing,
          passed_performance_criterion_counterconditioning_training, passed_performance_criterion_counterconditioning_testing) %>%
   gather(phase, passed_performance_criterion, c(passed_performance_criterion_acquisition_training,
-                                                passed_performance_criterion_acquisition_testing, 
+                                                passed_performance_criterion_acquisition_testing,
                                                 passed_performance_criterion_extinction_training,
-                                                passed_performance_criterion_extinction_testing, 
+                                                passed_performance_criterion_extinction_testing,
                                                 passed_performance_criterion_counterconditioning_training,
                                                 passed_performance_criterion_counterconditioning_testing)) %>%
   distinct(unique_id, phase, .keep_all = TRUE) %>%
   drop_na() %>%
-  mutate(phase = dplyr::recode(phase, 
+  mutate(phase = dplyr::recode(phase,
                             "passed_performance_criterion_acquisition_training" = "Acquisition\ntraining",
                             "passed_performance_criterion_acquisition_testing" = "Acquisition\ntest",
                             "passed_performance_criterion_extinction_training" = "Extinction\ntraining",
                             "passed_performance_criterion_extinction_testing" = "Extinction\ntesting",
                             "passed_performance_criterion_counterconditioning_training" = "Counterconditioning\ntraining",
                             "passed_performance_criterion_counterconditioning_testing" = "Counterconditioning\ntesting")) %>%
-  
-  mutate(phase = as.factor(phase)) %>% 
+
+  mutate(phase = as.factor(phase)) %>%
   mutate(phase = fct_relevel(phase, "Acquisition\ntraining",
                                     "Acquisition\ntest",
                                     "Extinction\ntraining",
                                     "Extinction\ntesting",
                                     "Counterconditioning\ntraining",
                                     "Counterconditioning\ntesting")) %>%
-  
-  
-  
-  group_by(experiment, phase) %>% 
+
+
+
+  group_by(experiment, phase) %>%
   dplyr::summarise(percent_passed = mean(passed_performance_criterion*100, na.rm = TRUE)) %>%
   ungroup()
 
 results_training_and_testing_percent_pass %>%
   mutate_if(is.numeric, round, digits = 0) %>%
   spread(phase, percent_passed) %>%
-  kable(knitr.kable.NA = "/", align = "c") %>% 
+  kable(knitr.kable.NA = "/", align = "c") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
-  
+
 ```
 
 # Analyses by study
@@ -374,22 +374,22 @@ write_csv(results_basic_effect_iat_selfreports, "results/results_basic_effect_ia
 
 results_basic_effect_iat_selfreports %>%
   select(experiment, DV_type, reportable_result) %>%
-  kable() %>% 
+  kable() %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 
 ```
 
 ### Behavioral intentions
 
-Only "brand A" and "brand B" responses were considered (i.e., not both, neither, i dont know, or non responses). Counts of each response for each study and experiment condition were calculated, which were then used to calculate an odds ratio. P values were computed via fischer's exact test.  
+Only "brand A" and "brand B" responses were considered (i.e., not both, neither, i dont know, or non responses). Counts of each response for each study and experiment condition were calculated, which were then used to calculate an odds ratio. P values were computed via fischer's exact test.
 
-NB Haldane-Anscombe correction was applied to studies where at least one cell contained zero/NA counts, in which case 1 was added to all cells. 
+NB Haldane-Anscombe correction was applied to studies where at least one cell contained zero/NA counts, in which case 1 was added to all cells.
 
 ```{r}
 
 data_reshaped_intentions_acquisition_ir <- data_processed_after_exclusions %>%
-  filter(experiment_condition == c("acquisition_only") & 
-           behavioral_intentions_IR %in% c("brand_A", "brand_B")) %>% 
+  filter(experiment_condition == c("acquisition_only") &
+           behavioral_intentions_IR %in% c("brand_A", "brand_B")) %>%
   count(experiment, stimulus_identity_condition, behavioral_intentions_IR) %>%
   spread(behavioral_intentions_IR, n) %>%
   # Haldane-Anscombe correction
@@ -444,7 +444,7 @@ temp_study_7 <- data_reshaped_intentions_acquisition_ir %>%
   as.matrix() %>%
   epitools::epitab(x = .)
 
-results_basic_effect_intentions_ir <- 
+results_basic_effect_intentions_ir <-
   bind_rows(
     as.data.frame(temp_study_1$tab) %>%
       drop_na() %>%
@@ -485,7 +485,7 @@ write_csv(results_basic_effect_intentions_ir, "results/results_basic_effect_inte
 
 results_basic_effect_intentions_ir %>%
   select(experiment, reportable_result) %>%
-  kable() %>% 
+  kable() %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 
 ```
@@ -500,12 +500,12 @@ results_basic_effect_intentions_ir %>%
 ```{r}
 
 results_moderation_by_extinction <- data_processed_after_exclusions %>%
-  filter(experiment_condition %in% c("acquisition_only", "acquisition_and_extinction") & 
+  filter(experiment_condition %in% c("acquisition_only", "acquisition_and_extinction") &
            experiment %in% c(1, 2, 3, 4, 7)) %>%
   rename(IV = experiment_condition) %>%
   mutate(IV = fct_relevel(IV, "acquisition_and_extinction", "acquisition_only")) %>%
-  gather(DV_type, DV, c(self_reported_OEC_effect_controlling_stimulus_identity, 
-                        self_reported_IR_effect_controlling_stimulus_identity, 
+  gather(DV_type, DV, c(self_reported_OEC_effect_controlling_stimulus_identity,
+                        self_reported_IR_effect_controlling_stimulus_identity,
                         IAT_D2_controlling_stimulus_identity)) %>%
   select(experiment, DV_type, DV, IV) %>%
   drop_na() %>%
@@ -515,7 +515,7 @@ write_csv(results_moderation_by_extinction, "results/results_moderation_by_extin
 
 results_moderation_by_extinction %>%
   select(experiment, DV_type, reportable_result) %>%
-  kable() %>% 
+  kable() %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 
 ```
@@ -525,9 +525,9 @@ results_moderation_by_extinction %>%
 ```{r}
 
 data_reshaped_intentions_moderation_by_extinction_ir <- data_processed_after_exclusions %>%
-  filter(experiment_condition %in% c("acquisition_only", "acquisition_and_extinction") & 
-           experiment %in% c(1, 2, 3, 4, 7) & 
-           behavioral_intentions_IR %in% c("brand_A", "brand_B")) %>% 
+  filter(experiment_condition %in% c("acquisition_only", "acquisition_and_extinction") &
+           experiment %in% c(1, 2, 3, 4, 7) &
+           behavioral_intentions_IR %in% c("brand_A", "brand_B")) %>%
   count(experiment, experiment_condition, behavioral_intentions_IR) %>%
   spread(behavioral_intentions_IR, n) %>%
   # Haldane-Anscombe correction
@@ -570,7 +570,7 @@ temp_study_7 <- data_reshaped_intentions_moderation_by_extinction_ir %>%
   as.matrix() %>%
   epitools::epitab(x = .)
 
-results_moderation_by_extinction_intentions_ir <- 
+results_moderation_by_extinction_intentions_ir <-
   bind_rows(
     as.data.frame(temp_study_1$tab) %>%
       drop_na() %>%
@@ -603,7 +603,7 @@ write_csv(results_moderation_by_extinction_intentions_ir, "results/results_moder
 
 results_moderation_by_extinction_intentions_ir %>%
   select(experiment, reportable_result) %>%
-  kable() %>% 
+  kable() %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 
 ```
@@ -618,12 +618,12 @@ results_moderation_by_extinction_intentions_ir %>%
 ```{r}
 
 results_moderation_by_counterconditioning <- data_processed_after_exclusions %>%
-  filter(experiment_condition %in% c("acquisition_only", "acquisition_and_counterconditioning") & 
+  filter(experiment_condition %in% c("acquisition_only", "acquisition_and_counterconditioning") &
            experiment %in% c(5, 6, 7)) %>%
   rename(IV = experiment_condition) %>%
   mutate(IV = fct_relevel(IV, "acquisition_and_counterconditioning", "acquisition_only")) %>%
-  gather(DV_type, DV, c(self_reported_OEC_effect_controlling_stimulus_identity, 
-                        self_reported_IR_effect_controlling_stimulus_identity, 
+  gather(DV_type, DV, c(self_reported_OEC_effect_controlling_stimulus_identity,
+                        self_reported_IR_effect_controlling_stimulus_identity,
                         IAT_D2_controlling_stimulus_identity)) %>%
   select(experiment, DV_type, DV, IV) %>%
   drop_na() %>%
@@ -633,7 +633,7 @@ write_csv(results_moderation_by_counterconditioning, "results/results_moderation
 
 results_moderation_by_counterconditioning %>%
   select(experiment, DV_type, reportable_result) %>%
-  kable() %>% 
+  kable() %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 
 ```
@@ -643,9 +643,9 @@ results_moderation_by_counterconditioning %>%
 ```{r}
 
 data_reshaped_intentions_moderation_by_counterconditioning_ir <- data_processed_after_exclusions %>%
-  filter(experiment_condition %in% c("acquisition_only", "acquisition_and_counterconditioning") & 
-           experiment %in% c(5, 6, 7) & 
-           behavioral_intentions_IR %in% c("brand_A", "brand_B")) %>% 
+  filter(experiment_condition %in% c("acquisition_only", "acquisition_and_counterconditioning") &
+           experiment %in% c(5, 6, 7) &
+           behavioral_intentions_IR %in% c("brand_A", "brand_B")) %>%
   count(experiment, experiment_condition, behavioral_intentions_IR) %>%
   spread(behavioral_intentions_IR, n) %>%
   # Haldane-Anscombe correction
@@ -676,7 +676,7 @@ temp_study_7 <- data_reshaped_intentions_moderation_by_counterconditioning_ir %>
   as.matrix() %>%
   epitools::epitab(x = .)
 
-results_moderation_by_counterconditioning_intentions_ir <- 
+results_moderation_by_counterconditioning_intentions_ir <-
   bind_rows(
     as.data.frame(temp_study_5$tab) %>%
       drop_na() %>%
@@ -702,7 +702,7 @@ write_csv(results_moderation_by_counterconditioning_intentions_ir,
 
 results_moderation_by_counterconditioning_intentions_ir %>%
   select(experiment, reportable_result) %>%
-  kable() %>% 
+  kable() %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 
 ```
@@ -728,8 +728,8 @@ fit_study_7_iat <- ez::ezANOVA(data     = data_study_7,
                                type     = 3,
                                detailed = TRUE)
 
- 
-  
+
+
 # IR
 fit_study_7_ir <- ez::ezANOVA(data     = data_study_7,
                               dv       = self_reported_IR_effect_controlling_stimulus_identity,
@@ -747,24 +747,24 @@ fit_study_7_oec <- ez::ezANOVA(data     = data_study_7,
                                detailed = TRUE)
 
 # combine results
-results_study_7 <- 
-  bind_rows(anova_out(fit_study_7_iat, 
-                      etasq = "partial", 
+results_study_7 <-
+  bind_rows(anova_out(fit_study_7_iat,
+                      etasq = "partial",
                       print = FALSE)$`--- FORMATTED RESULTS ------------------------------------` %>%
               mutate(DV = "IAT"),
-            anova_out(fit_study_7_ir, 
-                      etasq = "partial", 
+            anova_out(fit_study_7_ir,
+                      etasq = "partial",
                       print = FALSE)$`--- FORMATTED RESULTS ------------------------------------` %>%
               mutate(DV = "IR"),
-            anova_out(fit_study_7_oec, 
-                      etasq = "partial", 
+            anova_out(fit_study_7_oec,
+                      etasq = "partial",
                       print = FALSE)$`--- FORMATTED RESULTS ------------------------------------` %>%
               mutate(DV = "OEC")) %>%
   filter(Effect == "experiment_condition") %>%
   select(DV, Text)
 
 results_study_7 %>%
-  kable() %>% 
+  kable() %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 
 ```
@@ -1071,9 +1071,9 @@ write_rds(fit_moderation_counterconditioning_ir, "models/fit_moderation_counterc
 
 ```
 
-# Sensitivity meta-analyses 
+# Sensitivity meta-analyses
 
-Also excluded participants who failed to meet mastery criteria in training or testing phases. Question is considered only at the level of meta-analyses, as sample sizes likely to be under powered at study level.  
+Also excluded participants who failed to meet mastery criteria in training or testing phases. Question is considered only at the level of meta-analyses, as sample sizes likely to be under powered at study level.
 
 ```{r}
 
@@ -1165,8 +1165,8 @@ write_rds(fit_basic_effect_oec_sensitivity, "models/fit_basic_effect_oec_sensiti
 ```{r}
 
 data_reshaped_intentions_acquisition_ir_sensitivity <- data_processed_after_exclusions_sensitivity %>%
-  filter(experiment_condition == c("acquisition_only") & 
-           behavioral_intentions_IR %in% c("brand_A", "brand_B")) %>% 
+  filter(experiment_condition == c("acquisition_only") &
+           behavioral_intentions_IR %in% c("brand_A", "brand_B")) %>%
   count(experiment, stimulus_identity_condition, behavioral_intentions_IR) %>%
   spread(behavioral_intentions_IR, n) %>%
   # Haldane-Anscombe correction
@@ -1221,7 +1221,7 @@ temp_study_7 <- data_reshaped_intentions_acquisition_ir_sensitivity %>%
   as.matrix() %>%
   epitools::epitab(x = .)
 
-results_basic_effect_intentions_ir_sensitivity <- 
+results_basic_effect_intentions_ir_sensitivity <-
   bind_rows(
     as.data.frame(temp_study_1$tab) %>%
       drop_na() %>%
@@ -1291,12 +1291,12 @@ write_rds(fit_basic_effect_intentions_ir_sensitivity, "models/fit_basic_effect_i
 ```{r}
 
 results_moderation_by_extinction_sensitivity <- data_processed_after_exclusions_sensitivity %>%
-  filter(experiment_condition %in% c("acquisition_only", "acquisition_and_extinction") & 
+  filter(experiment_condition %in% c("acquisition_only", "acquisition_and_extinction") &
            experiment %in% c(1, 2, 3, 4, 7)) %>%
   rename(IV = experiment_condition) %>%
   mutate(IV = fct_relevel(IV, "acquisition_and_extinction", "acquisition_only")) %>%
-  gather(DV_type, DV, c(self_reported_OEC_effect_controlling_stimulus_identity, 
-                        self_reported_IR_effect_controlling_stimulus_identity, 
+  gather(DV_type, DV, c(self_reported_OEC_effect_controlling_stimulus_identity,
+                        self_reported_IR_effect_controlling_stimulus_identity,
                         IAT_D2_controlling_stimulus_identity)) %>%
   select(experiment, DV_type, DV, IV) %>%
   drop_na() %>%
@@ -1370,9 +1370,9 @@ write_rds(fit_moderation_extinction_oec_sensitivity, "models/fit_moderation_exti
 ```{r}
 
 data_reshaped_intentions_moderation_by_extinction_ir_sensitivity <- data_processed_after_exclusions_sensitivity %>%
-  filter(experiment_condition %in% c("acquisition_only", "acquisition_and_extinction") & 
-           experiment %in% c(1, 2, 3, 4, 7) & 
-           behavioral_intentions_IR %in% c("brand_A", "brand_B")) %>% 
+  filter(experiment_condition %in% c("acquisition_only", "acquisition_and_extinction") &
+           experiment %in% c(1, 2, 3, 4, 7) &
+           behavioral_intentions_IR %in% c("brand_A", "brand_B")) %>%
   count(experiment, experiment_condition, behavioral_intentions_IR) %>%
   spread(behavioral_intentions_IR, n) %>%
   # Haldane-Anscombe correction
@@ -1415,7 +1415,7 @@ temp_study_7 <- data_reshaped_intentions_moderation_by_extinction_ir_sensitivity
   as.matrix() %>%
   epitools::epitab(x = .)
 
-results_moderation_by_extinction_intentions_ir_sensitivity <- 
+results_moderation_by_extinction_intentions_ir_sensitivity <-
   bind_rows(
     as.data.frame(temp_study_1$tab) %>%
       drop_na() %>%
@@ -1477,12 +1477,12 @@ write_rds(fit_moderation_extinction_ir_sensitivity, "models/fit_moderation_extin
 ```{r}
 
 results_moderation_by_counterconditioning_sensitivity <- data_processed_after_exclusions_sensitivity %>%
-  filter(experiment_condition %in% c("acquisition_only", "acquisition_and_counterconditioning") & 
+  filter(experiment_condition %in% c("acquisition_only", "acquisition_and_counterconditioning") &
            experiment %in% c(5, 6, 7)) %>%
   rename(IV = experiment_condition) %>%
   mutate(IV = fct_relevel(IV, "acquisition_and_counterconditioning", "acquisition_only")) %>%
-  gather(DV_type, DV, c(self_reported_OEC_effect_controlling_stimulus_identity, 
-                        self_reported_IR_effect_controlling_stimulus_identity, 
+  gather(DV_type, DV, c(self_reported_OEC_effect_controlling_stimulus_identity,
+                        self_reported_IR_effect_controlling_stimulus_identity,
                         IAT_D2_controlling_stimulus_identity)) %>%
   select(experiment, DV_type, DV, IV) %>%
   drop_na() %>%
@@ -1556,9 +1556,9 @@ write_rds(fit_moderation_counterconditioning_oec_sensitivity, "models/fit_modera
 ```{r}
 
 data_reshaped_intentions_moderation_by_counterconditioning_ir_sensitivity <- data_processed_after_exclusions_sensitivity %>%
-  filter(experiment_condition %in% c("acquisition_only", "acquisition_and_counterconditioning") & 
-           experiment %in% c(5, 6, 7) & 
-           behavioral_intentions_IR %in% c("brand_A", "brand_B")) %>% 
+  filter(experiment_condition %in% c("acquisition_only", "acquisition_and_counterconditioning") &
+           experiment %in% c(5, 6, 7) &
+           behavioral_intentions_IR %in% c("brand_A", "brand_B")) %>%
   count(experiment, experiment_condition, behavioral_intentions_IR) %>%
   spread(behavioral_intentions_IR, n) %>%
   # Haldane-Anscombe correction
@@ -1589,7 +1589,7 @@ temp_study_7 <- data_reshaped_intentions_moderation_by_counterconditioning_ir_se
   as.matrix() %>%
   epitools::epitab(x = .)
 
-results_moderation_by_counterconditioning_intentions_ir_sensitivity <- 
+results_moderation_by_counterconditioning_intentions_ir_sensitivity <-
   bind_rows(
     as.data.frame(temp_study_5$tab) %>%
       drop_na() %>%
@@ -1646,7 +1646,4 @@ write_rds(fit_moderation_counterconditioning_ir_sensitivity, "models/fit_moderat
 - study 7 participants could have extra training and testing data depending on performance. currently this is excluded, but it should be used. change data processing.
 - check if there are any issues with the data processing for the pass rate in studies 3 and 7 extinction testing - they're oddly low
 - study 7 data processing needs attention for other unknown reasons: why are there multiple rows with the same unique id in the processed data? why do the Ns for the extinction and counterconditioning training and testing processed data equal the acquisition phase, when only one third of people should have done CC and extinction (each).
-- Moderation of OEC by extinction (self-reported evaluations) seems to go beyond limits of forest plot. when data processing is finalized, check that this and all plots' limits are appropriate and standardized. 
-
-
-
+- Moderation of OEC by extinction (self-reported evaluations) seems to go beyond limits of forest plot. when data processing is finalized, check that this and all plots' limits are appropriate and standardized.
