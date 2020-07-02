@@ -1653,11 +1653,11 @@ write_rds(fit_moderation_counterconditioning_ir_sensitivity, "models/fit_moderat
 # to do
 
 - move "  ## move this to data processing??" chunk to data processing
-- duplicate participant codes in study 7?
-<!-- x <- read_csv("../data/Study 7/processed/data_processed.csv") %>% -->
-<!--   arrange(unique_id) %>% -->
-<!--   filter(unique_id == lag(unique_id)) -->
+- study 7 data processing 
+  - duplicate unique_ids in processed data?
+  <!-- x <- read_csv("../data/Study 7/processed/data_processed.csv") %>% -->
+  <!--   arrange(unique_id) %>% -->
+  <!--   filter(unique_id == lag(unique_id)) -->
+  - why do the Ns for the extinction and counterconditioning training and testing processed data equal the acquisition phase, when only one third of people should have done CC and extinction (each)?
 - study 7 participants could have extra training and testing data depending on performance. currently this is excluded, but it should be used. change data processing.
-- check if there are any issues with the data processing for the pass rate in studies 3 and 7 extinction testing - they're oddly low
-- study 7 data processing needs attention for other unknown reasons: why are there multiple rows with the same unique id in the processed data? why do the Ns for the extinction and counterconditioning training and testing processed data equal the acquisition phase, when only one third of people should have done CC and extinction (each).
 - Moderation of OEC by extinction (self-reported evaluations) seems to go beyond limits of forest plot. when data processing is finalized, check that this and all plots' limits are appropriate and standardized.
