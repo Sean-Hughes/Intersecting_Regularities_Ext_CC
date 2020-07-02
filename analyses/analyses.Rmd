@@ -17,6 +17,9 @@ knitr::opts_chunk$set(message=FALSE,
                       warning=FALSE)
 ```
 
+.libPaths()
+
+
 # Dependencies & functions
 
 ```{r}
@@ -305,10 +308,20 @@ results_training_and_testing_percent_accuracy <- data_processed_after_exclusions
   distinct(unique_id, phase, .keep_all = TRUE) %>%
   drop_na() %>%
   mutate(phase = dplyr::recode(phase, 
-                               "mean_correct_acquisition_testing" = "Acquisition\ntest",
                                "mean_correct_acquisition_training" = "Acquisition\ntraining",
-                               "mean_correct_extinction_testing" = "Extinction\ntesting",			
-                               "mean_correct_extinction_training" = "Extinction\ntraining")) %>%
+                               "mean_correct_acquisition_testing" = "Acquisition\ntest",
+                               "mean_correct_extinction_training" = "Extinction\ntraining",
+                               "mean_correct_extinction_testing" = "Extinction\ntesting",
+                               "mean_correct_counterconditioning_training" = "Counterconditioning\ntraining",
+                               "mean_correct_counterconditioning_testing" = "Counterconditioning\ntesting")) %>%
+  mutate(phase = as.factor(phase)) %>% 
+  mutate(phase = fct_relevel(phase, "Acquisition\ntraining",
+                                    "Acquisition\ntest",
+                                    "Extinction\ntraining",
+                                    "Extinction\ntesting",
+                                    "Counterconditioning\ntraining",
+                                    "Counterconditioning\ntesting")) %>%
+  
   group_by(experiment, phase) %>% 
   dplyr::summarise(mean_accuracy = mean(mean_correct*100, na.rm = TRUE), 
                    sd_accuracy = sd(mean_correct*100, na.rm = TRUE)) %>%
@@ -319,8 +332,9 @@ results_training_and_testing_percent_accuracy %>%
   mutate(result = paste0(mean_accuracy, " (", sd_accuracy, ")")) %>%
   select(-mean_accuracy, -sd_accuracy) %>%
   spread(phase, result) %>%
-  kable() %>% 
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+  kable(knitr.kable.NA = "/", align = "c") %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE) 
+ 
   
 # ggplot(results_training_and_testing_percent_accuracy, aes(x = phase, y = mean_accuracy)) +
 #   geom_bar(colour = "black", stat = "identity") + 
@@ -349,10 +363,23 @@ results_training_and_testing_percent_pass <- data_processed_after_exclusions %>%
   distinct(unique_id, phase, .keep_all = TRUE) %>%
   drop_na() %>%
   mutate(phase = dplyr::recode(phase, 
-                               "passed_performance_criterion_acquisition_testing" = "Acquisition\ntest",
-                               "passed_performance_criterion_acquisition_training" = "Acquisition\ntraining",
-                               "passed_performance_criterion_extinction_testing" = "Extinction\ntesting",			
-                               "passed_performance_criterion_extinction_training" = "Extinction\ntraining")) %>%
+                            "passed_performance_criterion_acquisition_training" = "Acquisition\ntraining",
+                            "passed_performance_criterion_acquisition_testing" = "Acquisition\ntest",
+                            "passed_performance_criterion_extinction_training" = "Extinction\ntraining",
+                            "passed_performance_criterion_extinction_testing" = "Extinction\ntesting",
+                            "passed_performance_criterion_counterconditioning_training" = "Counterconditioning\ntraining",
+                            "passed_performance_criterion_counterconditioning_testing" = "Counterconditioning\ntesting")) %>%
+  
+  mutate(phase = as.factor(phase)) %>% 
+  mutate(phase = fct_relevel(phase, "Acquisition\ntraining",
+                                    "Acquisition\ntest",
+                                    "Extinction\ntraining",
+                                    "Extinction\ntesting",
+                                    "Counterconditioning\ntraining",
+                                    "Counterconditioning\ntesting")) %>%
+  
+  
+  
   group_by(experiment, phase) %>% 
   dplyr::summarise(percent_passed = mean(passed_performance_criterion*100, na.rm = TRUE)) %>%
   ungroup()
@@ -360,7 +387,7 @@ results_training_and_testing_percent_pass <- data_processed_after_exclusions %>%
 results_training_and_testing_percent_pass %>%
   mutate_if(is.numeric, round, digits = 0) %>%
   spread(phase, percent_passed) %>%
-  kable() %>% 
+  kable(knitr.kable.NA = "/", align = "c") %>% 
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
   
 ```
