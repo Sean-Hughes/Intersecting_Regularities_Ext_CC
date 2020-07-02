@@ -1075,11 +1075,25 @@ write_rds(fit_moderation_counterconditioning_ir, "models/fit_moderation_counterc
 
 Also excluded participants who failed to meet mastery criteria in training or testing phases. Question is considered only at the level of meta-analyses, as sample sizes likely to be under powered at study level.
 
+## Demographics
+
 ```{r}
 
 data_processed_after_exclusions_sensitivity <- data_processed_after_exclusions %>%
   filter(passed_performance_criterion_acquisition_training == TRUE &
            passed_performance_criterion_acquisition_testing == TRUE)
+
+data_processed_after_exclusions %>%
+  mutate(training_and_testing_exclusions = ifelse(passed_performance_criterion_acquisition_training == TRUE & 
+                                                    passed_performance_criterion_acquisition_testing == TRUE, 
+                                                  FALSE, TRUE)) %>%
+  group_by(experiment) %>%
+  summarize(original_n = n(),
+            excluded_n = sum(training_and_testing_exclusions),
+            excluded_percent = mean(training_and_testing_exclusions*100)) %>%
+  mutate_if(is.numeric, round, digits = 1) %>%
+  kable(align = "c") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 
 ```
 
