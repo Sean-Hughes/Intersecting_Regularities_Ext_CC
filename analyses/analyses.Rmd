@@ -944,10 +944,10 @@ metafor::forest(fit_moderation_extinction_iat,
                 xlab = "Cohen's d",
                 addcred = TRUE,
                 refline = 0,
-                xlim = c(-2.25, 2.25),
-                at = c(-1.5, -1.0, -0.5, 0, 0.5, 1.0))
-text(-2.25, 7, "Moderation of IR by extinction (IAT)", pos = 4)
-text(2.25, 7, "d [95% CI]", pos = 2)
+                xlim = c(-1.75, 2.75),
+                at = c(-1.0, -0.5, 0, 0.5, 1.0, 1.5))
+text(-1.75, 7, "Moderation of IR by extinction (IAT)", pos = 4)
+text(2.75, 7, "d [95% CI]", pos = 2)
 
 # IR
 fit_moderation_extinction_ir <- results_for_meta_extinction %>%
@@ -961,10 +961,10 @@ metafor::forest(fit_moderation_extinction_ir,
                 xlab = "Cohen's d",
                 addcred = TRUE,
                 refline = 0,
-                xlim = c(-2.25, 2.25),
-                at = c(-1.5, -1.0, -0.5, 0, 0.5, 1.0))
-text(-2.25, 7, "Moderation of IR by extinction (self-reported evaluations)", pos = 4)
-text(2.25, 7, "d [95% CI]", pos = 2)
+                xlim = c(-1.75, 2.75),
+                at = c(-1.0, -0.5, 0, 0.5, 1.0, 1.5))
+text(-1.75, 7, "Moderation of IR by extinction (self-reported evaluations)", pos = 4)
+text(2.75, 7, "d [95% CI]", pos = 2)
 
 # OEC
 fit_moderation_extinction_oec <- results_for_meta_extinction %>%
@@ -978,10 +978,10 @@ metafor::forest(fit_moderation_extinction_oec,
                 xlab = "Cohen's d",
                 addcred = TRUE,
                 refline = 0,
-                xlim = c(-2.25, 2.25),
-                at = c(-1.5, -1.0, -0.5, 0, 0.5, 1.0))
-text(-2.25, 7, "Moderation of OEC by extinction (self-reported evaluations)", pos = 4)
-text(2.25, 7, "d [95% CI]", pos = 2)
+                xlim = c(-1.75, 2.75),
+                at = c(-1.0, -0.5, 0, 0.5, 1.0, 1.5))
+text(-1.75, 7, "Moderation of OEC by extinction (self-reported evaluations)", pos = 4)
+text(2.75, 7, "d [95% CI]", pos = 2)
 
 # save model fits for making pdf plots for publication
 write_rds(fit_moderation_extinction_iat, "models/fit_moderation_extinction_iat.rds")
@@ -1011,10 +1011,10 @@ fit_moderation_extinction_ir <- data_reshaped_intentions_moderation_by_extinctio
 metafor::forest(fit_moderation_extinction_ir,
                 addcred = TRUE,
                 refline = 0,
-                xlim = c(-5, 12),
-                at = c(-2, 0, 2, 4, 6, 8))
-text(-5, 7, "Moderation of IR by extinction (behavioral intentions)", pos = 4)
-text(12, 7, "Log OR [95% CI]", pos = 2)
+                xlim = c(-3.5, 4),
+                at = c(-2, -1, 0, 1, 2))
+text(-3.5, 7, "Moderation of IR by extinction (behavioral intentions)", pos = 4)
+text(4, 7, "Log OR [95% CI]", pos = 2)
 
 # save model fits for making pdf plots for publication
 write_rds(fit_moderation_extinction_ir, "models/fit_moderation_extinction_ir.rds")
@@ -1111,10 +1111,10 @@ fit_moderation_counterconditioning_ir <- data_reshaped_intentions_moderation_by_
 metafor::forest(fit_moderation_counterconditioning_ir,
                 addcred = TRUE,
                 refline = 0,
-                xlim = c(-5, 12),
-                at = c(-2, 0, 2, 4, 6, 8))
-text(-5, 5, "Moderation of IR by counterconditioning (behavioral intentions)", pos = 4)
-text(12, 5, "Log OR [95% CI]", pos = 2)
+                xlim = c(-3.5, 4),
+                at = c(-2, -1, 0, 1, 2))
+text(-3.5, 5, "Moderation of IR by counterconditioning (behavioral intentions)", pos = 4)
+text(4, 5, "Log OR [95% CI]", pos = 2)
 
 # save model fits for making pdf plots for publication
 write_rds(fit_moderation_counterconditioning_ir, "models/fit_moderation_counterconditioning_ir.rds")
@@ -1699,12 +1699,3 @@ text(12, 5, "Log OR [95% CI]", pos = 2)
 write_rds(fit_moderation_counterconditioning_ir_sensitivity, "models/fit_moderation_counterconditioning_ir_sensitivity.rds")
 
 ```
-
-# to do
-
-- study 7 data processing 
-  - duplicate unique_ids in processed data?
-  <!-- x <- read_csv("../data/Study 7/processed/data_processed.csv") %>% -->
-  <!--   arrange(unique_id) %>% -->
-  <!--   filter(unique_id == lag(unique_id)) -->
-  - why do the Ns for the extinction and counterconditioning training and testing processed data equal the acquisition phase, when only one third of people should have done CC and extinction (each)?
