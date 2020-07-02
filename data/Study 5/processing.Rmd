@@ -491,11 +491,7 @@ data_processed <- data_conditions %>%
       stimulus_identity_condition == "Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad" ~ IAT_D2_controlling_stimulus_identity
     )
   ) %>%
-  # make unique id
-  mutate(experiment = current_experiment_number,
-         unique_id = paste(experiment, subject, sep = "_")) %>%
-  
-    # recode and reverse score intentions
+  # recode and reverse score intentions
   mutate(
     # recoding for the IR intentions data
     behavioral_intentions_IR = case_when(
@@ -539,7 +535,11 @@ data_processed <- data_conditions %>%
       TRUE ~ as.character(behavioral_intentions_OEC)
     )
   ) %>%
-  
+  # remove test sessions
+  filter(age != "sean" & gender != "sean") %>%
+  # make unique id
+  mutate(experiment = current_experiment_number,
+         unique_id = paste(experiment, subject, sep = "_")) %>%
   # select and reorder variables
   select(experiment, 
          unique_id, 

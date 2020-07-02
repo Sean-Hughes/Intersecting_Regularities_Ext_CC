@@ -538,7 +538,8 @@ data_processed <- data_conditions %>%
       TRUE ~ as.character(behavioral_intentions_OEC)
     )
   ) %>%
-  
+  # remove test sessions
+  filter(age != "sean" & gender != "sean") %>%
   mutate(experiment = current_experiment_number,
          unique_id = paste(experiment, subject, sep = "_")) %>% 
   select(experiment, 

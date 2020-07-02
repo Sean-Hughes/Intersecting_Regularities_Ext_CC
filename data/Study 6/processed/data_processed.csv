@@ -101,8 +101,6 @@ experiment,unique_id,age,gender,stimulus_identity_condition,experiment_condition
 6,6_800342016,33,F,Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good,acquisition_and_counterconditioning,complete,complete,complete,complete,complete,1,0.75,0.95,0.75,TRUE,TRUE,TRUE,TRUE,TRUE,-8.75,8.75,7.25,-7.25,-0.24174687352695262,0.24174687352695262,brand_B,brand_A,brand_A,brand_B,Implicits First,learning_inconsistent_first,Not Demand Compliant,yes,3,5,2,5,-2,yes,5
 6,6_617687584,34,F,Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good,acquisition_and_counterconditioning,complete,complete,complete,complete,complete,1,0.875,1,0.875,TRUE,TRUE,TRUE,TRUE,TRUE,0,-0,0,-0,-0.26304451008375473,0.26304451008375473,neither,neither,neither,neither,Implicits First,learning_inconsistent_first,Not Demand Compliant,no,NA,0,0,0,0,no,NA
 6,6_137333688,37,M,Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good,acquisition_only,complete,complete,NA,complete,complete,0.25,0.125,NA,0.125,FALSE,FALSE,NA,FALSE,FALSE,-1.25,1.25,1,-1,NaN,NaN,brand_B,brand_A,both,both,Implicits First,learning_inconsistent_first,Not Demand Compliant,no,NA,0,0,0,0,no,NA
-6,6_1,NA,NA,NA,acquisition_only,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Explicits First,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-6,6_19,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 6,6_22,27,F,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 6,6_39,27,F,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 6,6_65,35,M,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA

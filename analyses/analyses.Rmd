@@ -167,9 +167,7 @@ data_processed <-
                             passed_iat_performance == TRUE,
                           FALSE, TRUE),
          # if exclude variable is missing, then exclude
-         exclude = ifelse(is.na(exclude), TRUE, exclude)) %>%
-  # remove test sessions
-  filter(age != "sean" & gender != "sean")
+         exclude = ifelse(is.na(exclude), TRUE, exclude))
 
 # exclusions
 data_processed_after_exclusions <- data_processed %>%
@@ -1710,4 +1708,3 @@ write_rds(fit_moderation_counterconditioning_ir_sensitivity, "models/fit_moderat
   <!--   arrange(unique_id) %>% -->
   <!--   filter(unique_id == lag(unique_id)) -->
   - why do the Ns for the extinction and counterconditioning training and testing processed data equal the acquisition phase, when only one third of people should have done CC and extinction (each)?
-- Moderation of OEC by extinction (self-reported evaluations) seems to go beyond limits of forest plot. when data processing is finalized, check that this and all plots' limits are appropriate and standardized.

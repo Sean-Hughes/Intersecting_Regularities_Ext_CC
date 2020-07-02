@@ -2260,53 +2260,54 @@ complete
 <span id="cb14-75"><a href="#cb14-75"></a>      <span class="ot">TRUE</span> <span class="op">~</span><span class="st"> </span><span class="kw">as.character</span>(behavioral_intentions_OEC)</span>
 <span id="cb14-76"><a href="#cb14-76"></a>    )</span>
 <span id="cb14-77"><a href="#cb14-77"></a>  ) <span class="op">%&gt;%</span></span>
-<span id="cb14-78"><a href="#cb14-78"></a><span class="st">  </span></span>
-<span id="cb14-79"><a href="#cb14-79"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">experiment =</span> <span class="dv">3</span>,</span>
-<span id="cb14-80"><a href="#cb14-80"></a>         <span class="dt">unique_id =</span> <span class="kw">paste</span>(experiment, subject, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb14-81"><a href="#cb14-81"></a><span class="st">  </span><span class="kw">select</span>(experiment, </span>
-<span id="cb14-82"><a href="#cb14-82"></a>         unique_id, </span>
-<span id="cb14-83"><a href="#cb14-83"></a>         age, </span>
-<span id="cb14-84"><a href="#cb14-84"></a>         gender, </span>
-<span id="cb14-85"><a href="#cb14-85"></a>         </span>
-<span id="cb14-86"><a href="#cb14-86"></a>         <span class="co"># conditions</span></span>
-<span id="cb14-87"><a href="#cb14-87"></a>         stimulus_identity_condition, </span>
-<span id="cb14-88"><a href="#cb14-88"></a>         experiment_condition,</span>
-<span id="cb14-89"><a href="#cb14-89"></a>         completeness_acquisition_training, completeness_acquisition_testing, </span>
-<span id="cb14-90"><a href="#cb14-90"></a>         <span class="co">#completeness_counterconditioning_training, completeness_counterconditioning_testing,</span></span>
-<span id="cb14-91"><a href="#cb14-91"></a>         completeness_extinction_training, completeness_extinction_testing,</span>
-<span id="cb14-92"><a href="#cb14-92"></a>         complete_iat_data, </span>
-<span id="cb14-93"><a href="#cb14-93"></a>         </span>
-<span id="cb14-94"><a href="#cb14-94"></a>         <span class="co"># training and testing</span></span>
-<span id="cb14-95"><a href="#cb14-95"></a>         mean_correct_acquisition_training, mean_correct_acquisition_testing, </span>
-<span id="cb14-96"><a href="#cb14-96"></a>         <span class="co">#mean_correct_counterconditioning_training, mean_correct_counterconditioning_testing,</span></span>
-<span id="cb14-97"><a href="#cb14-97"></a>         mean_correct_extinction_training, mean_correct_extinction_testing, </span>
-<span id="cb14-98"><a href="#cb14-98"></a>         </span>
-<span id="cb14-99"><a href="#cb14-99"></a>         passed_performance_criterion_acquisition_training, passed_performance_criterion_acquisition_testing, </span>
-<span id="cb14-100"><a href="#cb14-100"></a>         <span class="co">#passed_performance_criterion_counterconditioning_training, passed_performance_criterion_counterconditioning_testing,</span></span>
-<span id="cb14-101"><a href="#cb14-101"></a>         passed_performance_criterion_extinction_training, passed_performance_criterion_extinction_testing,</span>
-<span id="cb14-102"><a href="#cb14-102"></a>         passed_iat_performance,</span>
-<span id="cb14-103"><a href="#cb14-103"></a>         </span>
-<span id="cb14-104"><a href="#cb14-104"></a>         <span class="co"># DVs</span></span>
-<span id="cb14-105"><a href="#cb14-105"></a>         self_reported_OEC_effect, self_reported_OEC_effect_controlling_stimulus_identity, </span>
-<span id="cb14-106"><a href="#cb14-106"></a>         self_reported_IR_effect, self_reported_IR_effect_controlling_stimulus_identity, </span>
-<span id="cb14-107"><a href="#cb14-107"></a>         IAT_D2, IAT_D2_controlling_stimulus_identity, </span>
-<span id="cb14-108"><a href="#cb14-108"></a>         behavioral_intentions_OEC, behavioral_intentions_OEC_controlling_stimulus_identity,</span>
-<span id="cb14-109"><a href="#cb14-109"></a>         behavioral_intentions_IR, behavioral_intentions_IR_controlling_stimulus_identity,</span>
-<span id="cb14-110"><a href="#cb14-110"></a>         </span>
-<span id="cb14-111"><a href="#cb14-111"></a>         <span class="co"># exploratory measures</span></span>
-<span id="cb14-112"><a href="#cb14-112"></a>         task_order, </span>
-<span id="cb14-113"><a href="#cb14-113"></a>         iat_block_order,</span>
-<span id="cb14-114"><a href="#cb14-114"></a>         <span class="co">#complete_equivalence_data, passed_equivalence,</span></span>
-<span id="cb14-115"><a href="#cb14-115"></a>         demand_response, </span>
-<span id="cb14-116"><a href="#cb14-116"></a>         reactance_response_<span class="dv">1</span>, reactance_response_<span class="dv">2</span>, </span>
-<span id="cb14-117"><a href="#cb14-117"></a>         confidence_stim_<span class="dv">1</span>, confidence_stim_<span class="dv">2</span>, confidence_stim_<span class="dv">3</span>, confidence_stim_<span class="dv">4</span>,</span>
-<span id="cb14-118"><a href="#cb14-118"></a>         believability_response_<span class="dv">1</span>, believability_response_<span class="dv">2</span>)  </span>
-<span id="cb14-119"><a href="#cb14-119"></a></span>
-<span id="cb14-120"><a href="#cb14-120"></a><span class="co"># Ensures that the processed data folder exists</span></span>
-<span id="cb14-121"><a href="#cb14-121"></a><span class="kw">dir.create</span>(<span class="st">&quot;processed&quot;</span>)</span>
-<span id="cb14-122"><a href="#cb14-122"></a></span>
-<span id="cb14-123"><a href="#cb14-123"></a><span class="co"># write to disk</span></span>
-<span id="cb14-124"><a href="#cb14-124"></a><span class="kw">write_csv</span>(data_processed, <span class="st">&quot;processed/data_processed.csv&quot;</span>)</span></code></pre></div>
+<span id="cb14-78"><a href="#cb14-78"></a><span class="st">  </span><span class="co"># remove test sessions</span></span>
+<span id="cb14-79"><a href="#cb14-79"></a><span class="st">  </span><span class="kw">filter</span>(age <span class="op">!=</span><span class="st"> &quot;sean&quot;</span> <span class="op">&amp;</span><span class="st"> </span>gender <span class="op">!=</span><span class="st"> &quot;sean&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb14-80"><a href="#cb14-80"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">experiment =</span> <span class="dv">3</span>,</span>
+<span id="cb14-81"><a href="#cb14-81"></a>         <span class="dt">unique_id =</span> <span class="kw">paste</span>(experiment, subject, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb14-82"><a href="#cb14-82"></a><span class="st">  </span><span class="kw">select</span>(experiment, </span>
+<span id="cb14-83"><a href="#cb14-83"></a>         unique_id, </span>
+<span id="cb14-84"><a href="#cb14-84"></a>         age, </span>
+<span id="cb14-85"><a href="#cb14-85"></a>         gender, </span>
+<span id="cb14-86"><a href="#cb14-86"></a>         </span>
+<span id="cb14-87"><a href="#cb14-87"></a>         <span class="co"># conditions</span></span>
+<span id="cb14-88"><a href="#cb14-88"></a>         stimulus_identity_condition, </span>
+<span id="cb14-89"><a href="#cb14-89"></a>         experiment_condition,</span>
+<span id="cb14-90"><a href="#cb14-90"></a>         completeness_acquisition_training, completeness_acquisition_testing, </span>
+<span id="cb14-91"><a href="#cb14-91"></a>         <span class="co">#completeness_counterconditioning_training, completeness_counterconditioning_testing,</span></span>
+<span id="cb14-92"><a href="#cb14-92"></a>         completeness_extinction_training, completeness_extinction_testing,</span>
+<span id="cb14-93"><a href="#cb14-93"></a>         complete_iat_data, </span>
+<span id="cb14-94"><a href="#cb14-94"></a>         </span>
+<span id="cb14-95"><a href="#cb14-95"></a>         <span class="co"># training and testing</span></span>
+<span id="cb14-96"><a href="#cb14-96"></a>         mean_correct_acquisition_training, mean_correct_acquisition_testing, </span>
+<span id="cb14-97"><a href="#cb14-97"></a>         <span class="co">#mean_correct_counterconditioning_training, mean_correct_counterconditioning_testing,</span></span>
+<span id="cb14-98"><a href="#cb14-98"></a>         mean_correct_extinction_training, mean_correct_extinction_testing, </span>
+<span id="cb14-99"><a href="#cb14-99"></a>         </span>
+<span id="cb14-100"><a href="#cb14-100"></a>         passed_performance_criterion_acquisition_training, passed_performance_criterion_acquisition_testing, </span>
+<span id="cb14-101"><a href="#cb14-101"></a>         <span class="co">#passed_performance_criterion_counterconditioning_training, passed_performance_criterion_counterconditioning_testing,</span></span>
+<span id="cb14-102"><a href="#cb14-102"></a>         passed_performance_criterion_extinction_training, passed_performance_criterion_extinction_testing,</span>
+<span id="cb14-103"><a href="#cb14-103"></a>         passed_iat_performance,</span>
+<span id="cb14-104"><a href="#cb14-104"></a>         </span>
+<span id="cb14-105"><a href="#cb14-105"></a>         <span class="co"># DVs</span></span>
+<span id="cb14-106"><a href="#cb14-106"></a>         self_reported_OEC_effect, self_reported_OEC_effect_controlling_stimulus_identity, </span>
+<span id="cb14-107"><a href="#cb14-107"></a>         self_reported_IR_effect, self_reported_IR_effect_controlling_stimulus_identity, </span>
+<span id="cb14-108"><a href="#cb14-108"></a>         IAT_D2, IAT_D2_controlling_stimulus_identity, </span>
+<span id="cb14-109"><a href="#cb14-109"></a>         behavioral_intentions_OEC, behavioral_intentions_OEC_controlling_stimulus_identity,</span>
+<span id="cb14-110"><a href="#cb14-110"></a>         behavioral_intentions_IR, behavioral_intentions_IR_controlling_stimulus_identity,</span>
+<span id="cb14-111"><a href="#cb14-111"></a>         </span>
+<span id="cb14-112"><a href="#cb14-112"></a>         <span class="co"># exploratory measures</span></span>
+<span id="cb14-113"><a href="#cb14-113"></a>         task_order, </span>
+<span id="cb14-114"><a href="#cb14-114"></a>         iat_block_order,</span>
+<span id="cb14-115"><a href="#cb14-115"></a>         <span class="co">#complete_equivalence_data, passed_equivalence,</span></span>
+<span id="cb14-116"><a href="#cb14-116"></a>         demand_response, </span>
+<span id="cb14-117"><a href="#cb14-117"></a>         reactance_response_<span class="dv">1</span>, reactance_response_<span class="dv">2</span>, </span>
+<span id="cb14-118"><a href="#cb14-118"></a>         confidence_stim_<span class="dv">1</span>, confidence_stim_<span class="dv">2</span>, confidence_stim_<span class="dv">3</span>, confidence_stim_<span class="dv">4</span>,</span>
+<span id="cb14-119"><a href="#cb14-119"></a>         believability_response_<span class="dv">1</span>, believability_response_<span class="dv">2</span>)  </span>
+<span id="cb14-120"><a href="#cb14-120"></a></span>
+<span id="cb14-121"><a href="#cb14-121"></a><span class="co"># Ensures that the processed data folder exists</span></span>
+<span id="cb14-122"><a href="#cb14-122"></a><span class="kw">dir.create</span>(<span class="st">&quot;processed&quot;</span>)</span>
+<span id="cb14-123"><a href="#cb14-123"></a></span>
+<span id="cb14-124"><a href="#cb14-124"></a><span class="co"># write to disk</span></span>
+<span id="cb14-125"><a href="#cb14-125"></a><span class="kw">write_csv</span>(data_processed, <span class="st">&quot;processed/data_processed.csv&quot;</span>)</span></code></pre></div>
 </div>
 
 
