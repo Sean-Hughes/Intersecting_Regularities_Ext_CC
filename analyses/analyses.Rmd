@@ -38,6 +38,8 @@ library(schoRsch)
 library(nnet)
 library(epitools)
 
+options(knitr.kable.NA = "/") 
+
 # Ensures that the processed data folder exists
 dir.create("models")
 dir.create("results")
@@ -276,9 +278,8 @@ results_training_and_testing_percent_accuracy %>%
   mutate(result = paste0(mean_accuracy, " (", sd_accuracy, ")")) %>%
   select(-mean_accuracy, -sd_accuracy) %>%
   spread(phase, result) %>%
-  kable(knitr.kable.NA = "/", align = "c") %>% 
+  kable(align = "c") %>% 
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE) 
- 
   
 # ggplot(results_training_and_testing_percent_accuracy, aes(x = phase, y = mean_accuracy)) +
 #   geom_bar(colour = "black", stat = "identity") + 
@@ -331,7 +332,7 @@ results_training_and_testing_percent_pass <- data_processed_after_exclusions %>%
 results_training_and_testing_percent_pass %>%
   mutate_if(is.numeric, round, digits = 0) %>%
   spread(phase, percent_passed) %>%
-  kable(knitr.kable.NA = "/", align = "c") %>% 
+  kable(align = "c") %>% 
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
   
 ```
@@ -361,6 +362,43 @@ results_basic_effect_iat_selfreports %>%
   select(experiment, DV_type, reportable_result) %>%
   kable() %>% 
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+
+# In earlier analyses the following basic effects came out: * indicates deviation from current results
+# Exp 1:
+#   IR  present (p < .001) *
+#   OEC present (p < .001) 
+#   IAT present (p < .001)
+
+# Exp 2:
+#   IR  present (p < .001)
+#   OEC present (p < .001) 
+#   IAT present (p = .78) 
+
+# Exp 3:
+#   IR  present (p < .001)
+#   OEC present (p < .001) 
+#   IAT present (p < .001)
+
+# Exp 4:
+#   IR  present (p < .001)
+#   OEC present (p < .001) 
+#   IAT present (p = .024)
+
+# Exp 5:
+#   IR  present (p = .10) *
+#   OEC present (p = .02) 
+#   IAT present (p = .45) *
+
+# Exp 6:
+#   IR  present (p < .001)
+#   OEC present (p < .001) 
+#   IAT present (p = .23) *
+
+# Exp 7:
+#   IR  present (p = .005)
+#   OEC present (p < .001) 
+#   IAT present (p = .33) *
 
 ```
 
@@ -469,7 +507,33 @@ results_basic_effect_intentions_ir %>%
   kable() %>% 
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 
+
+
+# In earlier analyses the following basic effects came out: * indicates deviation from current results
+# Exp 1:
+#   IR  present (p = .004) *
+
+# Exp 2:
+#   IR  present (p < .001)
+
+# Exp 3:
+#   IR  present (p = .005)
+
+# Exp 4:
+#   IR  present (p = .05)
+
+# Exp 5:
+#   IR  present (p = .001) 
+
+# Exp 6:
+#   IR  present (p = .144)
+
+# Exp 7:
+#   IR  present (p = .52)
+
+
 ```
+
 
 ## Was the IR moderated by extinction?
 
@@ -498,6 +562,42 @@ results_moderation_by_extinction %>%
   select(experiment, DV_type, reportable_result) %>%
   kable() %>% 
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+# In earlier analyses the following moderation effects came out: * indicates deviation from current results
+# Exp 1:
+#   IR  present (p = .19) 
+#   OEC present (p = .41) 
+#   IAT present (p = .61)
+
+# Exp 2:
+#   IR  present (p = .009)
+#   OEC present (p < .001) 
+#   IAT present (p = .85) 
+
+# Exp 3:
+#   IR  present (p = .04)  *
+#   OEC present (p < .001) 
+#   IAT present (p < .001) *
+
+# Exp 4:
+#   IR  present (p = .63)
+#   OEC present (p = .22) 
+#   IAT present (p = .81)
+
+# Exp 5:
+#   IR  present (p = .002) 
+#   OEC present (p < .001) 
+#   IAT present (p = .63) 
+
+# Exp 6:
+#   IR  present (p = .59)
+#   OEC present (p = .01) 
+#   IAT present (p = .82) 
+
+# Exp 7:
+#   IR  present (p < .001) *
+#   OEC present (p = .12) 
+#   IAT present (p = .72) 
 
 ```
 
