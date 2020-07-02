@@ -102,5 +102,5 @@ experiment,unique_id,age,gender,stimulus_identity_condition,experiment_condition
 4,4_379601181,25,M,Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good,acquisition_and_extinction,complete,complete,complete,complete,1,1,TRUE,TRUE,TRUE,-7,7,-5.5,5.5,-0.175603848143983,0.175603848143983,I would try Brand 3,I would try neither Brand,Explicits First,learning_consistent_first,Not Demand Compliant,yes,2,5,5,5,5,no,NA
 4,4_888776896,28,F,Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good,acquisition_and_extinction,complete,complete,complete,complete,1,1,TRUE,TRUE,TRUE,-10,10,-10,10,0.025346513130500556,-0.025346513130500556,I would try Brand 3,I would try Brand 4,Implicits First,learning_inconsistent_first,Not Demand Compliant,yes,1,5,5,5,5,no,NA
 4,4_616538237,28,M,Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good,acquisition_and_extinction,complete,complete,complete,complete,1,1,TRUE,TRUE,TRUE,0,-0,0,-0,-0.5064857270488397,0.5064857270488397,I would try Brands 1 and 3,I would try Brands 2 and 4,Explicits First,learning_consistent_first,Not Demand Compliant,yes,9,5,5,5,5,no,NA
-NA,NA_905546527,28,F,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA_905546570,27,M,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+4,4_905546527,28,F,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+4,4_905546570,27,M,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA

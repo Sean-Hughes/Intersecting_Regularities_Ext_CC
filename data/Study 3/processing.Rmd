@@ -494,7 +494,8 @@ data_processed <- data_conditions %>%
     )
   ) %>%
   
-  mutate(unique_id = paste(experiment, subject, sep = "_")) %>%
+  mutate(experiment = 3,
+         unique_id = paste(experiment, subject, sep = "_")) %>%
   select(experiment, 
          unique_id, 
          age, 
