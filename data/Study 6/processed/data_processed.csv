@@ -102,8 +102,8 @@ experiment,unique_id,age,gender,stimulus_identity_condition,experiment_condition
 6,6_617687584,34,F,Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good,acquisition_and_counterconditioning,complete,complete,complete,complete,complete,1,0.875,1,0.875,TRUE,TRUE,TRUE,TRUE,TRUE,0,-0,0,-0,-0.26304451008375473,0.26304451008375473,I would try neither Brand,I would try neither Brand,Implicits First,learning_inconsistent_first,Not Demand Compliant,no,NA,0,0,0,0,no,NA
 6,6_137333688,37,M,Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good,acquisition_only,complete,complete,NA,complete,complete,0.25,0.125,NA,0.125,FALSE,FALSE,NA,FALSE,FALSE,-1.25,1.25,1,-1,NaN,NaN,I would try Brand 3,I would try Brands 2 and 4,Implicits First,learning_inconsistent_first,Not Demand Compliant,no,NA,0,0,0,0,no,NA
 6,6_1,NA,NA,NA,acquisition_only,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,Explicits First,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA_19,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA_22,27,F,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA_39,27,F,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA_65,35,M,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-NA,NA_135,21,M,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+6,6_19,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+6,6_22,27,F,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+6,6_39,27,F,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+6,6_65,35,M,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+6,6_135,21,M,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA

@@ -766,7 +766,8 @@ data_processed <- data_conditions %>%
     )
   ) %>%
   # make unique id
-  mutate(unique_id = paste(experiment, subject, sep = "_")) %>%
+  mutate(experiment = current_experiment_number,
+         unique_id = paste(experiment, subject, sep = "_")) %>%
   # select and reorder variables
   select(experiment, 
          unique_id, 
