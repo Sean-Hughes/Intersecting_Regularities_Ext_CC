@@ -409,7 +409,8 @@ data_reactance <-
   select(subject, 
          reactance_response_1 = react1_response, 
          reactance_response_2 = react2_response) %>%
-  mutate(reactance_response_2 = str_remove_all(reactance_response_2, "[^0-9]"))
+  mutate(reactance_response_2 = str_remove_all(reactance_response_2, "[^0-9]")) %>%
+  distinct(subject, .keep_all = TRUE)
 
 # # no believability in this study
 # data_believability <- read_xlsx("raw/acquisition_only/cover_belief.xlsx") %>% 
@@ -507,7 +508,8 @@ data_intentions <-
                        subject = paste(subject, experiment_condition, sep = "_")) %>%
                 select(subject, behavioral_intentions_IR = Intentions_2_4_response),
               by = "subject")
-  )
+  ) %>%
+  distinct(subject, behavioral_intentions_OEC, behavioral_intentions_IR)
     
 ```
 
@@ -572,7 +574,7 @@ data_iat_block_order <- data_iat_input %>%
   filter(block == 1 & trial_number == 1) %>%
   mutate(iat_block_order = case_when(block_type == "targetincompatiblepractice" ~ "learning_inconsistent_first",
                                      block_type == "targetcompatiblepractice" ~ "learning_consistent_first")) %>%
-  select(subject, iat_block_order)
+  distinct(subject, iat_block_order)
 
 # only retain the critical practice and test blocks (i.e., block_number = 3, 4, 6, 7)
 data_iat_cleaned <- data_iat_block_order %>%
@@ -868,5 +870,4 @@ dir.create("processed")
 write_csv(data_processed, "processed/data_processed.csv")
 
 ```
-
 

@@ -2205,105 +2205,107 @@ partial
 <span id="cb9-32"><a href="#cb9-32"></a><span class="st">  </span><span class="kw">select</span>(subject, </span>
 <span id="cb9-33"><a href="#cb9-33"></a>         <span class="dt">reactance_response_1 =</span> react1_response, </span>
 <span id="cb9-34"><a href="#cb9-34"></a>         <span class="dt">reactance_response_2 =</span> react2_response) <span class="op">%&gt;%</span></span>
-<span id="cb9-35"><a href="#cb9-35"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">reactance_response_2 =</span> <span class="kw">str_remove_all</span>(reactance_response_<span class="dv">2</span>, <span class="st">&quot;[^0-9]&quot;</span>))</span>
-<span id="cb9-36"><a href="#cb9-36"></a></span>
-<span id="cb9-37"><a href="#cb9-37"></a><span class="co"># # no believability in this study</span></span>
-<span id="cb9-38"><a href="#cb9-38"></a><span class="co"># data_believability &lt;- read_xlsx(&quot;raw/acquisition_only/cover_belief.xlsx&quot;) %&gt;% </span></span>
-<span id="cb9-39"><a href="#cb9-39"></a><span class="co">#   select(subject, </span></span>
-<span id="cb9-40"><a href="#cb9-40"></a><span class="co">#          believability_response_1 = belief1_response, </span></span>
-<span id="cb9-41"><a href="#cb9-41"></a><span class="co">#          believability_response_2 = belief2_response) %&gt;%</span></span>
-<span id="cb9-42"><a href="#cb9-42"></a><span class="co">#   mutate(believability_response_2 = str_remove_all(believability_response_2, &quot;[^0-9]&quot;))</span></span>
-<span id="cb9-43"><a href="#cb9-43"></a></span>
-<span id="cb9-44"><a href="#cb9-44"></a>data_confidence_ratings &lt;-<span class="st"> </span></span>
-<span id="cb9-45"><a href="#cb9-45"></a><span class="st">  </span><span class="kw">bind_rows</span>(</span>
-<span id="cb9-46"><a href="#cb9-46"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/acquisition_only/confidence_ratings.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb9-47"><a href="#cb9-47"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_only&quot;</span>,</span>
-<span id="cb9-48"><a href="#cb9-48"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
-<span id="cb9-49"><a href="#cb9-49"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/counterconditioning/confidence_ratings.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb9-50"><a href="#cb9-50"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_and_counterconditioning&quot;</span>,</span>
-<span id="cb9-51"><a href="#cb9-51"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
-<span id="cb9-52"><a href="#cb9-52"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/extinction/confidence_ratings.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb9-53"><a href="#cb9-53"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_and_extinction&quot;</span>,</span>
-<span id="cb9-54"><a href="#cb9-54"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
-<span id="cb9-55"><a href="#cb9-55"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb9-56"><a href="#cb9-56"></a><span class="st">  </span><span class="kw">select</span>(subject, </span>
-<span id="cb9-57"><a href="#cb9-57"></a>         <span class="dt">confidence_stim_1 =</span> Stimulus_<span class="dv">1</span>_Confidence_Confidence_response, </span>
-<span id="cb9-58"><a href="#cb9-58"></a>         <span class="dt">confidence_stim_2 =</span> Stimulus_<span class="dv">2</span>_Confidence_Confidence_response, </span>
-<span id="cb9-59"><a href="#cb9-59"></a>         <span class="dt">confidence_stim_3 =</span> Stimulus_<span class="dv">3</span>_Confidence_Confidence_response, </span>
-<span id="cb9-60"><a href="#cb9-60"></a>         <span class="dt">confidence_stim_4 =</span> Stimulus_<span class="dv">4</span>_Confidence_Confidence_response)</span>
-<span id="cb9-61"><a href="#cb9-61"></a></span>
-<span id="cb9-62"><a href="#cb9-62"></a>data_ratings &lt;-<span class="st"> </span></span>
-<span id="cb9-63"><a href="#cb9-63"></a><span class="st">  </span><span class="kw">bind_rows</span>(</span>
-<span id="cb9-64"><a href="#cb9-64"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/acquisition_only/valence_ratings.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb9-65"><a href="#cb9-65"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_only&quot;</span>,</span>
-<span id="cb9-66"><a href="#cb9-66"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
-<span id="cb9-67"><a href="#cb9-67"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/counterconditioning/valence_ratings.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb9-68"><a href="#cb9-68"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_and_counterconditioning&quot;</span>,</span>
-<span id="cb9-69"><a href="#cb9-69"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
-<span id="cb9-70"><a href="#cb9-70"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/extinction/valence_ratings.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb9-71"><a href="#cb9-71"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_and_extinction&quot;</span>,</span>
-<span id="cb9-72"><a href="#cb9-72"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
-<span id="cb9-73"><a href="#cb9-73"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb9-74"><a href="#cb9-74"></a><span class="st">  </span><span class="kw">select</span>(subject, </span>
-<span id="cb9-75"><a href="#cb9-75"></a>         <span class="dt">Outcome_1_Pos_Neg =</span> Stimulus_<span class="dv">1</span>_Positive_Negative_Positive_Negative_response,</span>
-<span id="cb9-76"><a href="#cb9-76"></a>         <span class="dt">Outcome_1_Good_Bad =</span> Stimulus_<span class="dv">1</span>_Good_Bad_Good_Bad_response,</span>
-<span id="cb9-77"><a href="#cb9-77"></a>         <span class="dt">Outcome_1_Pleasant_Unpleasant =</span> Stimulus_<span class="dv">1</span>_Pleasant_Unpleasant_Pleasant_Unpleasant_response,</span>
-<span id="cb9-78"><a href="#cb9-78"></a>         <span class="dt">Outcome_1_Like_Dislike =</span> Stimulus_<span class="dv">1</span>_Like_Dislike_Like_Dislike_response,</span>
-<span id="cb9-79"><a href="#cb9-79"></a>         <span class="dt">Outcome_2_Pos_Neg =</span> Stimulus_<span class="dv">3</span>_Positive_Negative_Positive_Negative_response,</span>
-<span id="cb9-80"><a href="#cb9-80"></a>         <span class="dt">Outcome_2_Good_Bad =</span> Stimulus_<span class="dv">3</span>_Good_Bad_Good_Bad_response, </span>
-<span id="cb9-81"><a href="#cb9-81"></a>         <span class="dt">Outcome_2_Pleasant_Unpleasant =</span> Stimulus_<span class="dv">3</span>_Pleasant_Unpleasant_Pleasant_Unpleasant_response,</span>
-<span id="cb9-82"><a href="#cb9-82"></a>         <span class="dt">Outcome_2_Like_Dislike =</span> Stimulus_<span class="dv">3</span>_Like_Dislike_Like_Dislike_response,</span>
-<span id="cb9-83"><a href="#cb9-83"></a>         <span class="dt">Target_1_Pos_Neg =</span> Stimulus_<span class="dv">2</span>_Positive_Negative_Positive_Negative_response,</span>
-<span id="cb9-84"><a href="#cb9-84"></a>         <span class="dt">Target_1_Good_Bad =</span> Stimulus_<span class="dv">2</span>_Good_Bad_Good_Bad_response, </span>
-<span id="cb9-85"><a href="#cb9-85"></a>         <span class="dt">Target_1_Pleasant_Unpleasant =</span> Stimulus_<span class="dv">2</span>_Pleasant_Unpleasant_Pleasant_Unpleasant_response,</span>
-<span id="cb9-86"><a href="#cb9-86"></a>         <span class="dt">Target_1_Like_Dislike =</span> Stimulus_<span class="dv">2</span>_Like_Dislike_Like_Dislike_response,</span>
-<span id="cb9-87"><a href="#cb9-87"></a>         <span class="dt">Target_2_Pos_Neg =</span> Stimulus_<span class="dv">4</span>_Positive_Negative_Positive_Negative_response,</span>
-<span id="cb9-88"><a href="#cb9-88"></a>         <span class="dt">Target_2_Good_Bad =</span> Stimulus_<span class="dv">4</span>_Good_Bad_Good_Bad_response,</span>
-<span id="cb9-89"><a href="#cb9-89"></a>         <span class="dt">Target_2_Pleasant_Unpleasant =</span> Stimulus_<span class="dv">4</span>_Pleasant_Unpleasant_Pleasant_Unpleasant_response,</span>
-<span id="cb9-90"><a href="#cb9-90"></a>         <span class="dt">Target_2_Like_Dislike =</span> Stimulus_<span class="dv">4</span>_Like_Dislike_Like_Dislike_response) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb9-91"><a href="#cb9-91"></a><span class="st">  </span><span class="co"># Create a mean rating score for each stimulus</span></span>
-<span id="cb9-92"><a href="#cb9-92"></a><span class="st">  </span><span class="co"># Create an operant evaluative conditioning (OEC) and intersecting regularites (IR) effect</span></span>
-<span id="cb9-93"><a href="#cb9-93"></a><span class="st">  </span><span class="kw">rowwise</span>() <span class="op">%&gt;%</span></span>
-<span id="cb9-94"><a href="#cb9-94"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">mean_outcome_1 =</span> <span class="kw">mean</span>(<span class="kw">c</span>(Outcome_<span class="dv">1</span>_Pos_Neg, Outcome_<span class="dv">1</span>_Good_Bad, Outcome_<span class="dv">1</span>_Pleasant_Unpleasant, Outcome_<span class="dv">1</span>_Like_Dislike)),</span>
-<span id="cb9-95"><a href="#cb9-95"></a>         <span class="dt">mean_outcome_2 =</span> <span class="kw">mean</span>(<span class="kw">c</span>(Outcome_<span class="dv">2</span>_Pos_Neg, Outcome_<span class="dv">2</span>_Good_Bad, Outcome_<span class="dv">2</span>_Pleasant_Unpleasant, Outcome_<span class="dv">2</span>_Like_Dislike)),</span>
-<span id="cb9-96"><a href="#cb9-96"></a>         <span class="dt">mean_target_1  =</span> <span class="kw">mean</span>(<span class="kw">c</span>(Target_<span class="dv">1</span>_Pos_Neg, Target_<span class="dv">1</span>_Good_Bad, Target_<span class="dv">1</span>_Pleasant_Unpleasant, Target_<span class="dv">1</span>_Like_Dislike)),</span>
-<span id="cb9-97"><a href="#cb9-97"></a>         <span class="dt">mean_target_2  =</span> <span class="kw">mean</span>(<span class="kw">c</span>(Target_<span class="dv">2</span>_Pos_Neg, Target_<span class="dv">2</span>_Good_Bad, Target_<span class="dv">2</span>_Pleasant_Unpleasant, Target_<span class="dv">2</span>_Like_Dislike)),</span>
-<span id="cb9-98"><a href="#cb9-98"></a>         <span class="dt">self_reported_OEC_effect     =</span> mean_outcome_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>mean_outcome_<span class="dv">2</span>,</span>
-<span id="cb9-99"><a href="#cb9-99"></a>         <span class="dt">self_reported_IR_effect      =</span> mean_target_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>mean_target_<span class="dv">2</span>) <span class="op">%&gt;%</span></span>
-<span id="cb9-100"><a href="#cb9-100"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></span>
-<span id="cb9-101"><a href="#cb9-101"></a><span class="st">  </span><span class="kw">select</span>(subject, self_reported_OEC_effect, self_reported_IR_effect)</span>
-<span id="cb9-102"><a href="#cb9-102"></a></span>
-<span id="cb9-103"><a href="#cb9-103"></a><span class="co"># behavioural intentions</span></span>
-<span id="cb9-104"><a href="#cb9-104"></a>data_intentions &lt;-<span class="st"> </span></span>
-<span id="cb9-105"><a href="#cb9-105"></a><span class="st">  </span><span class="kw">bind_rows</span>(</span>
-<span id="cb9-106"><a href="#cb9-106"></a>    <span class="kw">full_join</span>(<span class="kw">read_xlsx</span>(<span class="st">&quot;raw/acquisition_only/intention_ratings_1_3.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb9-107"><a href="#cb9-107"></a><span class="st">                </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_only&quot;</span>,</span>
-<span id="cb9-108"><a href="#cb9-108"></a>                       <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb9-109"><a href="#cb9-109"></a><span class="st">                </span><span class="kw">select</span>(subject, <span class="dt">behavioral_intentions_OEC =</span> Intentions_<span class="dv">1</span>_<span class="dv">3</span>_response),</span>
-<span id="cb9-110"><a href="#cb9-110"></a>              <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/acquisition_only/intention_ratings_2_4.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb9-111"><a href="#cb9-111"></a><span class="st">                </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_only&quot;</span>,</span>
-<span id="cb9-112"><a href="#cb9-112"></a>                       <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb9-113"><a href="#cb9-113"></a><span class="st">                </span><span class="kw">select</span>(subject, <span class="dt">behavioral_intentions_IR =</span> Intentions_<span class="dv">2</span>_<span class="dv">4</span>_response),</span>
-<span id="cb9-114"><a href="#cb9-114"></a>              <span class="dt">by =</span> <span class="st">&quot;subject&quot;</span>),</span>
-<span id="cb9-115"><a href="#cb9-115"></a>    <span class="kw">full_join</span>(<span class="kw">read_xlsx</span>(<span class="st">&quot;raw/counterconditioning/intention_ratings_1_3.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb9-116"><a href="#cb9-116"></a><span class="st">                </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_and_counterconditioning&quot;</span>,</span>
-<span id="cb9-117"><a href="#cb9-117"></a>                       <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb9-118"><a href="#cb9-118"></a><span class="st">                </span><span class="kw">select</span>(subject, <span class="dt">behavioral_intentions_OEC =</span> Intentions_<span class="dv">1</span>_<span class="dv">3</span>_response),</span>
-<span id="cb9-119"><a href="#cb9-119"></a>              <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/counterconditioning/intention_ratings_2_4.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb9-120"><a href="#cb9-120"></a><span class="st">                </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_and_counterconditioning&quot;</span>,</span>
-<span id="cb9-121"><a href="#cb9-121"></a>                       <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb9-122"><a href="#cb9-122"></a><span class="st">                </span><span class="kw">select</span>(subject, <span class="dt">behavioral_intentions_IR =</span> Intentions_<span class="dv">2</span>_<span class="dv">4</span>_response),</span>
-<span id="cb9-123"><a href="#cb9-123"></a>              <span class="dt">by =</span> <span class="st">&quot;subject&quot;</span>),</span>
-<span id="cb9-124"><a href="#cb9-124"></a>    <span class="kw">full_join</span>(<span class="kw">read_xlsx</span>(<span class="st">&quot;raw/extinction/intention_ratings_1_3.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb9-125"><a href="#cb9-125"></a><span class="st">                </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_and_extinction&quot;</span>,</span>
-<span id="cb9-126"><a href="#cb9-126"></a>                       <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb9-127"><a href="#cb9-127"></a><span class="st">                </span><span class="kw">select</span>(subject, <span class="dt">behavioral_intentions_OEC =</span> Intentions_<span class="dv">1</span>_<span class="dv">3</span>_response),</span>
-<span id="cb9-128"><a href="#cb9-128"></a>              <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/extinction/intention_ratings_2_4.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
-<span id="cb9-129"><a href="#cb9-129"></a><span class="st">                </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_and_extinction&quot;</span>,</span>
-<span id="cb9-130"><a href="#cb9-130"></a>                       <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb9-131"><a href="#cb9-131"></a><span class="st">                </span><span class="kw">select</span>(subject, <span class="dt">behavioral_intentions_IR =</span> Intentions_<span class="dv">2</span>_<span class="dv">4</span>_response),</span>
-<span id="cb9-132"><a href="#cb9-132"></a>              <span class="dt">by =</span> <span class="st">&quot;subject&quot;</span>)</span>
-<span id="cb9-133"><a href="#cb9-133"></a>  )</span></code></pre></div>
+<span id="cb9-35"><a href="#cb9-35"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">reactance_response_2 =</span> <span class="kw">str_remove_all</span>(reactance_response_<span class="dv">2</span>, <span class="st">&quot;[^0-9]&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb9-36"><a href="#cb9-36"></a><span class="st">  </span><span class="kw">distinct</span>(subject, <span class="dt">.keep_all =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb9-37"><a href="#cb9-37"></a></span>
+<span id="cb9-38"><a href="#cb9-38"></a><span class="co"># # no believability in this study</span></span>
+<span id="cb9-39"><a href="#cb9-39"></a><span class="co"># data_believability &lt;- read_xlsx(&quot;raw/acquisition_only/cover_belief.xlsx&quot;) %&gt;% </span></span>
+<span id="cb9-40"><a href="#cb9-40"></a><span class="co">#   select(subject, </span></span>
+<span id="cb9-41"><a href="#cb9-41"></a><span class="co">#          believability_response_1 = belief1_response, </span></span>
+<span id="cb9-42"><a href="#cb9-42"></a><span class="co">#          believability_response_2 = belief2_response) %&gt;%</span></span>
+<span id="cb9-43"><a href="#cb9-43"></a><span class="co">#   mutate(believability_response_2 = str_remove_all(believability_response_2, &quot;[^0-9]&quot;))</span></span>
+<span id="cb9-44"><a href="#cb9-44"></a></span>
+<span id="cb9-45"><a href="#cb9-45"></a>data_confidence_ratings &lt;-<span class="st"> </span></span>
+<span id="cb9-46"><a href="#cb9-46"></a><span class="st">  </span><span class="kw">bind_rows</span>(</span>
+<span id="cb9-47"><a href="#cb9-47"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/acquisition_only/confidence_ratings.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb9-48"><a href="#cb9-48"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_only&quot;</span>,</span>
+<span id="cb9-49"><a href="#cb9-49"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
+<span id="cb9-50"><a href="#cb9-50"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/counterconditioning/confidence_ratings.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb9-51"><a href="#cb9-51"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_and_counterconditioning&quot;</span>,</span>
+<span id="cb9-52"><a href="#cb9-52"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
+<span id="cb9-53"><a href="#cb9-53"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/extinction/confidence_ratings.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb9-54"><a href="#cb9-54"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_and_extinction&quot;</span>,</span>
+<span id="cb9-55"><a href="#cb9-55"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
+<span id="cb9-56"><a href="#cb9-56"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb9-57"><a href="#cb9-57"></a><span class="st">  </span><span class="kw">select</span>(subject, </span>
+<span id="cb9-58"><a href="#cb9-58"></a>         <span class="dt">confidence_stim_1 =</span> Stimulus_<span class="dv">1</span>_Confidence_Confidence_response, </span>
+<span id="cb9-59"><a href="#cb9-59"></a>         <span class="dt">confidence_stim_2 =</span> Stimulus_<span class="dv">2</span>_Confidence_Confidence_response, </span>
+<span id="cb9-60"><a href="#cb9-60"></a>         <span class="dt">confidence_stim_3 =</span> Stimulus_<span class="dv">3</span>_Confidence_Confidence_response, </span>
+<span id="cb9-61"><a href="#cb9-61"></a>         <span class="dt">confidence_stim_4 =</span> Stimulus_<span class="dv">4</span>_Confidence_Confidence_response)</span>
+<span id="cb9-62"><a href="#cb9-62"></a></span>
+<span id="cb9-63"><a href="#cb9-63"></a>data_ratings &lt;-<span class="st"> </span></span>
+<span id="cb9-64"><a href="#cb9-64"></a><span class="st">  </span><span class="kw">bind_rows</span>(</span>
+<span id="cb9-65"><a href="#cb9-65"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/acquisition_only/valence_ratings.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb9-66"><a href="#cb9-66"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_only&quot;</span>,</span>
+<span id="cb9-67"><a href="#cb9-67"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
+<span id="cb9-68"><a href="#cb9-68"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/counterconditioning/valence_ratings.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb9-69"><a href="#cb9-69"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_and_counterconditioning&quot;</span>,</span>
+<span id="cb9-70"><a href="#cb9-70"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)),</span>
+<span id="cb9-71"><a href="#cb9-71"></a>    <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/extinction/valence_ratings.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb9-72"><a href="#cb9-72"></a><span class="st">        </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_and_extinction&quot;</span>,</span>
+<span id="cb9-73"><a href="#cb9-73"></a>               <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
+<span id="cb9-74"><a href="#cb9-74"></a>  ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb9-75"><a href="#cb9-75"></a><span class="st">  </span><span class="kw">select</span>(subject, </span>
+<span id="cb9-76"><a href="#cb9-76"></a>         <span class="dt">Outcome_1_Pos_Neg =</span> Stimulus_<span class="dv">1</span>_Positive_Negative_Positive_Negative_response,</span>
+<span id="cb9-77"><a href="#cb9-77"></a>         <span class="dt">Outcome_1_Good_Bad =</span> Stimulus_<span class="dv">1</span>_Good_Bad_Good_Bad_response,</span>
+<span id="cb9-78"><a href="#cb9-78"></a>         <span class="dt">Outcome_1_Pleasant_Unpleasant =</span> Stimulus_<span class="dv">1</span>_Pleasant_Unpleasant_Pleasant_Unpleasant_response,</span>
+<span id="cb9-79"><a href="#cb9-79"></a>         <span class="dt">Outcome_1_Like_Dislike =</span> Stimulus_<span class="dv">1</span>_Like_Dislike_Like_Dislike_response,</span>
+<span id="cb9-80"><a href="#cb9-80"></a>         <span class="dt">Outcome_2_Pos_Neg =</span> Stimulus_<span class="dv">3</span>_Positive_Negative_Positive_Negative_response,</span>
+<span id="cb9-81"><a href="#cb9-81"></a>         <span class="dt">Outcome_2_Good_Bad =</span> Stimulus_<span class="dv">3</span>_Good_Bad_Good_Bad_response, </span>
+<span id="cb9-82"><a href="#cb9-82"></a>         <span class="dt">Outcome_2_Pleasant_Unpleasant =</span> Stimulus_<span class="dv">3</span>_Pleasant_Unpleasant_Pleasant_Unpleasant_response,</span>
+<span id="cb9-83"><a href="#cb9-83"></a>         <span class="dt">Outcome_2_Like_Dislike =</span> Stimulus_<span class="dv">3</span>_Like_Dislike_Like_Dislike_response,</span>
+<span id="cb9-84"><a href="#cb9-84"></a>         <span class="dt">Target_1_Pos_Neg =</span> Stimulus_<span class="dv">2</span>_Positive_Negative_Positive_Negative_response,</span>
+<span id="cb9-85"><a href="#cb9-85"></a>         <span class="dt">Target_1_Good_Bad =</span> Stimulus_<span class="dv">2</span>_Good_Bad_Good_Bad_response, </span>
+<span id="cb9-86"><a href="#cb9-86"></a>         <span class="dt">Target_1_Pleasant_Unpleasant =</span> Stimulus_<span class="dv">2</span>_Pleasant_Unpleasant_Pleasant_Unpleasant_response,</span>
+<span id="cb9-87"><a href="#cb9-87"></a>         <span class="dt">Target_1_Like_Dislike =</span> Stimulus_<span class="dv">2</span>_Like_Dislike_Like_Dislike_response,</span>
+<span id="cb9-88"><a href="#cb9-88"></a>         <span class="dt">Target_2_Pos_Neg =</span> Stimulus_<span class="dv">4</span>_Positive_Negative_Positive_Negative_response,</span>
+<span id="cb9-89"><a href="#cb9-89"></a>         <span class="dt">Target_2_Good_Bad =</span> Stimulus_<span class="dv">4</span>_Good_Bad_Good_Bad_response,</span>
+<span id="cb9-90"><a href="#cb9-90"></a>         <span class="dt">Target_2_Pleasant_Unpleasant =</span> Stimulus_<span class="dv">4</span>_Pleasant_Unpleasant_Pleasant_Unpleasant_response,</span>
+<span id="cb9-91"><a href="#cb9-91"></a>         <span class="dt">Target_2_Like_Dislike =</span> Stimulus_<span class="dv">4</span>_Like_Dislike_Like_Dislike_response) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb9-92"><a href="#cb9-92"></a><span class="st">  </span><span class="co"># Create a mean rating score for each stimulus</span></span>
+<span id="cb9-93"><a href="#cb9-93"></a><span class="st">  </span><span class="co"># Create an operant evaluative conditioning (OEC) and intersecting regularites (IR) effect</span></span>
+<span id="cb9-94"><a href="#cb9-94"></a><span class="st">  </span><span class="kw">rowwise</span>() <span class="op">%&gt;%</span></span>
+<span id="cb9-95"><a href="#cb9-95"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">mean_outcome_1 =</span> <span class="kw">mean</span>(<span class="kw">c</span>(Outcome_<span class="dv">1</span>_Pos_Neg, Outcome_<span class="dv">1</span>_Good_Bad, Outcome_<span class="dv">1</span>_Pleasant_Unpleasant, Outcome_<span class="dv">1</span>_Like_Dislike)),</span>
+<span id="cb9-96"><a href="#cb9-96"></a>         <span class="dt">mean_outcome_2 =</span> <span class="kw">mean</span>(<span class="kw">c</span>(Outcome_<span class="dv">2</span>_Pos_Neg, Outcome_<span class="dv">2</span>_Good_Bad, Outcome_<span class="dv">2</span>_Pleasant_Unpleasant, Outcome_<span class="dv">2</span>_Like_Dislike)),</span>
+<span id="cb9-97"><a href="#cb9-97"></a>         <span class="dt">mean_target_1  =</span> <span class="kw">mean</span>(<span class="kw">c</span>(Target_<span class="dv">1</span>_Pos_Neg, Target_<span class="dv">1</span>_Good_Bad, Target_<span class="dv">1</span>_Pleasant_Unpleasant, Target_<span class="dv">1</span>_Like_Dislike)),</span>
+<span id="cb9-98"><a href="#cb9-98"></a>         <span class="dt">mean_target_2  =</span> <span class="kw">mean</span>(<span class="kw">c</span>(Target_<span class="dv">2</span>_Pos_Neg, Target_<span class="dv">2</span>_Good_Bad, Target_<span class="dv">2</span>_Pleasant_Unpleasant, Target_<span class="dv">2</span>_Like_Dislike)),</span>
+<span id="cb9-99"><a href="#cb9-99"></a>         <span class="dt">self_reported_OEC_effect     =</span> mean_outcome_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>mean_outcome_<span class="dv">2</span>,</span>
+<span id="cb9-100"><a href="#cb9-100"></a>         <span class="dt">self_reported_IR_effect      =</span> mean_target_<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>mean_target_<span class="dv">2</span>) <span class="op">%&gt;%</span></span>
+<span id="cb9-101"><a href="#cb9-101"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></span>
+<span id="cb9-102"><a href="#cb9-102"></a><span class="st">  </span><span class="kw">select</span>(subject, self_reported_OEC_effect, self_reported_IR_effect)</span>
+<span id="cb9-103"><a href="#cb9-103"></a></span>
+<span id="cb9-104"><a href="#cb9-104"></a><span class="co"># behavioural intentions</span></span>
+<span id="cb9-105"><a href="#cb9-105"></a>data_intentions &lt;-<span class="st"> </span></span>
+<span id="cb9-106"><a href="#cb9-106"></a><span class="st">  </span><span class="kw">bind_rows</span>(</span>
+<span id="cb9-107"><a href="#cb9-107"></a>    <span class="kw">full_join</span>(<span class="kw">read_xlsx</span>(<span class="st">&quot;raw/acquisition_only/intention_ratings_1_3.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb9-108"><a href="#cb9-108"></a><span class="st">                </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_only&quot;</span>,</span>
+<span id="cb9-109"><a href="#cb9-109"></a>                       <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb9-110"><a href="#cb9-110"></a><span class="st">                </span><span class="kw">select</span>(subject, <span class="dt">behavioral_intentions_OEC =</span> Intentions_<span class="dv">1</span>_<span class="dv">3</span>_response),</span>
+<span id="cb9-111"><a href="#cb9-111"></a>              <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/acquisition_only/intention_ratings_2_4.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb9-112"><a href="#cb9-112"></a><span class="st">                </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_only&quot;</span>,</span>
+<span id="cb9-113"><a href="#cb9-113"></a>                       <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb9-114"><a href="#cb9-114"></a><span class="st">                </span><span class="kw">select</span>(subject, <span class="dt">behavioral_intentions_IR =</span> Intentions_<span class="dv">2</span>_<span class="dv">4</span>_response),</span>
+<span id="cb9-115"><a href="#cb9-115"></a>              <span class="dt">by =</span> <span class="st">&quot;subject&quot;</span>),</span>
+<span id="cb9-116"><a href="#cb9-116"></a>    <span class="kw">full_join</span>(<span class="kw">read_xlsx</span>(<span class="st">&quot;raw/counterconditioning/intention_ratings_1_3.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb9-117"><a href="#cb9-117"></a><span class="st">                </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_and_counterconditioning&quot;</span>,</span>
+<span id="cb9-118"><a href="#cb9-118"></a>                       <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb9-119"><a href="#cb9-119"></a><span class="st">                </span><span class="kw">select</span>(subject, <span class="dt">behavioral_intentions_OEC =</span> Intentions_<span class="dv">1</span>_<span class="dv">3</span>_response),</span>
+<span id="cb9-120"><a href="#cb9-120"></a>              <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/counterconditioning/intention_ratings_2_4.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb9-121"><a href="#cb9-121"></a><span class="st">                </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_and_counterconditioning&quot;</span>,</span>
+<span id="cb9-122"><a href="#cb9-122"></a>                       <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb9-123"><a href="#cb9-123"></a><span class="st">                </span><span class="kw">select</span>(subject, <span class="dt">behavioral_intentions_IR =</span> Intentions_<span class="dv">2</span>_<span class="dv">4</span>_response),</span>
+<span id="cb9-124"><a href="#cb9-124"></a>              <span class="dt">by =</span> <span class="st">&quot;subject&quot;</span>),</span>
+<span id="cb9-125"><a href="#cb9-125"></a>    <span class="kw">full_join</span>(<span class="kw">read_xlsx</span>(<span class="st">&quot;raw/extinction/intention_ratings_1_3.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb9-126"><a href="#cb9-126"></a><span class="st">                </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_and_extinction&quot;</span>,</span>
+<span id="cb9-127"><a href="#cb9-127"></a>                       <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb9-128"><a href="#cb9-128"></a><span class="st">                </span><span class="kw">select</span>(subject, <span class="dt">behavioral_intentions_OEC =</span> Intentions_<span class="dv">1</span>_<span class="dv">3</span>_response),</span>
+<span id="cb9-129"><a href="#cb9-129"></a>              <span class="kw">read_xlsx</span>(<span class="st">&quot;raw/extinction/intention_ratings_2_4.xlsx&quot;</span>) <span class="op">%&gt;%</span></span>
+<span id="cb9-130"><a href="#cb9-130"></a><span class="st">                </span><span class="kw">mutate</span>(<span class="dt">experiment_condition =</span> <span class="st">&quot;acquisition_and_extinction&quot;</span>,</span>
+<span id="cb9-131"><a href="#cb9-131"></a>                       <span class="dt">subject =</span> <span class="kw">paste</span>(subject, experiment_condition, <span class="dt">sep =</span> <span class="st">&quot;_&quot;</span>)) <span class="op">%&gt;%</span></span>
+<span id="cb9-132"><a href="#cb9-132"></a><span class="st">                </span><span class="kw">select</span>(subject, <span class="dt">behavioral_intentions_IR =</span> Intentions_<span class="dv">2</span>_<span class="dv">4</span>_response),</span>
+<span id="cb9-133"><a href="#cb9-133"></a>              <span class="dt">by =</span> <span class="st">&quot;subject&quot;</span>)</span>
+<span id="cb9-134"><a href="#cb9-134"></a>  ) <span class="op">%&gt;%</span></span>
+<span id="cb9-135"><a href="#cb9-135"></a><span class="st">  </span><span class="kw">distinct</span>(subject, behavioral_intentions_OEC, behavioral_intentions_IR)</span></code></pre></div>
 </div>
 <div id="iat" class="section level1">
 <h1>IAT</h1>
@@ -2364,7 +2366,7 @@ partial
 <span id="cb10-53"><a href="#cb10-53"></a><span class="st">  </span><span class="kw">filter</span>(block <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">&amp;</span><span class="st"> </span>trial_number <span class="op">==</span><span class="st"> </span><span class="dv">1</span>) <span class="op">%&gt;%</span></span>
 <span id="cb10-54"><a href="#cb10-54"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">iat_block_order =</span> <span class="kw">case_when</span>(block_type <span class="op">==</span><span class="st"> &quot;targetincompatiblepractice&quot;</span> <span class="op">~</span><span class="st"> &quot;learning_inconsistent_first&quot;</span>,</span>
 <span id="cb10-55"><a href="#cb10-55"></a>                                     block_type <span class="op">==</span><span class="st"> &quot;targetcompatiblepractice&quot;</span> <span class="op">~</span><span class="st"> &quot;learning_consistent_first&quot;</span>)) <span class="op">%&gt;%</span></span>
-<span id="cb10-56"><a href="#cb10-56"></a><span class="st">  </span><span class="kw">select</span>(subject, iat_block_order)</span>
+<span id="cb10-56"><a href="#cb10-56"></a><span class="st">  </span><span class="kw">distinct</span>(subject, iat_block_order)</span>
 <span id="cb10-57"><a href="#cb10-57"></a></span>
 <span id="cb10-58"><a href="#cb10-58"></a><span class="co"># only retain the critical practice and test blocks (i.e., block_number = 3, 4, 6, 7)</span></span>
 <span id="cb10-59"><a href="#cb10-59"></a>data_iat_cleaned &lt;-<span class="st"> </span>data_iat_block_order <span class="op">%&gt;%</span></span>
