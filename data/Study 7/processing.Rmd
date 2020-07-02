@@ -31,7 +31,7 @@ library(IATscores)
 
 # Conditions
 
-Some experimental conditions are not recorded in the data produced by inquisit but are discerned by the file names they come from, or the presence or absence of one phase of data. Extract this here. 
+Some experimental conditions are not recorded in the data produced by Inquisit but are discerned by the file names they come from, or the presence or absence of one phase of data. Extract this here. 
 
 ```{r}
 
@@ -264,8 +264,12 @@ data_training_and_testing_input <-
   filter(blockcode != "Begin") %>% 
   select(subject, experiment_condition, phase, block_number = blocknum, trial_number = trialnum, correct) %>%
   arrange(subject, phase) %>%
-  # many participants have block numbers 5+ for some reason I don't understand. trim this data.
-  filter(block_number %in% c(1, 2, 3, 4))
+  
+# Participants in Experiment 7 were exposed to a methodology that was more complex that the previous experiments. To compensate for this we provided them with an extra block of trials (Block 5) if they failed to reach a certain criteria on Block 4. This means that the amount of complete data for those who needed an extra block is different from that of those who did not need said block.
+
+# Inspecting the data indicated that a small number of participants received more than 5 blocks. These outliers have been trimmed here.
+  
+  filter(block_number %in% c(1, 2, 3, 4, 5))
 
 ```
 
@@ -282,23 +286,25 @@ data_training_and_testing_input <-
 #   rename(n_trials = n, n_participants = nn) %>%
 #   arrange(phase, block_number, desc(n_participants))
 
+# label participants as having complete, excess, or partial data
+
 data_training_and_testing_completeness_temp <- data_training_and_testing_input %>%
   group_by(subject, phase) %>%
   summarize(n = n()) %>%
   mutate(complete_training_testing_data = 
-           case_when((phase == "acquisition_training" & n == 80) |  
+           case_when((phase == "acquisition_training" & n == 80 | n == 100) |  
                        (phase == "acquisition_testing" & n == 8) |
-                       (phase == "counterconditioning_training" & n == 80) |  
+                       (phase == "counterconditioning_training" & n == 80  | n == 100) |  
                        (phase == "counterconditioning_testing" & n == 8) |  
-                       (phase == "extinction_training" & n == 80) |  
+                       (phase == "extinction_training" & n == 80  | n == 100) |  
                        (phase == "extinction_testing" & n == 8) ~ "complete",
-                     (phase == "acquisition_training" & n > 80) |  
+                       (phase == "acquisition_training" & n > 100) |  
                        (phase == "acquisition_testing" & n > 8) |
-                       (phase == "counterconditioning_training" & n > 80) |  
+                       (phase == "counterconditioning_training" & n > 100) |  
                        (phase == "counterconditioning_testing" & n > 8) |  
-                       (phase == "extinction_training" & n > 80) |  
+                       (phase == "extinction_training" & n > 100) |  
                        (phase == "extinction_testing" & n > 8) ~ "excess",
-                     (phase == "acquisition_training" & n < 80) |  
+                       (phase == "acquisition_training" & n < 80) |  
                        (phase == "acquisition_testing" & n < 8) |
                        (phase == "counterconditioning_training" & n < 80) |  
                        (phase == "counterconditioning_testing" & n < 8) |  
