@@ -328,43 +328,6 @@ results_basic_effect_iat_selfreports %>%
   kable() %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 
-
-# In earlier analyses the following basic effects came out: * indicates deviation from current results
-# Exp 1:
-#   IR  present (p < .001) *
-#   OEC present (p < .001)
-#   IAT present (p < .001)
-
-# Exp 2:
-#   IR  present (p < .001)
-#   OEC present (p < .001)
-#   IAT present (p = .78)
-
-# Exp 3:
-#   IR  present (p < .001)
-#   OEC present (p < .001)
-#   IAT present (p < .001)
-
-# Exp 4:
-#   IR  present (p < .001)
-#   OEC present (p < .001)
-#   IAT present (p = .024)
-
-# Exp 5:
-#   IR  present (p = .10) *
-#   OEC present (p = .02)
-#   IAT present (p = .45) *
-
-# Exp 6:
-#   IR  present (p < .001)
-#   OEC present (p < .001)
-#   IAT present (p = .23) *
-
-# Exp 7:
-#   IR  present (p = .005)
-#   OEC present (p < .001)
-#   IAT present (p = .33) *
-
 ```
 
 ### Behavioral intentions
@@ -531,42 +494,6 @@ results_moderation_by_extinction %>%
   select(experiment, DV_type, reportable_result) %>%
   kable() %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
-
-# In earlier analyses the following moderation effects came out: * indicates deviation from current results
-# Exp 1:
-#   IR  present (p = .19)
-#   OEC present (p = .41)
-#   IAT present (p = .61)
-
-# Exp 2:
-#   IR  present (p = .009)
-#   OEC present (p < .001)
-#   IAT present (p = .85)
-
-# Exp 3:
-#   IR  present (p = .04)  *
-#   OEC present (p < .001)
-#   IAT present (p < .001) *
-
-# Exp 4:
-#   IR  present (p = .63)
-#   OEC present (p = .22)
-#   IAT present (p = .81)
-
-# Exp 5:
-#   IR  present (p = .002)
-#   OEC present (p < .001)
-#   IAT present (p = .63)
-
-# Exp 6:
-#   IR  present (p = .59)
-#   OEC present (p = .01)
-#   IAT present (p = .82)
-
-# Exp 7:
-#   IR  present (p < .001) *
-#   OEC present (p = .12)
-#   IAT present (p = .72)
 
 ```
 
@@ -911,7 +838,7 @@ fit_basic_effect_intentions_ir <- data_reshaped_intentions_acquisition_ir %>%
 metafor::forest(fit_basic_effect_intentions_ir,
                 addcred = TRUE,
                 refline = 0,
-                xlim = c(-5, 12),
+                xlim = c(-5, 14),
                 at = c(-2, 0, 2, 4, 6, 8))
 text(-5, 9, "IR effect (behavioral intentions)", pos = 4)
 text(12, 9, "Log OR [95% CI]", pos = 2)
@@ -994,7 +921,7 @@ write_rds(fit_moderation_extinction_oec, "models/fit_moderation_extinction_oec.r
 
 ```{r}
 
-fit_moderation_extinction_ir <- data_reshaped_intentions_moderation_by_extinction_ir %>%
+fit_moderation_extinction_intentions_ir <- data_reshaped_intentions_moderation_by_extinction_ir %>%
   pivot_wider(names_from = experiment_condition,
               values_from = c(brand_A, brand_B)) %>%
   escalc(measure = "OR",
@@ -1008,7 +935,7 @@ fit_moderation_extinction_ir <- data_reshaped_intentions_moderation_by_extinctio
       data = .,
       slab = experiment)
 
-metafor::forest(fit_moderation_extinction_ir,
+metafor::forest(fit_moderation_extinction_intentions_ir,
                 addcred = TRUE,
                 refline = 0,
                 xlim = c(-3.5, 4),
@@ -1017,7 +944,7 @@ text(-3.5, 7, "Moderation of IR by extinction (behavioral intentions)", pos = 4)
 text(4, 7, "Log OR [95% CI]", pos = 2)
 
 # save model fits for making pdf plots for publication
-write_rds(fit_moderation_extinction_ir, "models/fit_moderation_extinction_ir.rds")
+write_rds(fit_moderation_extinction_intentions_ir, "models/fit_moderation_extinction_intentions_ir.rds")
 
 ```
 
@@ -1094,7 +1021,7 @@ write_rds(fit_moderation_counterconditioning_oec, "models/fit_moderation_counter
 
 ```{r}
 
-fit_moderation_counterconditioning_ir <- data_reshaped_intentions_moderation_by_counterconditioning_ir %>%
+fit_moderation_counterconditioning_intentions_ir <- data_reshaped_intentions_moderation_by_counterconditioning_ir %>%
   pivot_wider(names_from = experiment_condition,
               values_from = c(brand_A, brand_B)) %>%
   escalc(measure = "OR",
@@ -1108,7 +1035,7 @@ fit_moderation_counterconditioning_ir <- data_reshaped_intentions_moderation_by_
       data = .,
       slab = experiment)
 
-metafor::forest(fit_moderation_counterconditioning_ir,
+metafor::forest(fit_moderation_counterconditioning_intentions_ir,
                 addcred = TRUE,
                 refline = 0,
                 xlim = c(-3.5, 4),
@@ -1117,7 +1044,7 @@ text(-3.5, 5, "Moderation of IR by counterconditioning (behavioral intentions)",
 text(4, 5, "Log OR [95% CI]", pos = 2)
 
 # save model fits for making pdf plots for publication
-write_rds(fit_moderation_counterconditioning_ir, "models/fit_moderation_counterconditioning_ir.rds")
+write_rds(fit_moderation_counterconditioning_intentions_ir, "models/fit_moderation_counterconditioning_intentions_ir.rds")
 
 ```
 
@@ -1219,7 +1146,7 @@ text(4, 9, "d [95% CI]", pos = 2)
 
 # save model fits for making pdf plots for publication
 write_rds(fit_basic_effect_iat_sensitivity, "models/fit_basic_effect_iat_sensitivity.rds")
-write_rds(fit_basic_effect_ir_sensitivity, "models/fit_basic_effect_ir_sensitivity.rds")
+write_rds(fit_basic_effect_ir_sensitivity,  "models/fit_basic_effect_ir_sensitivity.rds")
 write_rds(fit_basic_effect_oec_sensitivity, "models/fit_basic_effect_oec_sensitivity.rds")
 
 ```
@@ -1424,7 +1351,7 @@ text(2.25, 7, "d [95% CI]", pos = 2)
 
 # save model fits for making pdf plots for publication
 write_rds(fit_moderation_extinction_iat_sensitivity, "models/fit_moderation_extinction_iat_sensitivity.rds")
-write_rds(fit_moderation_extinction_ir_sensitivity, "models/fit_moderation_extinction_ir_sensitivity.rds")
+write_rds(fit_moderation_extinction_ir_sensitivity,  "models/fit_moderation_extinction_ir_sensitivity.rds")
 write_rds(fit_moderation_extinction_oec_sensitivity, "models/fit_moderation_extinction_oec_sensitivity.rds")
 
 ```
@@ -1507,7 +1434,7 @@ results_moderation_by_extinction_intentions_ir_sensitivity <-
          OR_ci_lower = round(OR_ci_lower, 2),
          OR_ci_upper = round(OR_ci_upper, 2))
 
-fit_moderation_extinction_ir_sensitivity <- data_reshaped_intentions_moderation_by_extinction_ir_sensitivity %>%
+fit_moderation_extinction_intentions_ir_sensitivity <- data_reshaped_intentions_moderation_by_extinction_ir_sensitivity %>%
   pivot_wider(names_from = experiment_condition,
               values_from = c(brand_A, brand_B)) %>%
   escalc(measure = "OR",
@@ -1521,7 +1448,7 @@ fit_moderation_extinction_ir_sensitivity <- data_reshaped_intentions_moderation_
       data = .,
       slab = experiment)
 
-metafor::forest(fit_moderation_extinction_ir_sensitivity,
+metafor::forest(fit_moderation_extinction_intentions_ir_sensitivity,
                 addcred = TRUE,
                 refline = 0,
                 xlim = c(-5, 12),
@@ -1530,7 +1457,7 @@ text(-5, 7, "Moderation of IR by extinction (behavioral intentions)", pos = 4)
 text(12, 7, "Log OR [95% CI]", pos = 2)
 
 # save model fits for making pdf plots for publication
-write_rds(fit_moderation_extinction_ir_sensitivity, "models/fit_moderation_extinction_ir_sensitivity.rds")
+write_rds(fit_moderation_extinction_intentions_ir_sensitivity, "models/fit_moderation_extinction_intentions_ir_sensitivity.rds")
 
 ```
 
@@ -1610,7 +1537,7 @@ text(3.8, 5, "d [95% CI]", pos = 2)
 
 # save model fits for making pdf plots for publication
 write_rds(fit_moderation_counterconditioning_iat_sensitivity, "models/fit_moderation_counterconditioning_iat_sensitivity.rds")
-write_rds(fit_moderation_counterconditioning_ir_sensitivity, "models/fit_moderation_counterconditioning_ir_sensitivity.rds")
+write_rds(fit_moderation_counterconditioning_ir_sensitivity,  "models/fit_moderation_counterconditioning_ir_sensitivity.rds")
 write_rds(fit_moderation_counterconditioning_oec_sensitivity, "models/fit_moderation_counterconditioning_oec_sensitivity.rds")
 
 ```
@@ -1673,7 +1600,8 @@ results_moderation_by_counterconditioning_intentions_ir_sensitivity <-
          OR_ci_lower = round(OR_ci_lower, 2),
          OR_ci_upper = round(OR_ci_upper, 2))
 
-fit_moderation_counterconditioning_ir_sensitivity <- data_reshaped_intentions_moderation_by_counterconditioning_ir_sensitivity %>%
+fit_moderation_counterconditioning_intentions_ir_sensitivity <-
+  data_reshaped_intentions_moderation_by_counterconditioning_ir_sensitivity %>%
   pivot_wider(names_from = experiment_condition,
               values_from = c(brand_A, brand_B)) %>%
   escalc(measure = "OR",
@@ -1687,7 +1615,7 @@ fit_moderation_counterconditioning_ir_sensitivity <- data_reshaped_intentions_mo
       data = .,
       slab = experiment)
 
-metafor::forest(fit_moderation_counterconditioning_ir_sensitivity,
+metafor::forest(fit_moderation_counterconditioning_intentions_ir_sensitivity,
                 addcred = TRUE,
                 refline = 0,
                 xlim = c(-5, 12),
@@ -1696,6 +1624,7 @@ text(-5, 5, "Moderation of IR by counterconditioning (behavioral intentions)", p
 text(12, 5, "Log OR [95% CI]", pos = 2)
 
 # save model fits for making pdf plots for publication
-write_rds(fit_moderation_counterconditioning_ir_sensitivity, "models/fit_moderation_counterconditioning_ir_sensitivity.rds")
+write_rds(fit_moderation_counterconditioning_intentions_ir_sensitivity,
+          "models/fit_moderation_counterconditioning_intentions_ir_sensitivity.rds")
 
 ```
