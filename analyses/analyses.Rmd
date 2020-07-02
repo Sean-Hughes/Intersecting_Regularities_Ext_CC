@@ -775,7 +775,7 @@ metafor::forest(fit_basic_effect_iat,
                 refline = 0,
                 xlim = c(-1.5, 4),
                 at = c(-0.5, 0, 0.5, 1.0, 1.5, 2.0, 2.5))
-text(-1.5, 9, "IAT (IR)", pos = 4)
+text(-1.5, 9, "IR effect (IAT)", pos = 4)
 text(4, 9, "d [95% CI]", pos = 2)
 
 # IR
@@ -792,7 +792,7 @@ metafor::forest(fit_basic_effect_ir,
                 refline = 0,
                 xlim = c(-1.5, 4),
                 at = c(-0.5, 0, 0.5, 1.0, 1.5, 2.0, 2.5))
-text(-1.5, 9, "Self-reported evaluations (IR)", pos = 4)
+text(-1.5, 9, "IR effect (self-reported evaluations)", pos = 4)
 text(4, 9, "d [95% CI]", pos = 2)
 
 # OEC
@@ -809,7 +809,7 @@ metafor::forest(fit_basic_effect_oec,
                 refline = 0,
                 xlim = c(-1.5, 4),
                 at = c(-0.5, 0, 0.5, 1.0, 1.5, 2.0, 2.5))
-text(-1.5, 9, "Self-reported evaluations (OEC)", pos = 4)
+text(-1.5, 9, "OEC effect (self-reported evaluations)", pos = 4)
 text(4, 9, "d [95% CI]", pos = 2)
 
 # save model fits for making pdf plots for publication
@@ -839,11 +839,11 @@ fit_basic_effect_intentions_ir <- data_reshaped_intentions_acquisition_ir %>%
 
 metafor::forest(fit_basic_effect_intentions_ir,
                 addcred = TRUE,
-                refline = 0)
-                # xlim = c(-1.5, 4),
-                # at = c(-0.5, 0, 0.5, 1.0, 1.5, 2.0, 2.5))
-# text(-1.5, 9, "Behavioral intentions (IR)", pos = 4)
-# text(4, 9, "OR [95% CI]", pos = 2)
+                refline = 0,
+                xlim = c(-5, 12),
+                at = c(-2, 0, 2, 4, 6, 8))
+text(-5, 9, "IR effect (behavioral intentions)", pos = 4)
+text(12, 9, "OR [95% CI]", pos = 2)
 
 # save model fits for making pdf plots for publication
 write_rds(fit_basic_effect_intentions_ir, "models/fit_basic_effect_intentions_ir.rds")
@@ -875,7 +875,7 @@ metafor::forest(fit_moderation_extinction_iat,
                 refline = 0,
                 xlim = c(-2.25, 2.25),
                 at = c(-1.5, -1.0, -0.5, 0, 0.5, 1.0))
-text(-2.25, 7, "IAT (IR)", pos = 4)
+text(-2.25, 7, "Moderation of IR by extinction (IAT)", pos = 4)
 text(2.25, 7, "d [95% CI]", pos = 2)
 
 # IR
@@ -892,7 +892,7 @@ metafor::forest(fit_moderation_extinction_ir,
                 refline = 0,
                 xlim = c(-2.25, 2.25),
                 at = c(-1.5, -1.0, -0.5, 0, 0.5, 1.0))
-text(-2.25, 7, "Self-reported evaluations (IR)", pos = 4)
+text(-2.25, 7, "Moderation of IR by extinction (self-reported evaluations)", pos = 4)
 text(2.25, 7, "d [95% CI]", pos = 2)
 
 # OEC
@@ -909,7 +909,7 @@ metafor::forest(fit_moderation_extinction_oec,
                 refline = 0,
                 xlim = c(-2.25, 2.25),
                 at = c(-1.5, -1.0, -0.5, 0, 0.5, 1.0))
-text(-2.25, 7, "Self-reported evaluations (OEC)", pos = 4)
+text(-2.25, 7, "Moderation of OEC by extinction (self-reported evaluations)", pos = 4)
 text(2.25, 7, "d [95% CI]", pos = 2)
 
 # save model fits for making pdf plots for publication
@@ -939,11 +939,11 @@ fit_moderation_extinction_ir <- data_reshaped_intentions_moderation_by_extinctio
 
 metafor::forest(fit_moderation_extinction_ir,
                 addcred = TRUE,
-                refline = 0)
-                # xlim = c(-1.5, 4),
-                # at = c(-0.5, 0, 0.5, 1.0, 1.5, 2.0, 2.5))
-# text(-1.5, 9, "Behavioral intentions (IR)", pos = 4)
-# text(4, 9, "OR [95% CI]", pos = 2)
+                refline = 0,
+                xlim = c(-5, 12),
+                at = c(-2, 0, 2, 4, 6, 8))
+text(-5, 7, "Moderation of IR by extinction (behavioral intentions)", pos = 4)
+text(12, 7, "OR [95% CI]", pos = 2)
 
 # save model fits for making pdf plots for publication
 write_rds(fit_moderation_extinction_ir, "models/fit_moderation_extinction_ir.rds")
@@ -975,7 +975,7 @@ metafor::forest(fit_moderation_counterconditioning_iat,
                 refline = 0,
                 xlim = c(-3.2, 3.8),
                 at = c(-2.0, -1.0, 0, 1.0, 2.0))
-text(-3.2, 5, "IAT (IR)", pos = 4)
+text(-3.2, 5, "Moderation of IR by counterconditioning (IAT)", pos = 4)
 text(3.8, 5, "d [95% CI]", pos = 2)
 
 # IR
@@ -992,7 +992,7 @@ metafor::forest(fit_moderation_counterconditioning_ir,
                 refline = 0,
                 xlim = c(-3.2, 3.8),
                 at = c(-2.0, -1.0, 0, 1.0, 2.0))
-text(-3.2, 5, "Self-reported evaluations (IR)", pos = 4)
+text(-3.2, 5, "Moderation of IR by counterconditioning (self-reported evaluations)", pos = 4)
 text(3.8, 5, "d [95% CI]", pos = 2)
 
 # OEC
@@ -1009,7 +1009,7 @@ metafor::forest(fit_moderation_counterconditioning_oec,
                 refline = 0,
                 xlim = c(-3.2, 3.8),
                 at = c(-2.0, -1.0, 0, 1.0, 2.0))
-text(-3.2, 5, "Self-reported evaluations (OEC)", pos = 4)
+text(-3.2, 5, "Moderation of OEC by counterconditioning (self-reported evaluations)", pos = 4)
 text(3.8, 5, "d [95% CI]", pos = 2)
 
 # save model fits for making pdf plots for publication
@@ -1039,11 +1039,11 @@ fit_moderation_counterconditioning_ir <- data_reshaped_intentions_moderation_by_
 
 metafor::forest(fit_moderation_counterconditioning_ir,
                 addcred = TRUE,
-                refline = 0)
-                # xlim = c(-1.5, 4),
-                # at = c(-0.5, 0, 0.5, 1.0, 1.5, 2.0, 2.5))
-# text(-1.5, 9, "Behavioral intentions (IR)", pos = 4)
-# text(4, 9, "OR [95% CI]", pos = 2)
+                refline = 0,
+                xlim = c(-5, 12),
+                at = c(-2, 0, 2, 4, 6, 8))
+text(-5, 5, "Moderation of IR by counterconditioning (behavioral intentions)", pos = 4)
+text(12, 5, "OR [95% CI]", pos = 2)
 
 # save model fits for making pdf plots for publication
 write_rds(fit_moderation_counterconditioning_ir, "models/fit_moderation_counterconditioning_ir.rds")
