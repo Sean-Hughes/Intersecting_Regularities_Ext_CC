@@ -38,6 +38,32 @@ Exp 7:
 
 
 
+
+
+In earlier analyses the following basic effects came out: * indicates deviation from current results
+Exp 1:
+  IR  present (p = .004) *
+
+Exp 2:
+  IR  present (p < .001)
+
+Exp 3:
+  IR  present (p = .005)
+
+Exp 4:
+  IR  present (p = .05)
+
+Exp 5:
+  IR  present (p = .001)
+
+Exp 6:
+  IR  present (p = .144)
+
+Exp 7:
+  IR  present (p = .52)
+
+
+
 # moderation by extinction
 
 In earlier analyses the following moderation effects came out: * indicates deviation from current results
