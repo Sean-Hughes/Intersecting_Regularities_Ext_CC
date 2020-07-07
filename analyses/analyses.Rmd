@@ -1848,13 +1848,12 @@ multilevel meta
 
 ```{r fig.height=4.5, fig.width=8}
 
-results_for_meta_counterconditioning_sensitivity <- data_processed_after_exclusions_sensitivity %>%
+results_for_meta_counterconditioning_sensitivity_ir <- data_processed_after_exclusions_sensitivity %>%
   filter(experiment_condition %in% c("acquisition_only", "acquisition_and_counterconditioning") &
            experiment %in% c(5, 6, 7)) %>%
   rename(IV = experiment_condition) %>%
   mutate(IV = fct_relevel(IV, "acquisition_and_counterconditioning", "acquisition_only")) %>%
-  gather(DV_type, DV, c(self_reported_OEC_effect_controlling_stimulus_identity,
-                        self_reported_IR_effect_controlling_stimulus_identity,
+  gather(DV_type, DV, c(self_reported_IR_effect_controlling_stimulus_identity,
                         IAT_D2_controlling_stimulus_identity)) %>%
   select(experiment, DV_type, DV, IV) %>%
   drop_na() %>%
@@ -1864,7 +1863,7 @@ results_for_meta_counterconditioning_sensitivity <- data_processed_after_exclusi
   select(experiment, DV_type, yi, sei) %>%
   filter(DV_type %in% c("IAT_D2_controlling_stimulus_identity", "self_reported_IR_effect_controlling_stimulus_identity"))
 
-results_moderation_extinction_intentions_ir_sensitivity <- data_processed_after_exclusions_sensitivity %>%
+results_moderation_extinction_intentions_sensitivity_ir <- data_processed_after_exclusions_sensitivity %>%
   filter(experiment_condition %in% c("acquisition_only", "acquisition_and_counterconditioning") &
            experiment %in% c(5, 6, 7) &
            behavioral_intentions_IR %in% c("brand_A", "brand_B")) %>%
@@ -1894,9 +1893,9 @@ results_moderation_extinction_intentions_ir_sensitivity <- data_processed_after_
          DV_type = "Intentions") %>%
   select(experiment, DV_type, yi, sei)
 
-fit_moderation_by_counterconditioning_sensitivity <- 
-  bind_rows(results_for_meta_counterconditioning_sensitivity,
-            results_moderation_extinction_intentions_ir_sensitivity) %>%
+fit_moderation_by_counterconditioning_sensitivity_ir <- 
+  bind_rows(results_for_meta_counterconditioning_sensitivity_ir,
+            results_moderation_extinction_intentions_sensitivity_ir) %>%
   mutate(DV_type = dplyr::recode(DV_type,
                                  "IAT_D2_controlling_stimulus_identity" = "IAT",
                                  "self_reported_IR_effect_controlling_stimulus_identity" = "Self-report",
@@ -1908,27 +1907,109 @@ fit_moderation_by_counterconditioning_sensitivity <-
          data    = .,
          slab    = paste(experiment, DV_type)) 
 
-forest(fit_moderation_by_counterconditioning_sensitivity, 
+forest(fit_moderation_by_counterconditioning_sensitivity_ir, 
        xlab = substitute(paste("Cohen's ", italic('d'))),
        addcred = TRUE,
        refline = 0,
        xlim = c(-2.25, 2),
        at = c(-1.5, -1, -0.5, 0, 0.5, 1))
-text(-2.25, 11, "Moderation of IR effect by counterconditioning", pos = 4)
+text(-2.25, 11, "Moderation of IR effect by counterconditioning (Pass Group)", pos = 4)
 text(2, 11, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
 
 # save model fits for making pdf plots for publication
-write_rds(fit_moderation_by_counterconditioning_sensitivity,
-          "models/fit_moderation_by_counterconditioning_sensitivity.rds")
+write_rds(fit_moderation_by_counterconditioning_sensitivity_ir,
+          "models/fit_moderation_by_counterconditioning_sensitivity_ir.rds")
 
 congruence_with_full_sample_counterconditioning <- 
-  ifelse((fit_moderation_by_counterconditioning$ci.lb > 0 & fit_moderation_by_counterconditioning_sensitivity$ci.lb > 0) |
-           (fit_moderation_by_counterconditioning$ci.ub < 0 & fit_moderation_by_counterconditioning_sensitivity$ci.ub < 0) |
-           (fit_moderation_by_counterconditioning$ci.lb < 0 & fit_moderation_by_counterconditioning_sensitivity$ci.lb < 0 & 
-              fit_moderation_by_counterconditioning$ci.ub > 0 & fit_moderation_by_counterconditioning_sensitivity$ci.ub > 0),
+  ifelse((fit_moderation_by_counterconditioning_ir$ci.lb > 0 & fit_moderation_by_counterconditioning_sensitivity_ir$ci.lb > 0) |
+           (fit_moderation_by_counterconditioning_ir$ci.ub < 0 & fit_moderation_by_counterconditioning_sensitivity_ir$ci.ub < 0) |
+           (fit_moderation_by_counterconditioning_ir$ci.lb < 0 & fit_moderation_by_counterconditioning_sensitivity_ir$ci.lb < 0 & 
+              fit_moderation_by_counterconditioning_ir$ci.ub > 0 & fit_moderation_by_counterconditioning_sensitivity_ir$ci.ub > 0),
          "Conclusions about the signficance of the estimate of the effect were congruent between the meta-analysis and sensitivity analysis.", "Conclusions about the signficance of the estimate of the effect were incongruent between the meta-analysis and sensitivity analysis.")
 
 ```
 
-`r congruence_with_full_sample_counterconditioning`
+### OEC
 
+multilevel meta
+
+```{r fig.height=4.5, fig.width=8}
+
+results_for_meta_counterconditioning_sensitivity_oec <- data_processed_after_exclusions_sensitivity %>%
+  filter(experiment_condition %in% c("acquisition_only", "acquisition_and_counterconditioning") &
+           experiment %in% c(5, 6, 7)) %>%
+  rename(IV = experiment_condition) %>%
+  mutate(IV = fct_relevel(IV, "acquisition_and_counterconditioning", "acquisition_only")) %>%
+  gather(DV_type, DV, c(self_reported_OEC_effect_controlling_stimulus_identity)) %>%
+  select(experiment, DV_type, DV, IV) %>%
+  drop_na() %>%
+  analysis_workflow(data = .) %>%
+  rename(yi = cohens_d) %>%
+  mutate(sei = (cohens_d_ci_upper - cohens_d_ci_lower)/(2*1.96)) %>%
+  select(experiment, DV_type, yi, sei) %>%
+  filter(DV_type %in% c("self_reported_OEC_effect_controlling_stimulus_identity"))
+
+results_moderation_extinction_intentions_sensitivity_oec <- data_processed_after_exclusions_sensitivity %>%
+  filter(experiment_condition %in% c("acquisition_only", "acquisition_and_counterconditioning") &
+           experiment %in% c(5, 6, 7) &
+           behavioral_intentions_OEC %in% c("brand_A", "brand_B")) %>%
+  count(experiment, experiment_condition, behavioral_intentions_OEC) %>%
+  spread(behavioral_intentions_OEC, n) %>%
+  # Haldane-Anscombe correction
+  group_by(experiment) %>%
+  mutate(count_zero = as.logical(max(c(is.na(brand_A), is.na(brand_B))))) %>%
+  ungroup() %>%
+  mutate(brand_A = ifelse(count_zero, brand_A+1, brand_A),
+         brand_A = ifelse(is.na(brand_A), 1, brand_A),
+         brand_B = ifelse(count_zero, brand_B+1, brand_B),
+         brand_B = ifelse(is.na(brand_B), 1, brand_B)) %>%
+  select(experiment, experiment_condition, brand_A, brand_B) %>%
+  pivot_wider(names_from = experiment_condition,
+              values_from = c(brand_A, brand_B)) %>%
+  escalc(measure = "OR",
+         ai = brand_A_acquisition_only,
+         bi = brand_B_acquisition_only,
+         ci = brand_A_acquisition_and_counterconditioning,
+         di = brand_B_acquisition_and_counterconditioning,
+         data = .) %>%
+  mutate(d_ci_lower = OR_to_d(exp(yi - vi*1.96)),
+         d_ci_upper = OR_to_d(exp(yi + vi*1.96)),
+         sei = (d_ci_upper - d_ci_lower)/(1.96*2),
+         yi = OR_to_d(exp(yi)),
+         DV_type = "Intentions") %>%
+  select(experiment, DV_type, yi, sei)
+
+fit_moderation_by_counterconditioning_sensitivity_oec <- 
+  bind_rows(results_for_meta_counterconditioning_sensitivity_oec,
+            results_moderation_extinction_intentions_sensitivity_oec) %>%
+  mutate(DV_type = dplyr::recode(DV_type,
+                                 "self_reported_OEC_effect_controlling_stimulus_identity" = "Self-report",
+                                 "Intentions" = "Intentions")) %>%
+  arrange(experiment, DV_type) %>%
+  rma.mv(yi      = yi,
+         V       = sei^2,
+         random  = ~ DV_type | experiment,
+         data    = .,
+         slab    = paste(experiment, DV_type)) 
+
+forest(fit_moderation_by_counterconditioning_sensitivity_oec, 
+       xlab = substitute(paste("Cohen's ", italic('d'))),
+       addcred = TRUE,
+       refline = 0,
+       xlim = c(-3.25, 2.75),
+       at = c(-2.0, -1.5, -1, -0.5, 0, 0.5, 1, 1.5))
+text(-3.3, 8, "Moderation of OEC effect by counterconditioning (Pass Group)", pos = 4)
+text(2.75, 8, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
+
+# save model fits for making pdf plots for publication
+write_rds(fit_moderation_by_counterconditioning_sensitivity_oec,
+          "models/fit_moderation_by_counterconditioning_sensitivity_oec.rds")
+
+congruence_with_full_sample_counterconditioning <- 
+  ifelse((fit_moderation_by_counterconditioning_oec$ci.lb > 0 & fit_moderation_by_counterconditioning_sensitivity_oec$ci.lb > 0) |
+           (fit_moderation_by_counterconditioning_oec$ci.ub < 0 & fit_moderation_by_counterconditioning_sensitivity_oec$ci.ub < 0) |
+           (fit_moderation_by_counterconditioning_oec$ci.lb < 0 & fit_moderation_by_counterconditioning_sensitivity_oec$ci.lb < 0 & 
+              fit_moderation_by_counterconditioning_oec$ci.ub > 0 & fit_moderation_by_counterconditioning_sensitivity_oec$ci.ub > 0),
+         "Conclusions about the signficance of the estimate of the effect were congruent between the meta-analysis and sensitivity analysis.", "Conclusions about the signficance of the estimate of the effect were incongruent between the meta-analysis and sensitivity analysis.")
+
+```
