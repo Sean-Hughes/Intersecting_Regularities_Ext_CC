@@ -178,9 +178,9 @@ data_processed_after_exclusions <- data_processed %>%
 
 data_processed %>%
   group_by(experiment) %>%
-  summarize(n = n(),
+  summarise(n = n(),
             age_mean = mean(age),
-            age_sd = mean(age),
+            age_sd = sd(age),
             excluded_n = sum(exclude),
             excluded_percent = mean(exclude*100)) %>%
   mutate_if(is.numeric, round, digits = 1) %>%
@@ -327,7 +327,7 @@ results_basic_effect_iat_selfreports %>%
 
 ```
 
-### Behavioral intentions
+### Behavioral intentions IR
 
 Only "brand A" and "brand B" responses were considered (i.e., not both, neither, i dont know, or non responses). Counts of each response for each study and experiment condition were calculated, which were then used to calculate an odds ratio. P values were computed via fischer's exact test.
 
@@ -438,6 +438,112 @@ results_basic_effect_intentions_ir %>%
 
 ```
 
+### Behavioral Intentions OEC 
+
+```{r}
+
+data_reshaped_intentions_acquisition_oec <- data_processed_after_exclusions %>%
+  filter(experiment_condition == c("acquisition_only") &
+           behavioral_intentions_OEC %in% c("brand_A", "brand_B")) %>%
+  count(experiment, stimulus_identity_condition, behavioral_intentions_OEC) %>%
+  spread(behavioral_intentions_OEC, n) %>%
+  # Haldane-Anscombe correction
+  group_by(experiment) %>%
+  mutate(count_zero = as.logical(max(c(is.na(brand_A), is.na(brand_B))))) %>%
+  ungroup() %>%
+  mutate(brand_A = ifelse(count_zero, brand_A+1, brand_A),
+         brand_A = ifelse(is.na(brand_A), 1, brand_A),
+         brand_B = ifelse(count_zero, brand_B+1, brand_B),
+         brand_B = ifelse(is.na(brand_B), 1, brand_B)) %>%
+  select(experiment, stimulus_identity_condition, brand_A, brand_B)
+
+temp_study_1 <- data_reshaped_intentions_acquisition_oec %>%
+  filter(experiment == 1) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+temp_study_2 <- data_reshaped_intentions_acquisition_oec %>%
+  filter(experiment == 2) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+temp_study_3 <- data_reshaped_intentions_acquisition_oec %>%
+  filter(experiment == 3) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+temp_study_4 <- data_reshaped_intentions_acquisition_oec %>%
+  filter(experiment == 4) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+temp_study_5 <- data_reshaped_intentions_acquisition_oec %>%
+  filter(experiment == 5) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+temp_study_6 <- data_reshaped_intentions_acquisition_oec %>%
+  filter(experiment == 6) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+temp_study_7 <- data_reshaped_intentions_acquisition_oec %>%
+  filter(experiment == 7) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+results_basic_effect_intentions_oec <-
+  bind_rows(
+    as.data.frame(temp_study_1$tab) %>%
+      drop_na() %>%
+      select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+      mutate(experiment = 1),
+    as.data.frame(temp_study_2$tab) %>%
+      drop_na() %>%
+      select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+      mutate(experiment = 2),
+    as.data.frame(temp_study_3$tab) %>%
+      drop_na() %>%
+      select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+      mutate(experiment = 3),
+    as.data.frame(temp_study_4$tab) %>%
+      drop_na() %>%
+      select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+      mutate(experiment = 4),
+    as.data.frame(temp_study_5$tab) %>%
+      drop_na() %>%
+      select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+      mutate(experiment = 5),
+    as.data.frame(temp_study_6$tab) %>%
+      drop_na() %>%
+      select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+      mutate(experiment = 6),
+    as.data.frame(temp_study_7$tab) %>%
+      drop_na() %>%
+      select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+      mutate(experiment = 7)
+  ) %>%
+  select(experiment, OR, OR_ci_lower, OR_ci_upper, p) %>%
+  mutate(OR = round(OR, 2),
+         OR_ci_lower = round(OR_ci_lower, 2),
+         OR_ci_upper = round(OR_ci_upper, 2),
+         reportable_result = paste0("OR = ", round(OR, 2), ", 95% CI [", round(OR_ci_lower, 2), ", ", round(OR_ci_upper, 2), "], p ", apa_p_value(p)))
+
+write_csv(results_basic_effect_intentions_oec, "results/results_basic_effect_intentions_oec.csv")
+
+results_basic_effect_intentions_oec %>%
+  select(experiment, reportable_result) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+```
 
 ## Was the IR moderated by extinction?
 
@@ -798,13 +904,13 @@ results_exp7_extinction_vs_counterconditioning_intentions %>%
 
 # Meta-analyses
 
-## Basic effect
+## Basic IR effect
 
 multilevel meta
 
 ```{r fig.height=6.5, fig.width=8}
 
-results_for_meta_basic_effect_iat_selfreports <- results_basic_effect_iat_selfreports %>%
+results_for_meta_basic_IR_effect_iat_selfreports <- results_basic_effect_iat_selfreports %>%
   rename(yi = cohens_d) %>%
   mutate(sei = (cohens_d_ci_upper - cohens_d_ci_lower)/(2*1.96)) %>%
   select(experiment, DV_type, yi, sei) %>%
@@ -826,8 +932,8 @@ results_for_meta_basic_effect_intentions_ir <- data_reshaped_intentions_acquisit
          DV_type = "Intentions") %>%
   select(experiment, DV_type, yi, sei)
 
-fit_basic_effect <- 
-  bind_rows(results_for_meta_basic_effect_iat_selfreports,
+fit_basic_IR_effect <- 
+  bind_rows(results_for_meta_basic_IR_effect_iat_selfreports,
             results_for_meta_basic_effect_intentions_ir) %>%
   mutate(DV_type = dplyr::recode(DV_type,
                                  "IAT_D2" = "IAT",
@@ -850,9 +956,65 @@ text(-2.5, 23, "Basic IR effect", pos = 4)
 text(6, 23, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
 
 # save model fits for making pdf plots for publication
-write_rds(fit_basic_effect, "models/fit_basic_effect.rds")
+write_rds(fit_basic_IR_effect, "models/fit_basic_IR_effect.rds")
 
 ```
+
+## Basic OEC effect
+
+```{r fig.height=6.5, fig.width=8}
+
+results_for_meta_basic_OEC_effect_iat_selfreports <- results_basic_effect_iat_selfreports %>%
+  rename(yi = cohens_d) %>%
+  mutate(sei = (cohens_d_ci_upper - cohens_d_ci_lower)/(2*1.96)) %>%
+  select(experiment, DV_type, yi, sei) %>%
+  filter(DV_type %in% c("IAT_D2", "self_reported_OEC_effect"))
+
+results_for_meta_basic_effect_intentions_oec <- data_reshaped_intentions_acquisition_oec %>%
+  pivot_wider(names_from = stimulus_identity_condition,
+              values_from = c(brand_A, brand_B)) %>%
+  escalc(measure = "OR",
+         ai = brand_A_Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad,
+         bi = brand_B_Outcome_1_Target_1_Good_Outcome_2_Target_2_Bad,
+         ci = brand_A_Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good,
+         di = brand_B_Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good,
+         data = .) %>%
+  mutate(d_ci_lower = OR_to_d(exp(yi - vi*1.96)),
+         d_ci_upper = OR_to_d(exp(yi + vi*1.96)),
+         sei = (d_ci_upper - d_ci_lower)/(1.96*2),
+         yi = OR_to_d(exp(yi)),
+         DV_type = "Intentions") %>%
+  select(experiment, DV_type, yi, sei)
+
+fit_basic_oec_effect <- 
+  bind_rows(results_for_meta_basic_OEC_effect_iat_selfreports,
+            results_for_meta_basic_effect_intentions_oec) %>%
+  mutate(DV_type = dplyr::recode(DV_type,
+                                 "IAT_D2" = "IAT",
+                                 "self_reported_OEC_effect" = "Self-report",
+                                 "Intentions" = "Intentions")) %>%
+  arrange(experiment, DV_type) %>%
+  rma.mv(yi      = yi,
+         V       = sei^2,
+         random  = ~ DV_type | experiment,
+         data    = .,
+         slab    = paste(experiment, DV_type)) 
+
+forest(fit_basic_oec_effect, 
+       xlab = substitute(paste("Cohen's ", italic('d'))),
+       addcred = TRUE,
+       refline = 0,
+       xlim = c(-2.5, 6),
+       at = c(-1, 0, 1, 2, 3, 4))
+text(-2.5, 23, "Basic OEC effect", pos = 4)
+text(6, 23, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
+
+# save model fits for making pdf plots for publication
+write_rds(fit_basic_OEC_effect, "models/fit_basic_OEC_effect.rds")
+
+```
+
+
 
 ## Moderation by extinction
 
