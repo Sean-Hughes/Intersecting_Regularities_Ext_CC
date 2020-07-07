@@ -20,7 +20,7 @@ knitr::opts_chunk$set(message=FALSE,
 .libPaths()
 
 
-# Dependencies & functions
+# Dependencies & Functions
 
 ```{r}
 
@@ -126,7 +126,7 @@ OR_to_d <- function(OR){
 
 ```
 
-# Data and exclusions
+# Data and Exclusions
 
 ```{r}
 
@@ -545,7 +545,7 @@ results_basic_effect_intentions_oec %>%
 
 ```
 
-## Was the IR moderated by extinction?
+## Were evaluative learning effects moderated by extinction?
 
 ### IAT & self_reports
 
@@ -575,7 +575,7 @@ results_moderation_by_extinction %>%
 
 ```
 
-### Behavioral intentions
+### Behavioral intentions IR
 
 ```{r}
 
@@ -663,7 +663,96 @@ results_moderation_by_extinction_intentions_ir %>%
 
 ```
 
-## Was the IR moderated by counter conditioning?
+### Behavioral intentions OEC
+
+```{r}
+
+data_reshaped_intentions_moderation_by_extinction_oec <- data_processed_after_exclusions %>%
+  filter(experiment_condition %in% c("acquisition_only", "acquisition_and_extinction") &
+           experiment %in% c(1, 2, 3, 4, 7) &
+           behavioral_intentions_OEC %in% c("brand_A", "brand_B")) %>%
+  count(experiment, experiment_condition, behavioral_intentions_OEC) %>%
+  spread(behavioral_intentions_OEC, n) %>%
+  # Haldane-Anscombe correction
+  group_by(experiment) %>%
+  mutate(count_zero = as.logical(max(c(is.na(brand_A), is.na(brand_B))))) %>%
+  ungroup() %>%
+  mutate(brand_A = ifelse(count_zero, brand_A+1, brand_A),
+         brand_A = ifelse(is.na(brand_A), 1, brand_A),
+         brand_B = ifelse(count_zero, brand_B+1, brand_B),
+         brand_B = ifelse(is.na(brand_B), 1, brand_B)) %>%
+  select(experiment, experiment_condition, brand_A, brand_B)
+
+temp_study_1 <- data_reshaped_intentions_moderation_by_extinction_oec %>%
+  filter(experiment == 1) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+temp_study_2 <- data_reshaped_intentions_moderation_by_extinction_oec %>%
+  filter(experiment == 2) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+temp_study_3 <- data_reshaped_intentions_moderation_by_extinction_oec %>%
+  filter(experiment == 3) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+temp_study_4 <- data_reshaped_intentions_moderation_by_extinction_oec %>%
+  filter(experiment == 4) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+temp_study_7 <- data_reshaped_intentions_moderation_by_extinction_oec %>%
+  filter(experiment == 7) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+results_moderation_by_extinction_intentions_oec <-
+  bind_rows(
+    as.data.frame(temp_study_1$tab) %>%
+      drop_na() %>%
+      select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+      mutate(experiment = 1),
+    as.data.frame(temp_study_2$tab) %>%
+      drop_na() %>%
+      select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+      mutate(experiment = 2),
+    as.data.frame(temp_study_3$tab) %>%
+      drop_na() %>%
+      select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+      mutate(experiment = 3),
+    as.data.frame(temp_study_4$tab) %>%
+      drop_na() %>%
+      select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+      mutate(experiment = 4),
+    as.data.frame(temp_study_7$tab) %>%
+      drop_na() %>%
+      select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+      mutate(experiment = 7)
+  ) %>%
+  select(experiment, OR, OR_ci_lower, OR_ci_upper, p) %>%
+  mutate(OR = round(OR, 2),
+         OR_ci_lower = round(OR_ci_lower, 2),
+         OR_ci_upper = round(OR_ci_upper, 2),
+         reportable_result = paste0("OR = ", round(OR, 2), ", 95% CI [", round(OR_ci_lower, 2), ", ", round(OR_ci_upper, 2), "], p ", apa_p_value(p)))
+
+write_csv(results_moderation_by_extinction_intentions_oec, "results/results_moderation_by_extinction_intentions_oec.csv")
+
+results_moderation_by_extinction_intentions_oec %>%
+  select(experiment, reportable_result) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+```
+
+
+## Were evaluative learning effects moderated by counterconditioning?
 
 ### IAT & self_reports
 
@@ -693,7 +782,7 @@ results_moderation_by_counterconditioning %>%
 
 ```
 
-### Behavioral intentions
+### Behavioral intentions IR 
 
 ```{r}
 
@@ -761,6 +850,78 @@ results_moderation_by_counterconditioning_intentions_ir %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 
 ```
+
+### Behavioral intentions OEC 
+
+```{r}
+
+data_reshaped_intentions_moderation_by_counterconditioning_oec <- data_processed_after_exclusions %>%
+  filter(experiment_condition %in% c("acquisition_only", "acquisition_and_counterconditioning") &
+           experiment %in% c(5, 6, 7) &
+           behavioral_intentions_OEC %in% c("brand_A", "brand_B")) %>%
+  count(experiment, experiment_condition, behavioral_intentions_OEC) %>%
+  spread(behavioral_intentions_OEC, n) %>%
+  # Haldane-Anscombe correction
+  group_by(experiment) %>%
+  mutate(count_zero = as.logical(max(c(is.na(brand_A), is.na(brand_B))))) %>%
+  ungroup() %>%
+  mutate(brand_A = ifelse(count_zero, brand_A+1, brand_A),
+         brand_A = ifelse(is.na(brand_A), 1, brand_A),
+         brand_B = ifelse(count_zero, brand_B+1, brand_B),
+         brand_B = ifelse(is.na(brand_B), 1, brand_B)) %>%
+  select(experiment, experiment_condition, brand_A, brand_B)
+
+temp_study_5 <- data_reshaped_intentions_moderation_by_counterconditioning_oec %>%
+  filter(experiment == 5) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+temp_study_6 <- data_reshaped_intentions_moderation_by_counterconditioning_oec %>%
+  filter(experiment == 6) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+temp_study_7 <- data_reshaped_intentions_moderation_by_counterconditioning_oec %>%
+  filter(experiment == 7) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+results_moderation_by_counterconditioning_intentions_oec <-
+  bind_rows(
+    as.data.frame(temp_study_5$tab) %>%
+      drop_na() %>%
+      select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+      mutate(experiment = 5),
+    as.data.frame(temp_study_6$tab) %>%
+      drop_na() %>%
+      select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+      mutate(experiment = 6),
+    as.data.frame(temp_study_7$tab) %>%
+      drop_na() %>%
+      select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+      mutate(experiment = 7)
+  ) %>%
+  select(experiment, OR, OR_ci_lower, OR_ci_upper, p) %>%
+  mutate(OR = round(OR, 2),
+         OR_ci_lower = round(OR_ci_lower, 2),
+         OR_ci_upper = round(OR_ci_upper, 2),
+         reportable_result = paste0("OR = ", round(OR, 2), ", 95% CI [", round(OR_ci_lower, 2), ", ", round(OR_ci_upper, 2), "], p ", apa_p_value(p)))
+
+write_csv(results_moderation_by_counterconditioning_intentions_oec,
+          "results/results_moderation_by_counterconditioning_intentions_oec.csv")
+
+results_moderation_by_counterconditioning_intentions_oec %>%
+  select(experiment, reportable_result) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+```
+
+
+
 
 ## Study 7 ANOVA
 
@@ -855,11 +1016,11 @@ results_exp7_extinction_vs_counterconditioning_iat_selfreports %>%
 
 ```
 
-#### Behavioral intentions
+#### Behavioral intentions IR
 
 ```{r}
 
-data_reshaped_intentions_differences_between_ext_and_cc <- data_processed_after_exclusions %>%
+data_reshaped_ir_intentions_differences_between_ext_and_cc <- data_processed_after_exclusions %>%
   filter(experiment_condition %in% c("acquisition_and_extinction", "acquisition_and_counterconditioning") &
            experiment %in% c(7) &
            behavioral_intentions_IR %in% c("brand_A", "brand_B")) %>%
@@ -875,13 +1036,13 @@ data_reshaped_intentions_differences_between_ext_and_cc <- data_processed_after_
          brand_B = ifelse(is.na(brand_B), 1, brand_B)) %>%
   select(experiment, experiment_condition, brand_A, brand_B)
 
-temp_study_7 <- data_reshaped_intentions_differences_between_ext_and_cc %>%
+temp_study_7 <- data_reshaped_ir_intentions_differences_between_ext_and_cc %>%
   filter(experiment == 7) %>%
   select(brand_A, brand_B) %>%
   as.matrix() %>%
   epitools::epitab(x = .)
 
-results_exp7_extinction_vs_counterconditioning_intentions <-
+results_exp7_extinction_vs_counterconditioning_ir_intentions <-
   as.data.frame(temp_study_7$tab) %>%
   drop_na() %>%
   select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
@@ -892,15 +1053,64 @@ results_exp7_extinction_vs_counterconditioning_intentions <-
          OR_ci_upper = round(OR_ci_upper, 2),
          reportable_result = paste0("OR = ", round(OR, 2), ", 95% CI [", round(OR_ci_lower, 2), ", ", round(OR_ci_upper, 2), "], p ", apa_p_value(p)))
 
-write_csv(results_exp7_extinction_vs_counterconditioning_intentions,
-          "results/results_exp7_extinction_vs_counterconditioning_intentions.csv")
+write_csv(results_exp7_extinction_vs_counterconditioning_ir_intentions,
+          "results/results_exp7_extinction_vs_counterconditioning_ir_intentions.csv")
 
-results_exp7_extinction_vs_counterconditioning_intentions %>%
+results_exp7_extinction_vs_counterconditioning_ir_intentions %>%
   select(experiment, reportable_result) %>%
   kable() %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 
 ```
+
+#### Behavioral intentions OEC
+
+```{r}
+
+data_reshaped_oec_intentions_differences_between_ext_and_cc <- data_processed_after_exclusions %>%
+  filter(experiment_condition %in% c("acquisition_and_extinction", "acquisition_and_counterconditioning") &
+           experiment %in% c(7) &
+           behavioral_intentions_OEC %in% c("brand_A", "brand_B")) %>%
+  count(experiment, experiment_condition, behavioral_intentions_OEC) %>%
+  spread(behavioral_intentions_OEC, n) %>%
+  # Haldane-Anscombe correction
+  group_by(experiment) %>%
+  mutate(count_zero = as.logical(max(c(is.na(brand_A), is.na(brand_B))))) %>%
+  ungroup() %>%
+  mutate(brand_A = ifelse(count_zero, brand_A+1, brand_A),
+         brand_A = ifelse(is.na(brand_A), 1, brand_A),
+         brand_B = ifelse(count_zero, brand_B+1, brand_B),
+         brand_B = ifelse(is.na(brand_B), 1, brand_B)) %>%
+  select(experiment, experiment_condition, brand_A, brand_B)
+
+temp_study_7 <- data_reshaped_oec_intentions_differences_between_ext_and_cc %>%
+  filter(experiment == 7) %>%
+  select(brand_A, brand_B) %>%
+  as.matrix() %>%
+  epitools::epitab(x = .)
+
+results_exp7_extinction_vs_counterconditioning_oec_intentions <-
+  as.data.frame(temp_study_7$tab) %>%
+  drop_na() %>%
+  select(OR = oddsratio, OR_ci_lower = lower, OR_ci_upper = upper, p = p.value) %>%
+  mutate(experiment = 7) %>%
+  select(experiment, OR, OR_ci_lower, OR_ci_upper, p) %>%
+  mutate(OR = round(OR, 2),
+         OR_ci_lower = round(OR_ci_lower, 2),
+         OR_ci_upper = round(OR_ci_upper, 2),
+         reportable_result = paste0("OR = ", round(OR, 2), ", 95% CI [", round(OR_ci_lower, 2), ", ", round(OR_ci_upper, 2), "], p ", apa_p_value(p)))
+
+write_csv(results_exp7_extinction_vs_counterconditioning_oec_intentions,
+          "results/results_exp7_extinction_vs_counterconditioning_oec_intentions.csv")
+
+results_exp7_extinction_vs_counterconditioning_oec_intentions %>%
+  select(experiment, reportable_result) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
+
+```
+
+
 
 # Meta-analyses
 
@@ -1005,12 +1215,12 @@ forest(fit_basic_oec_effect,
        addcred = TRUE,
        refline = 0,
        xlim = c(-2.5, 6),
-       at = c(-1, 0, 1, 2, 3, 4))
+       at = c(-1, 0, 1, 2, 3, 4, 5))
 text(-2.5, 23, "Basic OEC effect", pos = 4)
 text(6, 23, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
 
 # save model fits for making pdf plots for publication
-write_rds(fit_basic_OEC_effect, "models/fit_basic_OEC_effect.rds")
+write_rds(fit_basic_oec_effect, "models/fit_basic_OEC_effect.rds")
 
 ```
 
@@ -1018,11 +1228,12 @@ write_rds(fit_basic_OEC_effect, "models/fit_basic_OEC_effect.rds")
 
 ## Moderation by extinction
 
+### IR effect
 multilevel meta
 
 ```{r fig.height=5.5, fig.width=8}
 
-results_for_meta_extinction <- results_moderation_by_extinction %>%
+results_for_meta_extinction_ir <- results_moderation_by_extinction %>%
   rename(yi = cohens_d) %>%
   mutate(sei = (cohens_d_ci_upper - cohens_d_ci_lower)/(2*1.96)) %>%
   select(experiment, DV_type, yi, sei) %>%
@@ -1044,8 +1255,8 @@ results_for_meta_moderation_extinction_intentions_ir <- data_reshaped_intentions
          DV_type = "Intentions") %>%
   select(experiment, DV_type, yi, sei)
 
-fit_moderation_by_extinction <- 
-  bind_rows(results_for_meta_extinction,
+fit_moderation_by_extinction_ir <- 
+  bind_rows(results_for_meta_extinction_ir,
             results_for_meta_moderation_extinction_intentions_ir) %>%
   mutate(DV_type = dplyr::recode(DV_type,
                                  "IAT_D2_controlling_stimulus_identity" = "IAT",
@@ -1058,7 +1269,7 @@ fit_moderation_by_extinction <-
          data    = .,
          slab    = paste(experiment, DV_type)) 
 
-forest(fit_moderation_by_extinction, 
+forest(fit_moderation_by_extinction_ir, 
        xlab = substitute(paste("Cohen's ", italic('d'))),
        addcred = TRUE,
        refline = 0,
@@ -1068,9 +1279,65 @@ text(-1.75, 17, "Moderation of IR effect by extinction", pos = 4)
 text(2, 17, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
 
 # save model fits for making pdf plots for publication
-write_rds(fit_moderation_by_extinction, "models/fit_moderation_by_extinction.rds")
+write_rds(fit_moderation_by_extinction_ir, "models/fit_moderation_by_extinction_ir.rds")
 
 ```
+
+### OEC effect
+multilevel meta
+
+```{r fig.height=5.5, fig.width=8}
+
+results_for_meta_extinction_oec <- results_moderation_by_extinction %>%
+  rename(yi = cohens_d) %>%
+  mutate(sei = (cohens_d_ci_upper - cohens_d_ci_lower)/(2*1.96)) %>%
+  select(experiment, DV_type, yi, sei) %>%
+  filter(DV_type %in% c("self_reported_OEC_effect_controlling_stimulus_identity"))
+
+results_for_meta_moderation_extinction_intentions_oec <- data_reshaped_intentions_moderation_by_extinction_oec %>%
+  pivot_wider(names_from = experiment_condition,
+              values_from = c(brand_A, brand_B)) %>%
+  escalc(measure = "OR",
+         ai = brand_A_acquisition_only,
+         bi = brand_B_acquisition_only,
+         ci = brand_A_acquisition_and_extinction,
+         di = brand_B_acquisition_and_extinction,
+         data = .) %>%
+  mutate(d_ci_lower = OR_to_d(exp(yi - vi*1.96)),
+         d_ci_upper = OR_to_d(exp(yi + vi*1.96)),
+         sei = (d_ci_upper - d_ci_lower)/(1.96*2),
+         yi = OR_to_d(exp(yi)),
+         DV_type = "Intentions") %>%
+  select(experiment, DV_type, yi, sei)
+
+fit_moderation_by_extinction_oec <- 
+  bind_rows(results_for_meta_extinction_oec,
+            results_for_meta_moderation_extinction_intentions_oec) %>%
+  mutate(DV_type = dplyr::recode(DV_type,
+                                 "self_reported_OEC_effect_controlling_stimulus_identity" = "Self-report",
+                                 "Intentions" = "Intentions")) %>%
+  arrange(experiment, DV_type) %>%
+  rma.mv(yi      = yi,
+         V       = sei^2,
+         random  = ~ DV_type | experiment,
+         data    = .,
+         slab    = paste(experiment, DV_type)) 
+
+forest(fit_moderation_by_extinction_oec, 
+       xlab = substitute(paste("Cohen's ", italic('d'))),
+       addcred = TRUE,
+       refline = 0,
+       xlim = c(-1.75, 3),
+       at = c(-1, -0.5, 0, 0.5, 1, 1.5))
+text(-1.75, 12, "Moderation of OEC effect by extinction", pos = 4)
+text(3, 12, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
+
+# save model fits for making pdf plots for publication
+write_rds(fit_moderation_by_extinction_oec, "models/fit_moderation_by_extinction_oec.rds")
+
+```
+
+
 
 ## Moderation by counter conditioning
 
