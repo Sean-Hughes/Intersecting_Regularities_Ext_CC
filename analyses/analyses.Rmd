@@ -17,9 +17,6 @@ knitr::opts_chunk$set(message=FALSE,
                       warning=FALSE)
 ```
 
-.libPaths()
-
-
 # Dependencies & Functions
 
 ```{r}
@@ -751,7 +748,6 @@ results_moderation_by_extinction_intentions_oec %>%
 
 ```
 
-
 ## Were evaluative learning effects moderated by counterconditioning?
 
 ### IAT & self_reports
@@ -919,9 +915,6 @@ results_moderation_by_counterconditioning_intentions_oec %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
 
 ```
-
-
-
 
 ## Study 7 ANOVA
 
@@ -1110,8 +1103,6 @@ results_exp7_extinction_vs_counterconditioning_oec_intentions %>%
 
 ```
 
-
-
 # Meta-analyses
 
 ## Basic IR effect
@@ -1142,7 +1133,7 @@ results_for_meta_basic_effect_intentions_ir <- data_reshaped_intentions_acquisit
          DV_type = "Intentions") %>%
   select(experiment, DV_type, yi, sei)
 
-fit_basic_IR_effect <- 
+fit_basic_effect_ir <- 
   bind_rows(results_for_meta_basic_IR_effect_iat_selfreports,
             results_for_meta_basic_effect_intentions_ir) %>%
   mutate(DV_type = dplyr::recode(DV_type,
@@ -1156,7 +1147,7 @@ fit_basic_IR_effect <-
          data    = .,
          slab    = paste(experiment, DV_type)) 
 
-forest(fit_basic_effect, 
+forest(fit_basic_effect_ir, 
        xlab = substitute(paste("Cohen's ", italic('d'))),
        addcred = TRUE,
        refline = 0,
@@ -1166,7 +1157,7 @@ text(-2.5, 23, "Basic IR effect", pos = 4)
 text(6, 23, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
 
 # save model fits for making pdf plots for publication
-write_rds(fit_basic_IR_effect, "models/fit_basic_IR_effect.rds")
+write_rds(fit_basic_effect_ir, "models/fit_basic_effect_ir.rds")
 
 ```
 
@@ -1196,7 +1187,7 @@ results_for_meta_basic_effect_intentions_oec <- data_reshaped_intentions_acquisi
          DV_type = "Intentions") %>%
   select(experiment, DV_type, yi, sei)
 
-fit_basic_oec_effect <- 
+fit_basic_effect_oec <- 
   bind_rows(results_for_meta_basic_OEC_effect_iat_selfreports,
             results_for_meta_basic_effect_intentions_oec) %>%
   mutate(DV_type = dplyr::recode(DV_type,
@@ -1210,7 +1201,7 @@ fit_basic_oec_effect <-
          data    = .,
          slab    = paste(experiment, DV_type)) 
 
-forest(fit_basic_oec_effect, 
+forest(fit_basic_effect_oec, 
        xlab = substitute(paste("Cohen's ", italic('d'))),
        addcred = TRUE,
        refline = 0,
@@ -1220,15 +1211,14 @@ text(-2.5, 23, "Basic OEC effect", pos = 4)
 text(6, 23, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
 
 # save model fits for making pdf plots for publication
-write_rds(fit_basic_oec_effect, "models/fit_basic_OEC_effect.rds")
+write_rds(fit_basic_effect_oec, "models/fit_basic_effect_oec.rds")
 
 ```
-
-
 
 ## Moderation by extinction
 
 ### IR effect
+
 multilevel meta
 
 ```{r fig.height=5.5, fig.width=8}
@@ -1284,6 +1274,7 @@ write_rds(fit_moderation_by_extinction_ir, "models/fit_moderation_by_extinction_
 ```
 
 ### OEC effect
+
 multilevel meta
 
 ```{r fig.height=5.5, fig.width=8}
@@ -1336,8 +1327,6 @@ text(3, 12, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
 write_rds(fit_moderation_by_extinction_oec, "models/fit_moderation_by_extinction_oec.rds")
 
 ```
-
-
 
 ## Moderation by counter conditioning
 
@@ -1398,7 +1387,6 @@ write_rds(fit_moderation_by_counterconditioning_ir, "models/fit_moderation_by_co
 
 ```
 
-
 ### OEC effect
 
 multilevel meta
@@ -1455,13 +1443,11 @@ write_rds(fit_moderation_by_counterconditioning_oec, "models/fit_moderation_by_c
 
 ```
 
-
-
 # Sensitivity meta-analyses
 
 Also excluded participants who failed to meet mastery criteria in training or testing phases. Question is considered only at the level of meta-analyses, as sample sizes likely to be under powered at study level.
 
-## Demographics
+## Sample sizes
 
 ```{r}
 
@@ -1502,7 +1488,7 @@ multilevel meta
 
 ```{r fig.height=6.5, fig.width=8}
 
-results_for_meta_basic_effect_iat_selfreports_sensitivity_ir <- data_processed_after_exclusions_sensitivity %>%
+results_for_meta_basic_effect_iat_selfreports_ir_sensitivity <- data_processed_after_exclusions_sensitivity %>%
   filter(experiment_condition == "acquisition_only") %>%
   rename(IV = stimulus_identity_condition) %>%
   gather(DV_type, DV, c(self_reported_IR_effect, IAT_D2)) %>%
@@ -1514,7 +1500,7 @@ results_for_meta_basic_effect_iat_selfreports_sensitivity_ir <- data_processed_a
   select(experiment, DV_type, yi, sei) %>%
   filter(DV_type %in% c("IAT_D2", "self_reported_IR_effect"))
 
-results_basic_effect_intentions_sensitivity_ir <- data_processed_after_exclusions_sensitivity %>%
+results_basic_effect_intentions_ir_sensitivity <- data_processed_after_exclusions_sensitivity %>%
   filter(experiment_condition == c("acquisition_only") &
            behavioral_intentions_IR %in% c("brand_A", "brand_B")) %>%
   count(experiment, stimulus_identity_condition, behavioral_intentions_IR) %>%
@@ -1543,9 +1529,9 @@ results_basic_effect_intentions_sensitivity_ir <- data_processed_after_exclusion
          DV_type = "Intentions") %>%
   select(experiment, DV_type, yi, sei)
 
-fit_basic_effect_sensitivity_ir <- 
-  bind_rows(results_for_meta_basic_effect_iat_selfreports_sensitivity_ir,
-            results_basic_effect_intentions_sensitivity_ir) %>%
+fit_basic_effect_ir_sensitivity <- 
+  bind_rows(results_for_meta_basic_effect_iat_selfreports_ir_sensitivity,
+            results_basic_effect_intentions_ir_sensitivity) %>%
   mutate(DV_type = dplyr::recode(DV_type,
                                  "IAT_D2" = "IAT",
                                  "self_reported_IR_effect" = "Self-report",
@@ -1557,7 +1543,7 @@ fit_basic_effect_sensitivity_ir <-
          data    = .,
          slab    = paste(experiment, DV_type)) 
 
-forest(fit_basic_effect_sensitivity_ir, 
+forest(fit_basic_effect_ir_sensitivity, 
        xlab = substitute(paste("Cohen's ", italic('d'))),
        addcred = TRUE,
        refline = 0,
@@ -1567,17 +1553,18 @@ text(-2.5, 23, "Basic IR effect (Pass Group)", pos = 4)
 text(6, 23, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
 
 # save model fits for making pdf plots for publication
-write_rds(fit_basic_effect_sensitivity_ir, "models/fit_basic_effect_sensitivity_ir.rds")
+write_rds(fit_basic_effect_ir_sensitivity, "models/fit_basic_effect_ir_sensitivity.rds")
 
-congruence_with_full_sample <- 
-  ifelse((fit_basic_effect$ci.lb > 0 & fit_basic_effect_sensitivity$ci.lb > 0) |
-           (fit_basic_effect$ci.ub < 0 & fit_basic_effect_sensitivity$ci.ub < 0) |
-           (fit_basic_effect$ci.lb < 0 & fit_basic_effect_sensitivity$ci.lb < 0 & 
-              fit_basic_effect$ci.ub > 0 & fit_basic_effect_sensitivity$ci.ub > 0),
+congruence_with_full_sample_ir <- 
+  ifelse((fit_basic_effect_ir$ci.lb > 0 & fit_basic_effect_ir_sensitivity$ci.lb > 0) |
+           (fit_basic_effect_ir$ci.ub < 0 & fit_basic_effect_ir_sensitivity$ci.ub < 0) |
+           (fit_basic_effect_ir$ci.lb < 0 & fit_basic_effect_ir_sensitivity$ci.lb < 0 & 
+              fit_basic_effect_ir$ci.ub > 0 & fit_basic_effect_ir_sensitivity$ci.ub > 0),
          "Conclusions about the signficance of the estimate of the effect were congruent between the meta-analysis and sensitivity analysis.", "Conclusions about the signficance of the estimate of the effect were incongruent between the meta-analysis and sensitivity analysis.")
 
 ```
 
+`r congruence_with_full_sample_ir`
 
 ### OEC
 
@@ -1585,7 +1572,7 @@ multilevel meta
 
 ```{r fig.height=6.5, fig.width=8}
 
-results_for_meta_basic_effect_iat_selfreports_sensitivity_oec <- data_processed_after_exclusions_sensitivity %>%
+results_for_meta_basic_effect_iat_selfreports_oec_sensitivity <- data_processed_after_exclusions_sensitivity %>%
   filter(experiment_condition == "acquisition_only") %>%
   rename(IV = stimulus_identity_condition) %>%
   gather(DV_type, DV, c(self_reported_OEC_effect)) %>%
@@ -1597,7 +1584,7 @@ results_for_meta_basic_effect_iat_selfreports_sensitivity_oec <- data_processed_
   select(experiment, DV_type, yi, sei) %>%
   filter(DV_type %in% c("self_reported_OEC_effect"))
 
-results_basic_effect_intentions_sensitivity_oec <- data_processed_after_exclusions_sensitivity %>%
+results_basic_effect_intentions_oec_sensitivity <- data_processed_after_exclusions_sensitivity %>%
   filter(experiment_condition == c("acquisition_only") &
            behavioral_intentions_OEC %in% c("brand_A", "brand_B")) %>%
   count(experiment, stimulus_identity_condition, behavioral_intentions_OEC) %>%
@@ -1626,9 +1613,9 @@ results_basic_effect_intentions_sensitivity_oec <- data_processed_after_exclusio
          DV_type = "Intentions") %>%
   select(experiment, DV_type, yi, sei)
 
-fit_basic_effect_sensitivity_oec <- 
-  bind_rows(results_for_meta_basic_effect_iat_selfreports_sensitivity_oec,
-            results_basic_effect_intentions_sensitivity_oec) %>%
+fit_basic_effect_oec_sensitivity <- 
+  bind_rows(results_for_meta_basic_effect_iat_selfreports_oec_sensitivity,
+            results_basic_effect_intentions_oec_sensitivity) %>%
   mutate(DV_type = dplyr::recode(DV_type,
                                  "self_reported_OEC_effect" = "Self-report",
                                  "Intentions" = "Intentions")) %>%
@@ -1639,7 +1626,7 @@ fit_basic_effect_sensitivity_oec <-
          data    = .,
          slab    = paste(experiment, DV_type)) 
 
-forest(fit_basic_effect_sensitivity_oec, 
+forest(fit_basic_effect_oec_sensitivity, 
        xlab = substitute(paste("Cohen's ", italic('d'))),
        addcred = TRUE,
        refline = 0,
@@ -1649,20 +1636,18 @@ text(-2.5, 23, "Basic OEC effect (Pass Group)", pos = 4)
 text(6, 23, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
 
 # save model fits for making pdf plots for publication
-write_rds(fit_basic_effect_sensitivity_oec, "models/fit_basic_effect_sensitivity_oec.rds")
+write_rds(fit_basic_effect_oec_sensitivity, "models/fit_basic_effect_oec_sensitivity.rds")
 
-congruence_with_full_sample <- 
-  ifelse((fit_basic_effect$ci.lb > 0 & fit_basic_effect_sensitivity$ci.lb > 0) |
-           (fit_basic_effect$ci.ub < 0 & fit_basic_effect_sensitivity$ci.ub < 0) |
-           (fit_basic_effect$ci.lb < 0 & fit_basic_effect_sensitivity$ci.lb < 0 & 
-              fit_basic_effect$ci.ub > 0 & fit_basic_effect_sensitivity$ci.ub > 0),
+congruence_with_full_sample_oec <- 
+  ifelse((fit_basic_effect_oec$ci.lb > 0 & fit_basic_effect_oec_sensitivity$ci.lb > 0) |
+           (fit_basic_effect_oec$ci.ub < 0 & fit_basic_effect_oec_sensitivity$ci.ub < 0) |
+           (fit_basic_effect_oec$ci.lb < 0 & fit_basic_effect_oec_sensitivity$ci.lb < 0 & 
+              fit_basic_effect_oec$ci.ub > 0 & fit_basic_effect_oec_sensitivity$ci.ub > 0),
          "Conclusions about the signficance of the estimate of the effect were congruent between the meta-analysis and sensitivity analysis.", "Conclusions about the signficance of the estimate of the effect were incongruent between the meta-analysis and sensitivity analysis.")
 
 ```
 
-
-
-`r congruence_with_full_sample`
+`r congruence_with_full_sample_oec`
 
 ## Moderation by extinction
 
@@ -1672,7 +1657,7 @@ multilevel meta
 
 ```{r fig.height=5.5, fig.width=8}
 
-results_for_meta_extinction_sensitivity_ir <- data_processed_after_exclusions_sensitivity %>%
+results_for_meta_extinction_ir_sensitivity <- data_processed_after_exclusions_sensitivity %>%
   filter(experiment_condition %in% c("acquisition_only", "acquisition_and_extinction") &
            experiment %in% c(1, 2, 3, 4, 7)) %>%
   rename(IV = experiment_condition) %>%
@@ -1687,7 +1672,7 @@ results_for_meta_extinction_sensitivity_ir <- data_processed_after_exclusions_se
   select(experiment, DV_type, yi, sei) %>%
   filter(DV_type %in% c("IAT_D2_controlling_stimulus_identity", "self_reported_IR_effect_controlling_stimulus_identity"))
 
-results_moderation_extinction_intentions_sensitivity_ir <- data_processed_after_exclusions_sensitivity %>%
+results_moderation_extinction_intentions_ir_sensitivity <- data_processed_after_exclusions_sensitivity %>%
   filter(experiment_condition %in% c("acquisition_only", "acquisition_and_extinction") &
            experiment %in% c(1, 2, 3, 4, 7) &
            behavioral_intentions_IR %in% c("brand_A", "brand_B")) %>%
@@ -1717,9 +1702,9 @@ results_moderation_extinction_intentions_sensitivity_ir <- data_processed_after_
          DV_type = "Intentions") %>%
   select(experiment, DV_type, yi, sei)
 
-fit_moderation_by_extinction_sensitivity_ir <- 
-  bind_rows(results_for_meta_extinction_sensitivity_ir,
-            results_moderation_extinction_intentions_sensitivity_ir) %>%
+fit_moderation_by_extinction_ir_sensitivity <- 
+  bind_rows(results_for_meta_extinction_ir_sensitivity,
+            results_moderation_extinction_intentions_ir_sensitivity) %>%
   mutate(DV_type = dplyr::recode(DV_type,
                                  "IAT_D2_controlling_stimulus_identity" = "IAT",
                                  "self_reported_IR_effect_controlling_stimulus_identity" = "Self-report",
@@ -1731,7 +1716,7 @@ fit_moderation_by_extinction_sensitivity_ir <-
          data    = .,
          slab    = paste(experiment, DV_type)) 
 
-forest(fit_moderation_by_extinction_sensitivity_ir, 
+forest(fit_moderation_by_extinction_ir_sensitivity, 
        xlab = substitute(paste("Cohen's ", italic('d'))),
        addcred = TRUE,
        refline = 0,
@@ -1741,17 +1726,18 @@ text(-1.75, 17, "Moderation of IR effect by extinction (Pass Group)", pos = 4)
 text(2, 17, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
 
 # save model fits for making pdf plots for publication
-write_rds(fit_moderation_by_extinction_sensitivity_ir, "models/fit_moderation_by_extinction_sensitivity_ir.rds")
+write_rds(fit_moderation_by_extinction_ir_sensitivity, "models/fit_moderation_by_extinction_ir_sensitivity.rds")
 
-congruence_with_full_sample_extinction <- 
-  ifelse((fit_moderation_by_extinction$ci.lb > 0 & fit_moderation_by_extinction_sensitivity$ci.lb > 0) |
-           (fit_moderation_by_extinction$ci.ub < 0 & fit_moderation_by_extinction_sensitivity$ci.ub < 0) |
-           (fit_moderation_by_extinction$ci.lb < 0 & fit_moderation_by_extinction_sensitivity$ci.lb < 0 & 
-              fit_moderation_by_extinction$ci.ub > 0 & fit_moderation_by_extinction_sensitivity$ci.ub > 0),
+congruence_with_full_sample_extinction_ir <- 
+  ifelse((fit_moderation_by_extinction_ir$ci.lb > 0 & fit_moderation_by_extinction_ir_sensitivity$ci.lb > 0) |
+           (fit_moderation_by_extinction_ir$ci.ub < 0 & fit_moderation_by_extinction_ir_sensitivity$ci.ub < 0) |
+           (fit_moderation_by_extinction_ir$ci.lb < 0 & fit_moderation_by_extinction_ir_sensitivity$ci.lb < 0 & 
+              fit_moderation_by_extinction_ir$ci.ub > 0 & fit_moderation_by_extinction_ir_sensitivity$ci.ub > 0),
          "Conclusions about the signficance of the estimate of the effect were congruent between the meta-analysis and sensitivity analysis.", "Conclusions about the signficance of the estimate of the effect were incongruent between the meta-analysis and sensitivity analysis.")
 
 ```
 
+`r congruence_with_full_sample_extinction_ir`
 
 ### OEC
 
@@ -1759,7 +1745,7 @@ multilevel meta
 
 ```{r fig.height=5.5, fig.width=8}
 
-results_for_meta_extinction_sensitivity_oec <- data_processed_after_exclusions_sensitivity %>%
+results_for_meta_extinction_oec_sensitivity <- data_processed_after_exclusions_sensitivity %>%
   filter(experiment_condition %in% c("acquisition_only", "acquisition_and_extinction") &
            experiment %in% c(1, 2, 3, 4, 7)) %>%
   rename(IV = experiment_condition) %>%
@@ -1773,7 +1759,7 @@ results_for_meta_extinction_sensitivity_oec <- data_processed_after_exclusions_s
   select(experiment, DV_type, yi, sei) %>%
   filter(DV_type %in% c("self_reported_OEC_effect_controlling_stimulus_identity"))
 
-results_moderation_extinction_intentions_sensitivity_oec <- data_processed_after_exclusions_sensitivity %>%
+results_moderation_extinction_intentions_oec_sensitivity <- data_processed_after_exclusions_sensitivity %>%
   filter(experiment_condition %in% c("acquisition_only", "acquisition_and_extinction") &
            experiment %in% c(1, 2, 3, 4, 7) &
            behavioral_intentions_OEC %in% c("brand_A", "brand_B")) %>%
@@ -1803,9 +1789,9 @@ results_moderation_extinction_intentions_sensitivity_oec <- data_processed_after
          DV_type = "Intentions") %>%
   select(experiment, DV_type, yi, sei)
 
-fit_moderation_by_extinction_sensitivity_oec <- 
-  bind_rows(results_for_meta_extinction_sensitivity_oec,
-            results_moderation_extinction_intentions_sensitivity_oec) %>%
+fit_moderation_by_extinction_oec_sensitivity <- 
+  bind_rows(results_for_meta_extinction_oec_sensitivity,
+            results_moderation_extinction_intentions_oec_sensitivity) %>%
   mutate(DV_type = dplyr::recode(DV_type,
                                  "self_reported_OEC_effect_controlling_stimulus_identity" = "Self-report",
                                  "Intentions" = "Intentions")) %>%
@@ -1816,7 +1802,7 @@ fit_moderation_by_extinction_sensitivity_oec <-
          data    = .,
          slab    = paste(experiment, DV_type)) 
 
-forest(fit_moderation_by_extinction_sensitivity_oec, 
+forest(fit_moderation_by_extinction_oec_sensitivity, 
        xlab = substitute(paste("Cohen's ", italic('d'))),
        addcred = TRUE,
        refline = 0,
@@ -1826,19 +1812,18 @@ text(-1.75, 12, "Moderation of OEC effect by extinction (Pass Group)", pos = 4)
 text(2, 12, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
 
 # save model fits for making pdf plots for publication
-write_rds(fit_moderation_by_extinction_sensitivity_oec, "models/fit_moderation_by_extinction_sensitivity_oec.rds")
+write_rds(fit_moderation_by_extinction_oec_sensitivity, "models/fit_moderation_by_extinction_oec_sensitivity.rds")
 
-congruence_with_full_sample_extinction <- 
-  ifelse((fit_moderation_by_extinction$ci.lb > 0 & fit_moderation_by_extinction_sensitivity$ci.lb > 0) |
-           (fit_moderation_by_extinction$ci.ub < 0 & fit_moderation_by_extinction_sensitivity$ci.ub < 0) |
-           (fit_moderation_by_extinction$ci.lb < 0 & fit_moderation_by_extinction_sensitivity$ci.lb < 0 & 
-              fit_moderation_by_extinction$ci.ub > 0 & fit_moderation_by_extinction_sensitivity$ci.ub > 0),
+congruence_with_full_sample_extinction_oec <- 
+  ifelse((fit_moderation_by_extinction_oec$ci.lb > 0 & fit_moderation_by_extinction_oec_sensitivity$ci.lb > 0) |
+           (fit_moderation_by_extinction_oec$ci.ub < 0 & fit_moderation_by_extinction_oec_sensitivity$ci.ub < 0) |
+           (fit_moderation_by_extinction_oec$ci.lb < 0 & fit_moderation_by_extinction_oec_sensitivity$ci.lb < 0 & 
+              fit_moderation_by_extinction_oec$ci.ub > 0 & fit_moderation_by_extinction_oec_sensitivity$ci.ub > 0),
          "Conclusions about the signficance of the estimate of the effect were congruent between the meta-analysis and sensitivity analysis.", "Conclusions about the signficance of the estimate of the effect were incongruent between the meta-analysis and sensitivity analysis.")
 
 ```
 
-
-`r congruence_with_full_sample_extinction`
+`r congruence_with_full_sample_extinction_oec`
 
 ## Moderation by counter conditioning
 
@@ -1848,7 +1833,7 @@ multilevel meta
 
 ```{r fig.height=4.5, fig.width=8}
 
-results_for_meta_counterconditioning_sensitivity_ir <- data_processed_after_exclusions_sensitivity %>%
+results_for_meta_counterconditioning_ir_sensitivity <- data_processed_after_exclusions_sensitivity %>%
   filter(experiment_condition %in% c("acquisition_only", "acquisition_and_counterconditioning") &
            experiment %in% c(5, 6, 7)) %>%
   rename(IV = experiment_condition) %>%
@@ -1863,7 +1848,7 @@ results_for_meta_counterconditioning_sensitivity_ir <- data_processed_after_excl
   select(experiment, DV_type, yi, sei) %>%
   filter(DV_type %in% c("IAT_D2_controlling_stimulus_identity", "self_reported_IR_effect_controlling_stimulus_identity"))
 
-results_moderation_extinction_intentions_sensitivity_ir <- data_processed_after_exclusions_sensitivity %>%
+results_moderation_extinction_intentions_ir_sensitivity <- data_processed_after_exclusions_sensitivity %>%
   filter(experiment_condition %in% c("acquisition_only", "acquisition_and_counterconditioning") &
            experiment %in% c(5, 6, 7) &
            behavioral_intentions_IR %in% c("brand_A", "brand_B")) %>%
@@ -1893,9 +1878,9 @@ results_moderation_extinction_intentions_sensitivity_ir <- data_processed_after_
          DV_type = "Intentions") %>%
   select(experiment, DV_type, yi, sei)
 
-fit_moderation_by_counterconditioning_sensitivity_ir <- 
-  bind_rows(results_for_meta_counterconditioning_sensitivity_ir,
-            results_moderation_extinction_intentions_sensitivity_ir) %>%
+fit_moderation_by_counterconditioning_ir_sensitivity <- 
+  bind_rows(results_for_meta_counterconditioning_ir_sensitivity,
+            results_moderation_extinction_intentions_ir_sensitivity) %>%
   mutate(DV_type = dplyr::recode(DV_type,
                                  "IAT_D2_controlling_stimulus_identity" = "IAT",
                                  "self_reported_IR_effect_controlling_stimulus_identity" = "Self-report",
@@ -1907,7 +1892,7 @@ fit_moderation_by_counterconditioning_sensitivity_ir <-
          data    = .,
          slab    = paste(experiment, DV_type)) 
 
-forest(fit_moderation_by_counterconditioning_sensitivity_ir, 
+forest(fit_moderation_by_counterconditioning_ir_sensitivity, 
        xlab = substitute(paste("Cohen's ", italic('d'))),
        addcred = TRUE,
        refline = 0,
@@ -1917,17 +1902,19 @@ text(-2.25, 11, "Moderation of IR effect by counterconditioning (Pass Group)", p
 text(2, 11, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
 
 # save model fits for making pdf plots for publication
-write_rds(fit_moderation_by_counterconditioning_sensitivity_ir,
-          "models/fit_moderation_by_counterconditioning_sensitivity_ir.rds")
+write_rds(fit_moderation_by_counterconditioning_ir_sensitivity,
+          "models/fit_moderation_by_counterconditioning_ir_sensitivity.rds")
 
-congruence_with_full_sample_counterconditioning <- 
-  ifelse((fit_moderation_by_counterconditioning_ir$ci.lb > 0 & fit_moderation_by_counterconditioning_sensitivity_ir$ci.lb > 0) |
-           (fit_moderation_by_counterconditioning_ir$ci.ub < 0 & fit_moderation_by_counterconditioning_sensitivity_ir$ci.ub < 0) |
-           (fit_moderation_by_counterconditioning_ir$ci.lb < 0 & fit_moderation_by_counterconditioning_sensitivity_ir$ci.lb < 0 & 
-              fit_moderation_by_counterconditioning_ir$ci.ub > 0 & fit_moderation_by_counterconditioning_sensitivity_ir$ci.ub > 0),
+congruence_with_full_sample_counterconditioning_ir <- 
+  ifelse((fit_moderation_by_counterconditioning_ir$ci.lb > 0 & fit_moderation_by_counterconditioning_ir_sensitivity$ci.lb > 0) |
+           (fit_moderation_by_counterconditioning_ir$ci.ub < 0 & fit_moderation_by_counterconditioning_ir_sensitivity$ci.ub < 0) |
+           (fit_moderation_by_counterconditioning_ir$ci.lb < 0 & fit_moderation_by_counterconditioning_ir_sensitivity$ci.lb < 0 & 
+              fit_moderation_by_counterconditioning_ir$ci.ub > 0 & fit_moderation_by_counterconditioning_ir_sensitivity$ci.ub > 0),
          "Conclusions about the signficance of the estimate of the effect were congruent between the meta-analysis and sensitivity analysis.", "Conclusions about the signficance of the estimate of the effect were incongruent between the meta-analysis and sensitivity analysis.")
 
 ```
+
+`r congruence_with_full_sample_counterconditioning_ir`
 
 ### OEC
 
@@ -1935,7 +1922,7 @@ multilevel meta
 
 ```{r fig.height=4.5, fig.width=8}
 
-results_for_meta_counterconditioning_sensitivity_oec <- data_processed_after_exclusions_sensitivity %>%
+results_for_meta_counterconditioning_oec_sensitivity <- data_processed_after_exclusions_sensitivity %>%
   filter(experiment_condition %in% c("acquisition_only", "acquisition_and_counterconditioning") &
            experiment %in% c(5, 6, 7)) %>%
   rename(IV = experiment_condition) %>%
@@ -1949,7 +1936,7 @@ results_for_meta_counterconditioning_sensitivity_oec <- data_processed_after_exc
   select(experiment, DV_type, yi, sei) %>%
   filter(DV_type %in% c("self_reported_OEC_effect_controlling_stimulus_identity"))
 
-results_moderation_extinction_intentions_sensitivity_oec <- data_processed_after_exclusions_sensitivity %>%
+results_moderation_extinction_intentions_oec_sensitivity <- data_processed_after_exclusions_sensitivity %>%
   filter(experiment_condition %in% c("acquisition_only", "acquisition_and_counterconditioning") &
            experiment %in% c(5, 6, 7) &
            behavioral_intentions_OEC %in% c("brand_A", "brand_B")) %>%
@@ -1979,9 +1966,9 @@ results_moderation_extinction_intentions_sensitivity_oec <- data_processed_after
          DV_type = "Intentions") %>%
   select(experiment, DV_type, yi, sei)
 
-fit_moderation_by_counterconditioning_sensitivity_oec <- 
-  bind_rows(results_for_meta_counterconditioning_sensitivity_oec,
-            results_moderation_extinction_intentions_sensitivity_oec) %>%
+fit_moderation_by_counterconditioning_oec_sensitivity <- 
+  bind_rows(results_for_meta_counterconditioning_oec_sensitivity,
+            results_moderation_extinction_intentions_oec_sensitivity) %>%
   mutate(DV_type = dplyr::recode(DV_type,
                                  "self_reported_OEC_effect_controlling_stimulus_identity" = "Self-report",
                                  "Intentions" = "Intentions")) %>%
@@ -1992,7 +1979,7 @@ fit_moderation_by_counterconditioning_sensitivity_oec <-
          data    = .,
          slab    = paste(experiment, DV_type)) 
 
-forest(fit_moderation_by_counterconditioning_sensitivity_oec, 
+forest(fit_moderation_by_counterconditioning_oec_sensitivity, 
        xlab = substitute(paste("Cohen's ", italic('d'))),
        addcred = TRUE,
        refline = 0,
@@ -2002,14 +1989,19 @@ text(-3.3, 8, "Moderation of OEC effect by counterconditioning (Pass Group)", po
 text(2.75, 8, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
 
 # save model fits for making pdf plots for publication
-write_rds(fit_moderation_by_counterconditioning_sensitivity_oec,
-          "models/fit_moderation_by_counterconditioning_sensitivity_oec.rds")
+write_rds(fit_moderation_by_counterconditioning_oec_sensitivity,
+          "models/fit_moderation_by_counterconditioning_oec_sensitivity.rds")
 
-congruence_with_full_sample_counterconditioning <- 
-  ifelse((fit_moderation_by_counterconditioning_oec$ci.lb > 0 & fit_moderation_by_counterconditioning_sensitivity_oec$ci.lb > 0) |
-           (fit_moderation_by_counterconditioning_oec$ci.ub < 0 & fit_moderation_by_counterconditioning_sensitivity_oec$ci.ub < 0) |
-           (fit_moderation_by_counterconditioning_oec$ci.lb < 0 & fit_moderation_by_counterconditioning_sensitivity_oec$ci.lb < 0 & 
-              fit_moderation_by_counterconditioning_oec$ci.ub > 0 & fit_moderation_by_counterconditioning_sensitivity_oec$ci.ub > 0),
+congruence_with_full_sample_counterconditioning_oec <- 
+  ifelse((fit_moderation_by_counterconditioning_oec$ci.lb > 0 & fit_moderation_by_counterconditioning_oec_sensitivity$ci.lb > 0) |
+           (fit_moderation_by_counterconditioning_oec$ci.ub < 0 & fit_moderation_by_counterconditioning_oec_sensitivity$ci.ub < 0) |
+           (fit_moderation_by_counterconditioning_oec$ci.lb < 0 & fit_moderation_by_counterconditioning_oec_sensitivity$ci.lb < 0 & 
+              fit_moderation_by_counterconditioning_oec$ci.ub > 0 & fit_moderation_by_counterconditioning_oec_sensitivity$ci.ub > 0),
          "Conclusions about the signficance of the estimate of the effect were congruent between the meta-analysis and sensitivity analysis.", "Conclusions about the signficance of the estimate of the effect were incongruent between the meta-analysis and sensitivity analysis.")
 
 ```
+
+`r congruence_with_full_sample_counterconditioning_oec`
+
+
+

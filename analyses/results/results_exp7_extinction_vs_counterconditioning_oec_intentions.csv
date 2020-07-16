@@ -1,0 +1,2 @@
+experiment,OR,OR_ci_lower,OR_ci_upper,p,reportable_result
+7,0.67,0.34,1.33,0.2980139528022387,"OR = 0.67, 95% CI [0.34, 1.33], p = .298"

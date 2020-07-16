@@ -6,16 +6,16 @@ library(metafor)
 setwd("~/git/intersecting_regularities_counter_conditioning/analyses")
 
 # get data
-fit_basic_effect_multivariate <- read_rds("models/fit_basic_effect_multivariate.rds")
-fit_moderation_by_extinction_multivariate <- read_rds("models/fit_moderation_by_extinction_multivariate.rds")
-fit_moderation_by_counterconditioning_multivariate <- read_rds("models/fit_moderation_by_counterconditioning_multivariate.rds")
+fit_basic_effect_ir <- read_rds("models/fit_basic_effect_ir.rds")
+fit_moderation_by_extinction_ir <- read_rds("models/fit_moderation_by_extinction_ir.rds")
+fit_moderation_by_counterconditioning_ir <- read_rds("models/fit_moderation_by_counterconditioning_ir.rds")
 
 # multivariate metas
 ## basic
 pdf(NULL)
 dev.control(displaylist = "enable")
 
-forest(fit_basic_effect_multivariate, 
+forest(fit_basic_effect_ir, 
        xlab = substitute(paste("Cohen's ", italic('d'))),
        addcred = TRUE,
        refline = 0,
@@ -26,7 +26,7 @@ text(6, 23, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
 
 p1 <- recordPlot()
 invisible(dev.off())
-pdf("plots/forest_plots_multivariate_basic.pdf",
+pdf("plots/forest_plots_basic_effect_ir.pdf",
     width = 8, 
     height = 7.5)
 p1
@@ -36,7 +36,7 @@ dev.off()
 pdf(NULL)
 dev.control(displaylist = "enable")
 
-forest(fit_moderation_by_extinction_multivariate, 
+forest(fit_moderation_by_extinction_ir, 
        xlab = substitute(paste("Cohen's ", italic('d'))),
        addcred = TRUE,
        refline = 0,
@@ -47,7 +47,7 @@ text(2, 17, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
 
 p1 <- recordPlot()
 invisible(dev.off())
-pdf("plots/forest_plots_multivariate_moderation_by_extinction.pdf",
+pdf("plots/forest_plots_moderation_by_extinction_ir.pdf",
     width = 8, 
     height = 6.1)
 p1
@@ -57,7 +57,7 @@ dev.off()
 pdf(NULL)
 dev.control(displaylist = "enable")
 
-forest(fit_moderation_by_counterconditioning_multivariate, 
+forest(fit_moderation_by_counterconditioning_ir, 
        xlab = substitute(paste("Cohen's ", italic('d'))),
        addcred = TRUE,
        refline = 0,
@@ -68,7 +68,7 @@ text(2, 11, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
 
 p1 <- recordPlot()
 invisible(dev.off())
-pdf("plots/forest_plots_multivariate_moderation_by_counterconditioning.pdf",
+pdf("plots/forest_plots_moderation_by_counterconditioning_ir.pdf",
     width = 8, 
     height = 4.75)
 p1
