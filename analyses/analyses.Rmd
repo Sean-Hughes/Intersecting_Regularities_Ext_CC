@@ -117,8 +117,9 @@ analysis_workflow <- function(data){
   return(results)
 }
 
-OR_to_d <- function(OR){
-  log(OR)*(sqrt(3)/pi)
+# https://www.meta-analysis.com/downloads/Meta-analysis%20Converting%20among%20effect%20sizes.pdf
+logOR_to_d <- function(logOR){
+  logOR*(sqrt(3)/pi)
 }
 
 ```
@@ -1126,10 +1127,8 @@ results_for_meta_basic_effect_intentions_ir <- data_reshaped_intentions_acquisit
          ci = brand_A_Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good,
          di = brand_B_Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good,
          data = .) %>%
-  mutate(d_ci_lower = OR_to_d(exp(yi - vi*1.96)),
-         d_ci_upper = OR_to_d(exp(yi + vi*1.96)),
-         sei = (d_ci_upper - d_ci_lower)/(1.96*2),
-         yi = OR_to_d(exp(yi)),
+  mutate(sei = sqrt(logOR_to_d(vi)),
+         yi = logOR_to_d(yi),
          DV_type = "Intentions") %>%
   select(experiment, DV_type, yi, sei)
 
@@ -1161,6 +1160,8 @@ write_rds(fit_basic_effect_ir, "models/fit_basic_effect_ir.rds")
 
 ```
 
+meta p value: `r fit_basic_effect_ir$pval`
+
 ## Basic OEC effect
 
 ```{r fig.height=6.5, fig.width=8}
@@ -1180,10 +1181,8 @@ results_for_meta_basic_effect_intentions_oec <- data_reshaped_intentions_acquisi
          ci = brand_A_Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good,
          di = brand_B_Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good,
          data = .) %>%
-  mutate(d_ci_lower = OR_to_d(exp(yi - vi*1.96)),
-         d_ci_upper = OR_to_d(exp(yi + vi*1.96)),
-         sei = (d_ci_upper - d_ci_lower)/(1.96*2),
-         yi = OR_to_d(exp(yi)),
+  mutate(sei = sqrt(logOR_to_d(vi)),
+         yi = logOR_to_d(yi),
          DV_type = "Intentions") %>%
   select(experiment, DV_type, yi, sei)
 
@@ -1215,6 +1214,8 @@ write_rds(fit_basic_effect_oec, "models/fit_basic_effect_oec.rds")
 
 ```
 
+meta p value: `r fit_basic_effect_oec$pval`
+
 ## Moderation by extinction
 
 ### IR effect
@@ -1238,10 +1239,8 @@ results_for_meta_moderation_extinction_intentions_ir <- data_reshaped_intentions
          ci = brand_A_acquisition_and_extinction,
          di = brand_B_acquisition_and_extinction,
          data = .) %>%
-  mutate(d_ci_lower = OR_to_d(exp(yi - vi*1.96)),
-         d_ci_upper = OR_to_d(exp(yi + vi*1.96)),
-         sei = (d_ci_upper - d_ci_lower)/(1.96*2),
-         yi = OR_to_d(exp(yi)),
+  mutate(sei = sqrt(logOR_to_d(vi)),
+         yi = logOR_to_d(yi),
          DV_type = "Intentions") %>%
   select(experiment, DV_type, yi, sei)
 
@@ -1273,6 +1272,8 @@ write_rds(fit_moderation_by_extinction_ir, "models/fit_moderation_by_extinction_
 
 ```
 
+meta p value: `r fit_moderation_by_extinction_ir$pval`
+
 ### OEC effect
 
 multilevel meta
@@ -1294,10 +1295,8 @@ results_for_meta_moderation_extinction_intentions_oec <- data_reshaped_intention
          ci = brand_A_acquisition_and_extinction,
          di = brand_B_acquisition_and_extinction,
          data = .) %>%
-  mutate(d_ci_lower = OR_to_d(exp(yi - vi*1.96)),
-         d_ci_upper = OR_to_d(exp(yi + vi*1.96)),
-         sei = (d_ci_upper - d_ci_lower)/(1.96*2),
-         yi = OR_to_d(exp(yi)),
+  mutate(sei = sqrt(logOR_to_d(vi)),
+         yi = logOR_to_d(yi),
          DV_type = "Intentions") %>%
   select(experiment, DV_type, yi, sei)
 
@@ -1328,6 +1327,8 @@ write_rds(fit_moderation_by_extinction_oec, "models/fit_moderation_by_extinction
 
 ```
 
+meta p value: `r fit_moderation_by_extinction_oec$pval`
+
 ## Moderation by counter conditioning
 
 ### IR effect
@@ -1351,10 +1352,8 @@ results_for_meta_moderation_counterconditioning_intentions_ir <- data_reshaped_i
          ci = brand_A_acquisition_and_counterconditioning,
          di = brand_B_acquisition_and_counterconditioning,
          data = .) %>%
-  mutate(d_ci_lower = OR_to_d(exp(yi - vi*1.96)),
-         d_ci_upper = OR_to_d(exp(yi + vi*1.96)),
-         sei = (d_ci_upper - d_ci_lower)/(1.96*2),
-         yi = OR_to_d(exp(yi)),
+  mutate(sei = sqrt(logOR_to_d(vi)),
+         yi = logOR_to_d(yi),
          DV_type = "Intentions") %>%
   select(experiment, DV_type, yi, sei)
 
@@ -1387,6 +1386,8 @@ write_rds(fit_moderation_by_counterconditioning_ir, "models/fit_moderation_by_co
 
 ```
 
+meta p value: `r fit_moderation_by_counterconditioning_ir$pval`
+
 ### OEC effect
 
 multilevel meta
@@ -1408,10 +1409,8 @@ results_for_meta_moderation_counterconditioning_intentions_oec <- data_reshaped_
          ci = brand_A_acquisition_and_counterconditioning,
          di = brand_B_acquisition_and_counterconditioning,
          data = .) %>%
-  mutate(d_ci_lower = OR_to_d(exp(yi - vi*1.96)),
-         d_ci_upper = OR_to_d(exp(yi + vi*1.96)),
-         sei = (d_ci_upper - d_ci_lower)/(1.96*2),
-         yi = OR_to_d(exp(yi)),
+  mutate(sei = sqrt(logOR_to_d(vi)),
+         yi = logOR_to_d(yi),
          DV_type = "Intentions") %>%
   select(experiment, DV_type, yi, sei)
 
@@ -1442,6 +1441,8 @@ text(3, 8, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
 write_rds(fit_moderation_by_counterconditioning_oec, "models/fit_moderation_by_counterconditioning_oec.rds")
 
 ```
+
+meta p value: `r fit_moderation_by_counterconditioning_oec$pval`
 
 # Sensitivity meta-analyses
 
@@ -1522,10 +1523,8 @@ results_basic_effect_intentions_ir_sensitivity <- data_processed_after_exclusion
          ci = brand_A_Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good,
          di = brand_B_Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good,
          data = .) %>%
-  mutate(d_ci_lower = OR_to_d(exp(yi - vi*1.96)),
-         d_ci_upper = OR_to_d(exp(yi + vi*1.96)),
-         sei = (d_ci_upper - d_ci_lower)/(1.96*2),
-         yi = OR_to_d(exp(yi)),
+  mutate(sei = sqrt(logOR_to_d(vi)),
+         yi = logOR_to_d(yi),
          DV_type = "Intentions") %>%
   select(experiment, DV_type, yi, sei)
 
@@ -1606,10 +1605,8 @@ results_basic_effect_intentions_oec_sensitivity <- data_processed_after_exclusio
          ci = brand_A_Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good,
          di = brand_B_Outcome_1_Target_1_Bad_Outcome_2_Target_2_Good,
          data = .) %>%
-  mutate(d_ci_lower = OR_to_d(exp(yi - vi*1.96)),
-         d_ci_upper = OR_to_d(exp(yi + vi*1.96)),
-         sei = (d_ci_upper - d_ci_lower)/(1.96*2),
-         yi = OR_to_d(exp(yi)),
+  mutate(sei = sqrt(logOR_to_d(vi)),
+         yi = logOR_to_d(yi),
          DV_type = "Intentions") %>%
   select(experiment, DV_type, yi, sei)
 
@@ -1695,10 +1692,8 @@ results_moderation_extinction_intentions_ir_sensitivity <- data_processed_after_
          ci = brand_A_acquisition_and_extinction,
          di = brand_B_acquisition_and_extinction,
          data = .) %>%
-  mutate(d_ci_lower = OR_to_d(exp(yi - vi*1.96)),
-         d_ci_upper = OR_to_d(exp(yi + vi*1.96)),
-         sei = (d_ci_upper - d_ci_lower)/(1.96*2),
-         yi = OR_to_d(exp(yi)),
+  mutate(sei = sqrt(logOR_to_d(vi)),
+         yi = logOR_to_d(yi),
          DV_type = "Intentions") %>%
   select(experiment, DV_type, yi, sei)
 
@@ -1782,10 +1777,8 @@ results_moderation_extinction_intentions_oec_sensitivity <- data_processed_after
          ci = brand_A_acquisition_and_extinction,
          di = brand_B_acquisition_and_extinction,
          data = .) %>%
-  mutate(d_ci_lower = OR_to_d(exp(yi - vi*1.96)),
-         d_ci_upper = OR_to_d(exp(yi + vi*1.96)),
-         sei = (d_ci_upper - d_ci_lower)/(1.96*2),
-         yi = OR_to_d(exp(yi)),
+  mutate(sei = sqrt(logOR_to_d(vi)),
+         yi = logOR_to_d(yi),
          DV_type = "Intentions") %>%
   select(experiment, DV_type, yi, sei)
 
@@ -1871,10 +1864,8 @@ results_moderation_extinction_intentions_ir_sensitivity <- data_processed_after_
          ci = brand_A_acquisition_and_counterconditioning,
          di = brand_B_acquisition_and_counterconditioning,
          data = .) %>%
-  mutate(d_ci_lower = OR_to_d(exp(yi - vi*1.96)),
-         d_ci_upper = OR_to_d(exp(yi + vi*1.96)),
-         sei = (d_ci_upper - d_ci_lower)/(1.96*2),
-         yi = OR_to_d(exp(yi)),
+  mutate(sei = sqrt(logOR_to_d(vi)),
+         yi = logOR_to_d(yi),
          DV_type = "Intentions") %>%
   select(experiment, DV_type, yi, sei)
 
@@ -1959,10 +1950,8 @@ results_moderation_extinction_intentions_oec_sensitivity <- data_processed_after
          ci = brand_A_acquisition_and_counterconditioning,
          di = brand_B_acquisition_and_counterconditioning,
          data = .) %>%
-  mutate(d_ci_lower = OR_to_d(exp(yi - vi*1.96)),
-         d_ci_upper = OR_to_d(exp(yi + vi*1.96)),
-         sei = (d_ci_upper - d_ci_lower)/(1.96*2),
-         yi = OR_to_d(exp(yi)),
+  mutate(sei = sqrt(logOR_to_d(vi)),
+         yi = logOR_to_d(yi),
          DV_type = "Intentions") %>%
   select(experiment, DV_type, yi, sei)
 
