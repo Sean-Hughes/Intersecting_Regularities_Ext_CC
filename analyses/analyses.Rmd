@@ -1262,13 +1262,14 @@ forest(fit_moderation_by_extinction_ir,
        xlab = substitute(paste("Cohen's ", italic('d'))),
        addcred = TRUE,
        refline = 0,
-       xlim = c(-1.75, 2),
-       at = c(-1, -0.5, 0, 0.5, 1))
-text(-1.75, 17, "Moderation of IR effect by extinction", pos = 4)
+       xlim = c(-2.5, 2),
+       at = c(-1.5, -1, -0.5, 0, 0.5, 1))
+text(-2.5, 17, "Moderation of IR effect by extinction", pos = 4)
 text(2, 17, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
 
 # save model fits for making pdf plots for publication
 write_rds(fit_moderation_by_extinction_ir, "models/fit_moderation_by_extinction_ir.rds")
+read_rds("models/fit_moderation_by_extinction_ir.rds")
 
 ```
 
@@ -1317,13 +1318,14 @@ forest(fit_moderation_by_extinction_oec,
        xlab = substitute(paste("Cohen's ", italic('d'))),
        addcred = TRUE,
        refline = 0,
-       xlim = c(-1.75, 3),
-       at = c(-1, -0.5, 0, 0.5, 1, 1.5))
-text(-1.75, 12, "Moderation of OEC effect by extinction", pos = 4)
+       xlim = c(-2.5, 3),
+       at = c(-1.5, -1, -0.5, 0, 0.5, 1, 1.5))
+text(-2.5, 12, "Moderation of OEC effect by extinction", pos = 4)
 text(3, 12, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
 
 # save model fits for making pdf plots for publication
 write_rds(fit_moderation_by_extinction_oec, "models/fit_moderation_by_extinction_oec.rds")
+read_rds("models/fit_moderation_by_extinction_oec.rds")
 
 ```
 
@@ -1383,7 +1385,7 @@ text(2, 11, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
 
 # save model fits for making pdf plots for publication
 write_rds(fit_moderation_by_counterconditioning_ir, "models/fit_moderation_by_counterconditioning_ir.rds")
-
+read_rds("models/fit_moderation_by_counterconditioning_ir.rds")
 ```
 
 meta p value: `r fit_moderation_by_counterconditioning_ir$pval`
@@ -1553,6 +1555,9 @@ text(6, 23, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
 
 # save model fits for making pdf plots for publication
 write_rds(fit_basic_effect_ir_sensitivity, "models/fit_basic_effect_ir_sensitivity.rds")
+read_rds("models/fit_basic_effect_ir_sensitivity.rds")
+
+
 
 congruence_with_full_sample_ir <- 
   ifelse((fit_basic_effect_ir$ci.lb > 0 & fit_basic_effect_ir_sensitivity$ci.lb > 0) |
@@ -1560,6 +1565,8 @@ congruence_with_full_sample_ir <-
            (fit_basic_effect_ir$ci.lb < 0 & fit_basic_effect_ir_sensitivity$ci.lb < 0 & 
               fit_basic_effect_ir$ci.ub > 0 & fit_basic_effect_ir_sensitivity$ci.ub > 0),
          "Conclusions about the signficance of the estimate of the effect were congruent between the meta-analysis and sensitivity analysis.", "Conclusions about the signficance of the estimate of the effect were incongruent between the meta-analysis and sensitivity analysis.")
+
+congruence_with_full_sample_ir
 
 ```
 
@@ -1641,6 +1648,8 @@ congruence_with_full_sample_oec <-
            (fit_basic_effect_oec$ci.lb < 0 & fit_basic_effect_oec_sensitivity$ci.lb < 0 & 
               fit_basic_effect_oec$ci.ub > 0 & fit_basic_effect_oec_sensitivity$ci.ub > 0),
          "Conclusions about the signficance of the estimate of the effect were congruent between the meta-analysis and sensitivity analysis.", "Conclusions about the signficance of the estimate of the effect were incongruent between the meta-analysis and sensitivity analysis.")
+
+congruence_with_full_sample_oec
 
 ```
 
@@ -1730,6 +1739,8 @@ congruence_with_full_sample_extinction_ir <-
               fit_moderation_by_extinction_ir$ci.ub > 0 & fit_moderation_by_extinction_ir_sensitivity$ci.ub > 0),
          "Conclusions about the signficance of the estimate of the effect were congruent between the meta-analysis and sensitivity analysis.", "Conclusions about the signficance of the estimate of the effect were incongruent between the meta-analysis and sensitivity analysis.")
 
+congruence_with_full_sample_extinction_ir
+
 ```
 
 `r congruence_with_full_sample_extinction_ir`
@@ -1813,6 +1824,8 @@ congruence_with_full_sample_extinction_oec <-
            (fit_moderation_by_extinction_oec$ci.lb < 0 & fit_moderation_by_extinction_oec_sensitivity$ci.lb < 0 & 
               fit_moderation_by_extinction_oec$ci.ub > 0 & fit_moderation_by_extinction_oec_sensitivity$ci.ub > 0),
          "Conclusions about the signficance of the estimate of the effect were congruent between the meta-analysis and sensitivity analysis.", "Conclusions about the signficance of the estimate of the effect were incongruent between the meta-analysis and sensitivity analysis.")
+
+congruence_with_full_sample_extinction_oec
 
 ```
 
@@ -1903,6 +1916,8 @@ congruence_with_full_sample_counterconditioning_ir <-
               fit_moderation_by_counterconditioning_ir$ci.ub > 0 & fit_moderation_by_counterconditioning_ir_sensitivity$ci.ub > 0),
          "Conclusions about the signficance of the estimate of the effect were congruent between the meta-analysis and sensitivity analysis.", "Conclusions about the signficance of the estimate of the effect were incongruent between the meta-analysis and sensitivity analysis.")
 
+congruence_with_full_sample_counterconditioning_ir
+
 ```
 
 `r congruence_with_full_sample_counterconditioning_ir`
@@ -1987,6 +2002,8 @@ congruence_with_full_sample_counterconditioning_oec <-
            (fit_moderation_by_counterconditioning_oec$ci.lb < 0 & fit_moderation_by_counterconditioning_oec_sensitivity$ci.lb < 0 & 
               fit_moderation_by_counterconditioning_oec$ci.ub > 0 & fit_moderation_by_counterconditioning_oec_sensitivity$ci.ub > 0),
          "Conclusions about the signficance of the estimate of the effect were congruent between the meta-analysis and sensitivity analysis.", "Conclusions about the signficance of the estimate of the effect were incongruent between the meta-analysis and sensitivity analysis.")
+
+congruence_with_full_sample_counterconditioning_oec
 
 ```
 
