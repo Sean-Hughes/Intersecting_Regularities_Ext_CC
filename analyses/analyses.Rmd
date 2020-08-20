@@ -1549,7 +1549,7 @@ forest(fit_basic_effect_ir_sensitivity,
        addcred = TRUE,
        refline = 0,
        xlim = c(-2.5, 6),
-       at = c(-1, 0, 1, 2, 3, 4))
+       at = c(-1, 0, 1, 2, 3, 4, 5))
 text(-2.5, 23, "Basic IR effect (Pass Group)", pos = 4)
 text(6, 23, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
 
@@ -1634,10 +1634,10 @@ forest(fit_basic_effect_oec_sensitivity,
        xlab = substitute(paste("Cohen's ", italic('d'))),
        addcred = TRUE,
        refline = 0,
-       xlim = c(-2.5, 6),
-       at = c(-1, 0, 1, 2, 3, 4))
-text(-2.5, 23, "Basic OEC effect (Pass Group)", pos = 4)
-text(6, 23, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
+       xlim = c(-2.5, 7),
+       at = c(-1, 0, 1, 2, 3, 4, 5))
+text(-2.5, 16, "Basic OEC effect (Pass Group)", pos = 4)
+text(6, 16, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
 
 # save model fits for making pdf plots for publication
 write_rds(fit_basic_effect_oec_sensitivity, "models/fit_basic_effect_oec_sensitivity.rds")
@@ -1724,10 +1724,10 @@ forest(fit_moderation_by_extinction_ir_sensitivity,
        xlab = substitute(paste("Cohen's ", italic('d'))),
        addcred = TRUE,
        refline = 0,
-       xlim = c(-1.75, 2),
-       at = c(-1, -0.5, 0, 0.5, 1))
-text(-1.75, 17, "Moderation of IR effect by extinction (Pass Group)", pos = 4)
-text(2, 17, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
+       xlim = c(-3.5, 3.5),
+       at = c(-2, -1, 0, 1, 2))
+text(-3.5, 17, "Moderation of IR effect by extinction (Pass Group)", pos = 4)
+text(3.5, 17, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
 
 # save model fits for making pdf plots for publication
 write_rds(fit_moderation_by_extinction_ir_sensitivity, "models/fit_moderation_by_extinction_ir_sensitivity.rds")
@@ -1738,6 +1738,8 @@ congruence_with_full_sample_extinction_ir <-
            (fit_moderation_by_extinction_ir$ci.lb < 0 & fit_moderation_by_extinction_ir_sensitivity$ci.lb < 0 & 
               fit_moderation_by_extinction_ir$ci.ub > 0 & fit_moderation_by_extinction_ir_sensitivity$ci.ub > 0),
          "Conclusions about the signficance of the estimate of the effect were congruent between the meta-analysis and sensitivity analysis.", "Conclusions about the signficance of the estimate of the effect were incongruent between the meta-analysis and sensitivity analysis.")
+
+fit_moderation_by_extinction_ir_sensitivity
 
 congruence_with_full_sample_extinction_ir
 
@@ -1810,10 +1812,10 @@ forest(fit_moderation_by_extinction_oec_sensitivity,
        xlab = substitute(paste("Cohen's ", italic('d'))),
        addcred = TRUE,
        refline = 0,
-       xlim = c(-1.75, 3),
-       at = c(-1, -0.5, 0, 0.5, 1, 1.5))
-text(-1.75, 12, "Moderation of OEC effect by extinction (Pass Group)", pos = 4)
-text(2, 12, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
+       xlim = c(-3.5, 3.5),
+       at = c(-2, -1, 0, 1, 2))
+text(-3.5, 12, "Moderation of OEC effect by extinction (Pass Group)", pos = 4)
+text(3.5, 12, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
 
 # save model fits for making pdf plots for publication
 write_rds(fit_moderation_by_extinction_oec_sensitivity, "models/fit_moderation_by_extinction_oec_sensitivity.rds")
@@ -1824,6 +1826,8 @@ congruence_with_full_sample_extinction_oec <-
            (fit_moderation_by_extinction_oec$ci.lb < 0 & fit_moderation_by_extinction_oec_sensitivity$ci.lb < 0 & 
               fit_moderation_by_extinction_oec$ci.ub > 0 & fit_moderation_by_extinction_oec_sensitivity$ci.ub > 0),
          "Conclusions about the signficance of the estimate of the effect were congruent between the meta-analysis and sensitivity analysis.", "Conclusions about the signficance of the estimate of the effect were incongruent between the meta-analysis and sensitivity analysis.")
+
+fit_moderation_by_extinction_oec_sensitivity
 
 congruence_with_full_sample_extinction_oec
 
@@ -1900,10 +1904,10 @@ forest(fit_moderation_by_counterconditioning_ir_sensitivity,
        xlab = substitute(paste("Cohen's ", italic('d'))),
        addcred = TRUE,
        refline = 0,
-       xlim = c(-2.25, 2),
-       at = c(-1.5, -1, -0.5, 0, 0.5, 1))
-text(-2.25, 11, "Moderation of IR effect by counterconditioning (Pass Group)", pos = 4)
-text(2, 11, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
+       xlim = c(-3.5, 3.5),
+       at = c(-2, -1, 0, 1, 2))
+text(-3.5, 11, "Moderation of IR effect by counterconditioning (Pass Group)", pos = 4)
+text(3.5, 11, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
 
 # save model fits for making pdf plots for publication
 write_rds(fit_moderation_by_counterconditioning_ir_sensitivity,
@@ -1916,7 +1920,10 @@ congruence_with_full_sample_counterconditioning_ir <-
               fit_moderation_by_counterconditioning_ir$ci.ub > 0 & fit_moderation_by_counterconditioning_ir_sensitivity$ci.ub > 0),
          "Conclusions about the signficance of the estimate of the effect were congruent between the meta-analysis and sensitivity analysis.", "Conclusions about the signficance of the estimate of the effect were incongruent between the meta-analysis and sensitivity analysis.")
 
+fit_moderation_by_counterconditioning_ir_sensitivity
+
 congruence_with_full_sample_counterconditioning_ir
+
 
 ```
 
@@ -1987,10 +1994,10 @@ forest(fit_moderation_by_counterconditioning_oec_sensitivity,
        xlab = substitute(paste("Cohen's ", italic('d'))),
        addcred = TRUE,
        refline = 0,
-       xlim = c(-3.25, 2.75),
-       at = c(-2.0, -1.5, -1, -0.5, 0, 0.5, 1, 1.5))
-text(-3.3, 8, "Moderation of OEC effect by counterconditioning (Pass Group)", pos = 4)
-text(2.75, 8, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
+       xlim = c(-3.5, 3.5),
+       at = c(-2.0, -1, 0, 1, 2))
+text(-3.5, 8, "Moderation of OEC effect by counterconditioning (Pass Group)", pos = 4)
+text(3.5, 8, substitute(paste(italic('d'), " [95% CI]")), pos = 2)
 
 # save model fits for making pdf plots for publication
 write_rds(fit_moderation_by_counterconditioning_oec_sensitivity,
